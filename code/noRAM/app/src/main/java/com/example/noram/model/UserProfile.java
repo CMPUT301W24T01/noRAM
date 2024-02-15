@@ -1,5 +1,8 @@
 package com.example.noram.model;
 
+/**
+ * A class representing a user profile
+ */
 public abstract class UserProfile {
     private int identifier;
 

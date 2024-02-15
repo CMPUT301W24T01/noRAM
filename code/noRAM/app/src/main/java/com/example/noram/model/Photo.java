@@ -1,5 +1,8 @@
 package com.example.noram.model;
 
+/**
+ * A class to represent a photo
+ */
 public class Photo {
     private String photoName;
     private String photoPath;

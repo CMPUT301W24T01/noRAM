@@ -6,7 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * A class to represent the database
  */
-
 public class Database {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference attendeeRef = db.collection("Attendees");
