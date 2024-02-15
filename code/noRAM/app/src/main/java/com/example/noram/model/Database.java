@@ -12,6 +12,7 @@ public class Database {
     private CollectionReference attendeeRef = db.collection("Attendees");
     private CollectionReference organizerRef = db.collection("Organizers");
     private CollectionReference adminRef = db.collection("Admins");
+    private CollectionReference photoRef = db.collection("Photos");
 
     /**
      * A method to get the database
@@ -52,13 +53,12 @@ public class Database {
      */
     public boolean addAttendee(int identifier) {
         try {
-            attendeeRef.add(new Attendee()); // TODO: add the attendee properly
+            attendeeRef.add(new Attendee(identifier)); // TODO: add the attendee properly
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-
 
     /**
      * A method to add an organizer
@@ -67,7 +67,7 @@ public class Database {
      */
     public boolean addOrganizer(int identifier) {
         try {
-            organizerRef.add(new Organizer()); // TODO: add the organizer properly
+            organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
             return true;
         } catch (Exception e) {
             return false;
@@ -81,12 +81,25 @@ public class Database {
      */
     public boolean addAdmin(int identifier) {
         try {
-            adminRef.add(new Admin()); // TODO: add the admin properly
+            adminRef.add(new Admin(identifier)); // TODO: add the admin properly
             return true;
         } catch (Exception e) {
             return false;
         }
     }
+
+    /**
+     * A method to add a photo
+     * @param identifier // TODO: PLACE HOLDER FOR PHOTO's
+     * @return true if the photo is added, false otherwise
+     */
+    public boolean addPhoto(int identifier) {
+        try {
+            photoRef.add(); // TODO: add the photo properly
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
 
 
 }
