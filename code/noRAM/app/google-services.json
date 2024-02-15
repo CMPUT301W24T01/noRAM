@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125941067683",
+    "project_id": "noram-a8648",
+    "storage_bucket": "noram-a8648.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125941067683:android:68e2e1aea9f46dbbf3b416",
+        "android_client_info": {
+          "package_name": "com.example.noram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChLoVmGP0i4YevT7y0pRtAq8yc_sEWGfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
