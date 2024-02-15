@@ -1,12 +1,92 @@
 package com.example.noram.model;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public abstract class Database {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+/**
+ * A class to represent the database
+ */
 
+public class Database {
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference attendeeRef = db.collection("Attendees");
+    private CollectionReference organizerRef = db.collection("Organizers");
+    private CollectionReference adminRef = db.collection("Admins");
+
+    /**
+     * A method to get the database
+     * @return the database
+     */
     public FirebaseFirestore getDb() {
         return db;
     }
+
+    /**
+     * A method to get the attendee reference
+     * @return the attendee reference
+     */
+    public CollectionReference getAttendeeRef() {
+        return attendeeRef;
+    }
+
+    /**
+     * A method to get the organizer reference
+     * @return the organizer reference
+     */
+    public CollectionReference getOrganizerRef() {
+        return organizerRef;
+    }
+
+    /**
+     * A method to get the admin reference
+     * @return the admin reference
+     */
+    public CollectionReference getAdminRef() {
+        return adminRef;
+    }
+
+    /**
+     * A method to add an attendee
+     * @param identifier the identifier of the attendee
+     * @return true if the attendee is added, false otherwise
+     */
+    public boolean addAttendee(int identifier) {
+        try {
+            attendeeRef.add(new Attendee()); // TODO: add the attendee properly
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * A method to add an organizer
+     * @param identifier the identifier of the organizer
+     * @return true if the organizer is added, false otherwise
+     */
+    public boolean addOrganizer(int identifier) {
+        try {
+            organizerRef.add(new Organizer()); // TODO: add the organizer properly
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * A method to add an admin
+     * @param identifier the identifier of the admin
+     * @return true if the admin is added, false otherwise
+     */
+    public boolean addAdmin(int identifier) {
+        try {
+            adminRef.add(new Admin()); // TODO: add the admin properly
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 }
