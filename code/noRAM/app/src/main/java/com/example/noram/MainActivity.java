@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = db.getmAuth().getCurrentUser();
 
+        // https://firebase.google.com/docs/auth/android/anonymous-auth?authuser=1#java
         db.getmAuth().signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
