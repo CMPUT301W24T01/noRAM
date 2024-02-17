@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">noRAM</string>
+    <string name="organizerButton">Organizer</string>
+    <string name="attendeeButton">Attendee</string>
+    <string name="adminButton">Admin</string>
 </resources>

@@ -94,11 +94,11 @@ public class Database {
      */
     public boolean addPhoto(int identifier) {
         try {
-            photoRef.add(); // TODO: add the photo properly
+            photoRef.add(""); // TODO: add the photo properly
             return true;
         } catch (Exception e) {
             return false;
         }
 
-
+    }
 }
