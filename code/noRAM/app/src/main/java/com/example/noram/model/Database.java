@@ -106,9 +106,11 @@ public class Database {
     public boolean addPhoto(int identifier) {
         try {
             photoRef.add(new Photo()); // TODO: add the photo properly
+
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 }
+
