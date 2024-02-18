@@ -1,5 +1,6 @@
 package com.example.noram.model;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -12,6 +13,16 @@ public class Database {
     private CollectionReference organizerRef = db.collection("Organizers");
     private CollectionReference adminRef = db.collection("Admins");
     private CollectionReference photoRef = db.collection("Photos");
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+
+    /**
+     * A method to get the authentication
+     * @return the authentication
+     */
+    public FirebaseAuth getmAuth() {
+        return mAuth;
+    }
 
     /**
      * A method to get the database
@@ -94,11 +105,12 @@ public class Database {
      */
     public boolean addPhoto(int identifier) {
         try {
-            photoRef.add(""); // TODO: add the photo properly
+            photoRef.add(new Photo()); // TODO: add the photo properly
+
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-
 }
+
