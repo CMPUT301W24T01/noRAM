@@ -20,13 +20,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final Database db = new Database();
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      
-        private final Database db = new Database();
       
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;
