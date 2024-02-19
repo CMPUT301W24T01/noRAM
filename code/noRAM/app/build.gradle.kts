@@ -30,6 +30,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
@@ -47,5 +48,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     // Firebase Auth dependency
     implementation("com.google.firebase:firebase-auth")
+
+    // QR Scanner
+    implementation("com.github.yuriy-budiyev:code-scanner:2.3.0")
 
 }
