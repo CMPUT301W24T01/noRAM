@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.app.Application;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.example.noram.model.Event;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +43,6 @@ public class AttendeeEventListFragment extends Fragment {
     private CollectionReference eventRef; // list of events in database
     private ListView eventList;
     private ArrayList<Event> eventDataList;
-    private
 
     public AttendeeEventListFragment() {
         // Required empty public constructor
@@ -74,13 +78,17 @@ public class AttendeeEventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get database
-        eventRef = ((DataManager) getApplication()).getdatabase().getEventRef();
+        eventRef = ((DataManager) AttendeeEventListFragment.this.getApplication()).getdatabase().getEventRef();
 
         // get all views
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
         Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
         EditText searchInput = rootView.findViewById(R.id.searchInput);
-        ListView eventsList = rootView.findViewById(R.id.eventsList);
+        eventList = rootView.findViewById(R.id.eventsList);
+        eventDataList = new ArrayList<Event>();
+
+        // connect events' data to events' list
+        c
 
         // connect each button to corresponding function
         myEventsButton.setOnClickListener(new View.OnClickListener(){
@@ -95,7 +103,7 @@ public class AttendeeEventListFragment extends Fragment {
                 displayAllEvents();
             }
         });
-        eventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 displayEvent();
@@ -111,7 +119,11 @@ public class AttendeeEventListFragment extends Fragment {
                     return;
                 }
                 if(querySnapshots != null){
-
+                    eventList.clear();
+                    for(QueryDocumentSnapshot doc: querySnapshots){
+                        int id = Integer.parseInt(doc.getId());
+                        // TODO: create and save each book from database to list
+                    }
                 }
             }
         });
