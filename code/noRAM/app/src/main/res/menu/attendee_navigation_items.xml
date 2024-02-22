@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <item android:id="@+id/navbar_events"
+        android:title="Events"
+        android:icon="@drawable/event_list_24px" />
+    <item android:id="@+id/navbar_scan"
+        android:title="Scan"
+        android:icon="@drawable/qr_code_scanner_24px" />
+    <item android:id="@+id/navbar_profile"
+        android:title="Profile"
+        android:icon="@drawable/person_24px" />
+</menu>
