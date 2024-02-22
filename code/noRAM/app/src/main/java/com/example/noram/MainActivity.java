@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.example.noram.model.DataManager;
 import com.example.noram.model.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
+
+        // store database for other activities
+        ((DataManager) getApplication()).setDatabase(db);
     }
 
     @Override
