@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".AttendeeActivity">
 
-<<<<<<< HEAD
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="45dp"
-        android:layout_height="8dp"
-        android:text="Attendee Activity"
-=======
     <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +16,6 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
->>>>>>> 33fea4290a84d2504300a8186f8842c575adfaf7
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

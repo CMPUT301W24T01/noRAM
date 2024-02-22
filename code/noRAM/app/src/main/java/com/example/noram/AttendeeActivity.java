@@ -6,28 +6,20 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-<<<<<<< HEAD
-=======
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
->>>>>>> 33fea4290a84d2504300a8186f8842c575adfaf7
 
 import com.example.noram.R;
-<<<<<<< HEAD
-=======
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.zxing.Result;
->>>>>>> 33fea4290a84d2504300a8186f8842c575adfaf7
 
 import org.checkerframework.common.subtyping.qual.Bottom;
 
 public class AttendeeActivity extends AppCompatActivity {
 
-<<<<<<< HEAD
-=======
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
@@ -45,13 +37,10 @@ public class AttendeeActivity extends AppCompatActivity {
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      *
      */
->>>>>>> 33fea4290a84d2504300a8186f8842c575adfaf7
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
-<<<<<<< HEAD
-=======
         BottomNavigationView navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
@@ -106,6 +95,5 @@ public class AttendeeActivity extends AppCompatActivity {
                 }
             }
         });
->>>>>>> 33fea4290a84d2504300a8186f8842c575adfaf7
     }
 }
