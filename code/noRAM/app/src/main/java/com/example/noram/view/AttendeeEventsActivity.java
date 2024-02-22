@@ -1,2 +1,4 @@
-package com.example.noram.view;public class AttendeeEventsActivity {
+package com.example.noram.view;
+
+public class AttendeeEventsActivity {
 }

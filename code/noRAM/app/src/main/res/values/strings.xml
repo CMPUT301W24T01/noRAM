@@ -3,4 +3,9 @@
     <string name="organizerButton">Organizer</string>
     <string name="attendeeButton">Attendee</string>
     <string name="adminButton">Admin</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="attendee_profile">Attendee profile</string>
+    <string name="event_list">Event List</string>
+    <string name="scan_qr_code_title">Scan QR Code</string>
 </resources>
