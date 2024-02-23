@@ -1,14 +1,8 @@
 package com.example.noram;
 
-<<<<<<< HEAD
 import android.content.Intent;
-=======
->>>>>>> origin/master
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
-<<<<<<< HEAD
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,11 +25,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.example.noram.model.Event;
 
 import java.util.ArrayList;
-=======
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
->>>>>>> origin/master
 
 /**
  * A simple {@link Fragment} subclass.
