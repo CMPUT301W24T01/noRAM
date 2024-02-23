@@ -1,10 +1,14 @@
 package com.example.noram;
 
+<<<<<<< HEAD
 import android.content.Intent;
+=======
+>>>>>>> origin/master
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+<<<<<<< HEAD
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,6 +31,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.example.noram.model.Event;
 
 import java.util.ArrayList;
+=======
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+>>>>>>> origin/master
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +52,7 @@ public class AttendeeEventListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
     private ListView userEventList; // list of all user's events in UI
@@ -111,6 +121,7 @@ public class AttendeeEventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get database
