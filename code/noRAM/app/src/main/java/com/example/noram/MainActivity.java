@@ -9,18 +9,16 @@ import androidx.core.app.ActivityCompat;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.content.Intent;
 import android.widget.Toast;
 import android.widget.Button;
 
-import com.example.noram.model.DataManager;
+import com.example.noram.model.NoRAMApp;
 import com.example.noram.model.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // store database for other activities
-        ((DataManager) getApplication()).setDatabase(db);
+        ((NoRAMApp) getApplication()).setDatabase(db);
     }
 
     @Override

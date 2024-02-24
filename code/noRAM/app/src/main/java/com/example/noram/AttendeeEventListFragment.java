@@ -16,13 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.noram.controller.EventArrayAdapter;
-import com.example.noram.model.DataManager;
 import com.google.firebase.firestore.CollectionReference;
+import com.example.noram.model.Event;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.example.noram.model.Event;
 
 import java.util.ArrayList;
 
@@ -41,6 +40,7 @@ public class AttendeeEventListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static final String eventIDLabel = "eventID";
 
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
@@ -106,6 +106,13 @@ public class AttendeeEventListFragment extends Fragment {
         // Note: use viewingUserEvents to further narrow the query (if we just want user events)
     }
 
+    // shows the information of a specific event by changing to new activity
+    public void displayEvent(Event event){
+        Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
+        intent.putExtra(eventIDLabel, event.getId());
+        startActivity(intent);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,6 +121,7 @@ public class AttendeeEventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get database
+
         eventRef = ((DataManager) AttendeeEventListFragment.this.getActivity().getApplication())
                 .getdatabase().getEventRef();
 
@@ -176,7 +184,7 @@ public class AttendeeEventListFragment extends Fragment {
             }
         });
 
-        // connect both list so that each item display its event
+        // connect the three lists so that each item display its event
         allEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -191,8 +199,15 @@ public class AttendeeEventListFragment extends Fragment {
                 displayEvent(event);
             }
         });
+        searchEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = searchEventDataList.get(position);
+                displayEvent(event);
+            }
+        });
 
-        // connect database to both data lists
+        // connect database to all-events and user-events data lists
         eventRef.addSnapShotListener(new EventListener<QuerySnapshot>(){
             @Override
             public void onEvent(QuerySnapshot querySnapshots, FirebaseFirestoreException error){

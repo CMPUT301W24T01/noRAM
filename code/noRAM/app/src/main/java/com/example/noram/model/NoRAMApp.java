@@ -5,8 +5,13 @@ import android.app.Application;
 /**
  * A class to share data between activities
  */
-public class DataManager extends Application {
+public class NoRAMApp extends Application {
     private Database db;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+    }
 
     /**
      * Returns the firebase database
