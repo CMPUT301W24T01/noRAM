@@ -7,6 +7,7 @@ public class Attendee extends UserProfile {
     private int identifier;
     private String firstName;
     private String lastName;
+    private String homePage;
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber;
 
@@ -18,10 +19,11 @@ public class Attendee extends UserProfile {
      * @param phoneNumber the phone number of the attendee
      *
      */
-    public Attendee(int identifier, String firstName, String lastName, String phoneNumber) {
+    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber) {
         super(identifier);
         this.firstName = firstName;
         this.lastName = lastName;
+        this.homePage = homePage;
         this.phoneNumber = phoneNumber;
     }
 
@@ -71,6 +73,22 @@ public class Attendee extends UserProfile {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    /**
+     * A method to get the home page of the attendee
+     * @return the home page of the attendee
+     */
+    public String getHomePage() {
+        return homePage;
+    }
+
+    /**
+     * A method to set the home page of the attendee
+     * @param homePage the home page of the attendee
+     */
+    public void setHomePage(String homePage) {
+        this.homePage = homePage;
     }
 
     /**

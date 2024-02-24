@@ -61,9 +61,9 @@ public class Database {
      * @param identifier the identifier of the attendee
      * @return true if the attendee is added, false otherwise
      */
-    public boolean addAttendee(int identifier, String firstName, String lastName, String phoneNumber) {
+    public boolean addAttendee(int identifier, String firstName, String lastName,String homePage, String phoneNumber) {
         try {
-            attendeeRef.add(new Attendee(identifier, firstName, lastName, phoneNumber)); // TODO: add the attendee properly
+            attendeeRef.add(new Attendee(identifier, firstName, lastName, homePage, phoneNumber)); // TODO: add the attendee properly
             return true;
         } catch (Exception e) {
             return false;
