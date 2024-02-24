@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.noram.controller.EventArrayAdapter;
+import com.example.noram.model.NoRAMApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.EventListener;
@@ -120,14 +121,16 @@ public class AttendeeEventListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
-        // get database
-        eventRef = ((DataManager) AttendeeEventListFragment.this.getActivity().getApplication())
+        // TODO: get database and event reference (need ref implemented)
+        /*
+        eventRef = ((NoRAMApp) AttendeeEventListFragment.this.getActivity().getApplication())
                 .getdatabase().getEventRef();
+         */
 
         // get all views and initialize variables
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
         Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
-        ImageButton houseButton = rootView.findViewById(R.id.houseButton);
+        ImageButton houseButton = rootView.findViewById(R.id.backButton);
         searchInput = rootView.findViewById(R.id.searchInput);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<Event>();
@@ -206,7 +209,9 @@ public class AttendeeEventListFragment extends Fragment {
             }
         });
 
-        // connect database to all-events and user-events data lists
+
+        // TODO: connect database to all-events and user-events data lists (need ref implemented)
+        /*
         eventRef.addSnapShotListener(new EventListener<QuerySnapshot>(){
             @Override
             public void onEvent(QuerySnapshot querySnapshots, FirebaseFirestoreException error){
@@ -242,6 +247,7 @@ public class AttendeeEventListFragment extends Fragment {
                 }
             }
         });
+        */
 
         return rootView;
     }
