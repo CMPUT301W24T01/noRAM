@@ -1,5 +1,7 @@
 package com.example.noram.model;
 
+import android.media.Image;
+
 /**
  * A class representing an attendee
  */
@@ -10,6 +12,9 @@ public class Attendee extends UserProfile {
     private String homePage;
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber;
+    // TODO: ensure that Image is the correct type to use
+    private Image profilePicture;
+    private Boolean allowLocation;
 
     /**
      * A constructor to create an attendee
@@ -19,12 +24,14 @@ public class Attendee extends UserProfile {
      * @param phoneNumber the phone number of the attendee
      *
      */
-    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber) {
+    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, Image profilePicture, Boolean allowLocation) {
         super(identifier);
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
         this.phoneNumber = phoneNumber;
+        this.profilePicture = profilePicture;
+        this.allowLocation = allowLocation;
     }
 
     /**
@@ -105,5 +112,37 @@ public class Attendee extends UserProfile {
      */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * A method to get the profile picture of the attendee
+     * @return the profile picture of the attendee
+     */
+    public Image getProfilePicture() {
+        return profilePicture;
+    }
+
+    /**
+     * A method to set the profile picture of the attendee
+     * @param profilePicture the profile picture of the attendee
+     */
+    public void setProfilePicture(Image profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    /**
+     * A method to get the location allowance of the attendee
+     * @return the location allowance of the attendee
+     */
+    public Boolean getAllowLocation() {
+        return allowLocation;
+    }
+
+    /**
+     * A method to set the location allowance of the attendee
+     * @param allowLocation the location allowance of the attendee
+     */
+    public void setAllowLocation(Boolean allowLocation) {
+        this.allowLocation = allowLocation;
     }
 }
