@@ -14,6 +14,7 @@ import android.widget.Toast;
 import android.widget.Button;
 
 import com.example.noram.model.NoRAMApp;
+import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private final Database db = new Database();
+
+    private Attendee attendee;
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,25 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             // updateUI(null);
                         }
+                    }
+                });
+
+        // Access Attendees collection and check if the user is an attendee
+        // Reference: https://firebase.google.com/docs/firestore/query-data/get-data?authuser=1#java
+        db.getDb().collection("Attendees")
+                .whereEqualTo("uid", currentUser.getUid())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            // If the user is not an attendee, sign them out
+                            db.getmAuth().signOut();
+                        } else {
+                            //
+                            attendee = new Attendee(Integer.parseInt(currentUser.getUid()));
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
     }
