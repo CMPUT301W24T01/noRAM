@@ -1,6 +1,7 @@
 package com.example.noram;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.example.noram.model.Attendee;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -69,35 +72,51 @@ public class QrScanFragment extends Fragment {
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
-        Log.d("QRFRAGMENT", "onCreateView");
         mCodeScanner = new CodeScanner(activity, scannerView);
+
+        // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // TODO in future need to check if promo or checkin code.
                         String qrDecoded = result.getText();
                         checkInFromQR(qrDecoded);
                         scanLoadingSpinBar.setVisibility(View.VISIBLE);
-
-                        // TODO: search db for event for QR code
-                        Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
 
-        
         scannerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mCodeScanner.startPreview();
             }
         });
+
+
+        // create button listener so home button goes back to main page.
+        ImageButton homeButton = root.findViewById(R.id.home_button);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
         return root;
     }
 
+    /**
+     * Checks the app user into the event associated with the scanned qr code
+     * @param qrCodeString qr code encoded string
+     */
     private void checkInFromQR(String qrCodeString) {
         DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
@@ -151,12 +170,18 @@ public class QrScanFragment extends Fragment {
         Toast.makeText(getActivity(), "Couldn't check in: " + errMsg, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Called when fragment is resumed.
+     */
     @Override
     public void onResume() {
         super.onResume();
         mCodeScanner.startPreview();
     }
 
+    /**
+     * Called when fragment is paused.
+     */
     @Override
     public void onPause() {
         mCodeScanner.releaseResources();
