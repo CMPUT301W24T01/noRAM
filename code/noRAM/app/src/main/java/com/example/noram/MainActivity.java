@@ -23,7 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final Database db = new Database();
+    // TODO: change, temp static to make my life easier
+    public static final Database db = new Database();
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -7,16 +7,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.zxing.Result;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +56,9 @@ public class QrScanFragment extends Fragment {
 
     private CodeScanner mCodeScanner;
 
+    private ProgressBar scanLoadingSpinBar;
+
+
     // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
     @Nullable
     @Override
@@ -57,6 +67,9 @@ public class QrScanFragment extends Fragment {
         final Activity activity = getActivity();
         View root = inflater.inflate(R.layout.fragment_qr_scan, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+        scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
+        scanLoadingSpinBar.setVisibility(View.INVISIBLE);
+        Log.d("QRFRAGMENT", "onCreateView");
         mCodeScanner = new CodeScanner(activity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -65,6 +78,8 @@ public class QrScanFragment extends Fragment {
                     @Override
                     public void run() {
                         String qrDecoded = result.getText();
+                        checkInFromQR(qrDecoded);
+                        scanLoadingSpinBar.setVisibility(View.VISIBLE);
 
                         // TODO: search db for event for QR code
                         Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
@@ -81,6 +96,59 @@ public class QrScanFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void checkInFromQR(String qrCodeString) {
+        DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
+        scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        Log.d("DEBUG", "trying to checkin");
+        doc.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                Log.d("DEBUG", "got qr code");
+
+                if (document.exists()) {
+                    Log.d("DEBUG", "code exists");
+                    // TODO: actual event
+                    String eventName = (String) document.get("event");
+
+                    // Create a batched write to update attendee eventAt and event attendees
+                    WriteBatch batch = MainActivity.db.getDb().batch();
+                    DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventName);
+                    batch.update(eventRef, "attendees", FieldValue.arrayUnion("test_attendee"));
+                    DocumentReference attendeeRef = MainActivity.db.getAttendeeRef().document("test_attendee");
+                    batch.update(attendeeRef, "eventsAt", FieldValue.arrayUnion(eventName));
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                showCheckInSuccess(eventName);
+                            } else {
+                                showCheckInFailure("batch write failed.");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * Shows a toast when check in succeeds
+     * @param event name of the event to include in message
+     */
+    private void showCheckInSuccess(String event) {
+        scanLoadingSpinBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(getActivity(), "Signed into " + event + "!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Shows a toast when check in fails
+     * @param errMsg error message to include
+     */
+    private void showCheckInFailure(String errMsg) {
+        scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        Toast.makeText(getActivity(), "Couldn't check in: " + errMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
