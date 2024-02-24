@@ -13,9 +13,11 @@ import com.example.noram.model.Event;
 
 public class AttendeeEventInfo extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-    private Event event;
+    private Event event; // current event being inquired
 
-    // Signup user to new event and change activity
+    /**
+     * Signup the user to current event in the database and display a message through a new activity
+     */
     private void signup(){
         // TODO: update database
         // TODO: send to message page

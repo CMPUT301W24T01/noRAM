@@ -6,7 +6,7 @@ import android.app.Application;
  * A class to share data between activities
  */
 public class NoRAMApp extends Application {
-    private Database db;
+    private Database db; // firestore database
 
     @Override
     public void onCreate(){

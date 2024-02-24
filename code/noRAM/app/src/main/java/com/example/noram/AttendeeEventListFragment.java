@@ -80,21 +80,27 @@ public class AttendeeEventListFragment extends Fragment {
         }
     }
 
-    // toggle user's events as visible
+    /**
+     * Makes the user's personal events visible and hides the other lists
+     */
     public void displayMyEvents(){
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
     }
 
-    // toggle all events as visible
+    /**
+     * Makes the list of all events visible and hides the other list
+     */
     public void displayAllEvents(){
         allEventList.setVisibility(View.VISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
     }
 
-    // toggle all events that correspond to recent search
+    /**
+     * Makes the list containing the result of a recent search visible, while hiding the other lists
+     */
     public void searchEvents(){
         // show search list
         searchEventList.setVisibility(View.VISIBLE);
@@ -107,7 +113,10 @@ public class AttendeeEventListFragment extends Fragment {
         // Note: use viewingUserEvents to further narrow the query (if we just want user events)
     }
 
-    // shows the information of a specific event by changing to new activity
+    /**
+     * When an event is clicked on, its information is displayed by calling a new activity
+     * @param event The event whose information need to be displayed
+     */
     public void displayEvent(Event event){
         Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
         intent.putExtra(eventIDLabel, event.getId());
