@@ -121,7 +121,6 @@ public class AttendeeEventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get database
-
         eventRef = ((DataManager) AttendeeEventListFragment.this.getActivity().getApplication())
                 .getdatabase().getEventRef();
 
