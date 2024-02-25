@@ -9,12 +9,12 @@ import com.google.firebase.storage.FirebaseStorage;
  * A class to represent the database
  */
 public class Database {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference attendeeRef = db.collection("Attendees");
-    private CollectionReference organizerRef = db.collection("Organizers");
-    private CollectionReference adminRef = db.collection("Admins");
-    private CollectionReference photoRef = db.collection("Photos");
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference attendeeRef = db.collection("Attendees");
+    private final CollectionReference organizerRef = db.collection("Organizers");
+    private final CollectionReference adminRef = db.collection("Admins");
+    private final CollectionReference photoRef = db.collection("Photos");
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -64,7 +64,7 @@ public class Database {
      * @param identifier the identifier of the attendee
      * @return true if the attendee is added, false otherwise
      */
-    public boolean addAttendee(int identifier) {
+    public boolean addAttendee(String identifier) {
         try {
             attendeeRef.add(new Attendee(identifier)); // TODO: add the attendee properly
             return true;
@@ -78,7 +78,7 @@ public class Database {
      * @param identifier the identifier of the organizer
      * @return true if the organizer is added, false otherwise
      */
-    public boolean addOrganizer(int identifier) {
+    public boolean addOrganizer(String identifier) {
         try {
             organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
             return true;
@@ -92,7 +92,7 @@ public class Database {
      * @param identifier the identifier of the admin
      * @return true if the admin is added, false otherwise
      */
-    public boolean addAdmin(int identifier) {
+    public boolean addAdmin(String identifier) {
         try {
             adminRef.add(new Admin(identifier)); // TODO: add the admin properly
             return true;

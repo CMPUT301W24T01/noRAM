@@ -31,7 +31,6 @@ public class AttendeeActivity extends AppCompatActivity {
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
-
     private final Fragment qrFragment = QrScanFragment.newInstance();
     private final Fragment profileFragment = AttendeeProfileFragment.newInstance();
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
@@ -65,7 +64,6 @@ public class AttendeeActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, qrFragment, "qr")
                 .commit();
-
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**
              * Updates the Fragment shown in the FragmentContainerView when a navbar

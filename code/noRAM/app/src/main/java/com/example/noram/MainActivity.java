@@ -2,33 +2,37 @@ package com.example.noram;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.content.Intent;
-import android.widget.Toast;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Database db = new Database();
+    public static final Database db = new Database();
 
-    public static Attendee sharedAttendee;
+    public static Attendee attendee = null;
 
+    private Button adminButton;
+
+    /**
+     * Create and setup the main activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,20 +42,12 @@ public class MainActivity extends AppCompatActivity {
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;
         // for now, this will give us a base to start work without clashing against each other.
-        Button adminButton = findViewById(R.id.adminButton);
+        adminButton = findViewById(R.id.adminButton);
+        adminButton.setVisibility(View.INVISIBLE);
         Button organizerButton = findViewById(R.id.organizerButton);
         Button attendeeButton = findViewById(R.id.attendeeButton);
 
         // Start each activity via an intent.
-        /**adminButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TESTTTT", "This is a debug message");
-                Log.i("TESTTTT", "This is an informational message");
-                Log.e("TESTTTT", "This is an error message");
-                Log.w("TESTTTT", "This is a warning message");
-            }
-        });**/
         adminButton.setOnClickListener((v ->
                 startActivity(new Intent(MainActivity.this, AdminActivity.class))
                 ));
@@ -70,50 +66,76 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
     }
+
+    /**
+     * Start the main activity. This signs in the userusing firebase authentication
+     */
     @Override
     public void onStart() {
         super.onStart();
+        db.getmAuth().addAuthStateListener(auth -> {
+            signInFirebase();
+        });
+    }
+
+    /**
+     * Signs in the user using firebase authentication and gets the
+     * attendee associated with the UID.
+     */
+    private void signInFirebase() {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = db.getmAuth().getCurrentUser();
 
         // https://firebase.google.com/docs/auth/android/anonymous-auth?authuser=1#java
         db.getmAuth().signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInAnonymously:success");
-                            FirebaseUser user = db.getmAuth().getCurrentUser();
-                            // updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInAnonymously:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            // updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInAnonymously:success");
+                        FirebaseUser user = db.getmAuth().getCurrentUser();
+                        updateAdminAccess(user.getUid());
+                        // updateUI(user);
+                        // Get the user's data from the database
+                        db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                DocumentSnapshot document = task1.getResult();
+
+                                if (document.exists()) {
+                                    attendee = document.toObject(Attendee.class);
+                                } else {
+                                    attendee = new Attendee(currentUser.getUid());
+                                    attendee.updateDBAttendee();
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task1.getException());
+                            }
+                        });
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInAnonymously:failure", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    /**
+     * Updates the admin access for the application given a user ID
+     * @param uid user ID to check for admin privileges.
+     */
+    private void updateAdminAccess(String uid) {
+        DocumentReference adminRef = db.getAdminRef().document(uid);
+        adminRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
 
-
-    /*
-    @Override
-    public void uploadProfilePicture(Uri imageUri) {
-        Object profileRef = db.collection("profilePicture");
-        String filename = "profilePicture.jpg";
-        String storageRef = profileRef.addPhoto().ref("/images/" + filename);
-        String message = "data:image/jpg;base64," + imageUri;
-        storageRef.set(message)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firebase", "ProfilePicture successfully written!");
-                    }
-
-                    ;
-                });
-    }*/
+                // if user is found in the admin collection, show the admin button
+                if (document.exists()) {
+                    Log.d("AdminAccess", "User granted admin privileges");
+                    adminButton.setVisibility(View.VISIBLE);
+                } else {
+                    Log.d("AdminAccess", "User does not have admin privileges");
+                }
+            }
+        });
+    }
 }

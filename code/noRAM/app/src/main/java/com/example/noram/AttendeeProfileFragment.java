@@ -1,46 +1,43 @@
+/*
+This file is used to display the attendee's profile information and allow for editing.
+Outstanding Issues:
+- The attendee's information is not saved to the database.
+- The attendee's profile picture is not the correct type.
+ */
+
 package com.example.noram;
 
-import static com.example.noram.MainActivity.sharedAttendee;
-
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.example.noram.model.Database;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.noram.model.Attendee;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.Objects;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A {@link Fragment} subclass that displays and allows editing of attendee information.
  * Use the {@link AttendeeProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class AttendeeProfileFragment extends Fragment{
-
 
     // TODO: Rename and change types of parameters
     private ImageView imageView;
@@ -48,34 +45,50 @@ public class AttendeeProfileFragment extends Fragment{
 
     private FloatingActionButton deletePhoto;
 
+    private Attendee attendee;
 
-
+    /**
+     * This is the default constructor for the fragment.
+     */
     public AttendeeProfileFragment() {
         // Required empty public constructor
     }
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
      * @return A new instance of fragment AttendeeProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AttendeeProfileFragment newInstance() {
         AttendeeProfileFragment fragment = new AttendeeProfileFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * This method is called when the fragment is created.
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        //check if db already has a profile pic for this user.
-        //if yes
-            //upload the picture to populate imageView
-        //if no
-            //upload a auto fill photo
     }
+
+    /**
+     * This method is called when the fragment is created, it initializes the
+     * information and sets up listeners.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The view to be displayed with all attached listeners
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +98,22 @@ public class AttendeeProfileFragment extends Fragment{
         imageView = rootView.findViewById(R.id.image_view);
         addPhoto = rootView.findViewById(R.id.add_photo);
         deletePhoto = rootView.findViewById(R.id.delete_photo);
+
+        // Get the fields from the view
+        EditText firstName = rootView.findViewById(R.id.edit_attendee_first_name);
+        EditText lastName = rootView.findViewById(R.id.edit_attendee_last_name);
+        EditText homePage = rootView.findViewById(R.id.edit_attendee_home_page);
+        EditText phone = rootView.findViewById(R.id.edit_attendee_phone);
+        CheckBox allowLocation = rootView.findViewById(R.id.edit_attendee_location_box);
+
+        attendee = MainActivity.attendee;
+
+        // Set the fields to the attendee's information
+        firstName.setText(attendee.getFirstName());
+        lastName.setText(attendee.getLastName());
+        homePage.setText(attendee.getHomePage());
+        phone.setText(attendee.getPhoneNumber());
+        allowLocation.setChecked(attendee.getAllowLocation());
 
         //set on click listener to add photo when pressed
         addPhoto.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +129,31 @@ public class AttendeeProfileFragment extends Fragment{
                 deletePhoto();
             }
         });
+
+        // Save the entered information when the save button is clicked
+        rootView.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attendee.setFirstName(firstName.getText().toString());
+                attendee.setLastName(lastName.getText().toString());
+                attendee.setHomePage(homePage.getText().toString());
+                attendee.setPhoneNumber(phone.getText().toString());
+                attendee.setAllowLocation(allowLocation.isChecked());
+            }
+        });
+
+        // Revert the changes when the cancel button is clicked
+        rootView.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstName.setText(attendee.getFirstName());
+                lastName.setText(attendee.getLastName());
+                homePage.setText(attendee.getHomePage());
+                phone.setText(attendee.getPhoneNumber());
+                allowLocation.setChecked(attendee.getAllowLocation());
+            }
+        });
+
         return rootView;
     }
     private void startImagePicker() {
@@ -113,7 +167,7 @@ public class AttendeeProfileFragment extends Fragment{
     }
 
     private void deletePhoto(){
-        String deletePhotoStr = MainActivity.sharedAttendee.getProfilePic();
+        String deletePhotoStr = attendee.getProfilePicture();
         //DocumentReference photoRef = MainActivity.db.getAttendeeRef().document("test");
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -155,7 +209,7 @@ public class AttendeeProfileFragment extends Fragment{
         //check if the imageView already has an image
         //imageView.getImageURI()
         imageView.setImageURI(uri);
-        MainActivity.sharedAttendee.setProfilePic(uriString);
+        attendee.setProfilePicture(uriString);
         //manuallty set dimensions of the photo? allow only 1x1 box croping
     }
 
