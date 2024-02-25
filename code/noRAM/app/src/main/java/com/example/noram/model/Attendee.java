@@ -14,12 +14,22 @@ public class Attendee extends UserProfile {
     private Boolean allowLocation;
 
     /**
-     * A constructor to create an attendee
+     * A constructor to create an attendee with just an identifier
+     * @param identifier the identifier of the attendee
+     */
+    public Attendee(String identifier) {
+        super(identifier);
+    }
+
+    /**
+     * A constructor to create an attendee with all field filled
      * @param identifier the identifier of the attendee
      * @param firstName the first name of the attendee
      * @param lastName the last name of the attendee
+     * @param homePage the home page of the attendee
      * @param phoneNumber the phone number of the attendee
-     *
+     * @param profilePicture the profile picture of the attendee
+     * @param allowLocation the location allowance of the attendee
      */
     public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
         super(identifier);
