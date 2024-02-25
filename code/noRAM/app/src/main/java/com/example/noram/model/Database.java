@@ -61,7 +61,7 @@ public class Database {
      * @param identifier the identifier of the attendee
      * @return true if the attendee is added, false otherwise
      */
-    public boolean addAttendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
+    public boolean addAttendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
         try {
             attendeeRef.add(new Attendee(identifier, firstName, lastName, homePage, phoneNumber, profilePicture, allowLocation)); // TODO: add the attendee properly
             return true;
@@ -75,7 +75,7 @@ public class Database {
      * @param identifier the identifier of the organizer
      * @return true if the organizer is added, false otherwise
      */
-    public boolean addOrganizer(int identifier) {
+    public boolean addOrganizer(String identifier) {
         try {
             organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
             return true;
@@ -89,7 +89,7 @@ public class Database {
      * @param identifier the identifier of the admin
      * @return true if the admin is added, false otherwise
      */
-    public boolean addAdmin(int identifier) {
+    public boolean addAdmin(String identifier) {
         try {
             adminRef.add(new Admin(identifier)); // TODO: add the admin properly
             return true;

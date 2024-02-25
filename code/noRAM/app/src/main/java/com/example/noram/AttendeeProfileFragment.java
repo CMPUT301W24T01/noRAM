@@ -87,7 +87,7 @@ public class AttendeeProfileFragment extends Fragment {
 
         // TODO: get the attendee from the database to replace this temporary attendee
         if (attendee == null) {
-            attendee = new Attendee(1234, "John", "Doe", "john.com", "123-456-7890", null, true);
+            attendee = new Attendee("1234", "John", "Doe", "john.com", "123-456-7890", null, true);
         }
 
         // Set the fields to the attendee's information

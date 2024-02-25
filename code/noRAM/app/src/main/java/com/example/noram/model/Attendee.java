@@ -21,7 +21,7 @@ public class Attendee extends UserProfile {
      * @param phoneNumber the phone number of the attendee
      *
      */
-    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
         super(identifier);
         this.firstName = firstName;
         this.lastName = lastName;
