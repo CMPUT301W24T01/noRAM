@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
                                     String firstname = document.getString("firstName");
                                     String lastname = document.getString("lastName");
                                     String homepage = document.getString("homePage");
-                                    String phoneNumber = document.getString("phoneNumber");
+                                    String email = document.getString("email");
                                     String profilePicture = document.getString("profilePicture");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, phoneNumber, profilePicture, allowLocation);
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();

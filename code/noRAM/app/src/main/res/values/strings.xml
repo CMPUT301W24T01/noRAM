@@ -12,7 +12,7 @@
     <string name="confirm">Confirm</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="email">Email</string>
     <string name="home_page">Home Page</string>
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>

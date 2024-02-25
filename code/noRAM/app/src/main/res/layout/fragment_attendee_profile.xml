@@ -53,15 +53,15 @@
         app:layout_constraintTop_toBottomOf="@+id/attendee_last_name_label" />
 
     <EditText
-        android:id="@+id/edit_attendee_phone"
+        android:id="@+id/edit_attendee_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/phone_number"
-        android:inputType="phone"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_phone_label" />
+        app:layout_constraintTop_toBottomOf="@+id/attendee_email_label" />
 
     <EditText
         android:id="@+id/edit_attendee_home_page"
@@ -82,7 +82,7 @@
         android:text="@string/access_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_attendee_phone" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_attendee_email" />
 
     <ImageButton
         android:id="@+id/edit_attendee_image_button"
@@ -150,13 +150,13 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_attendee_last_name" />
 
     <TextView
-        android:id="@+id/attendee_phone_label"
+        android:id="@+id/attendee_email_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/phone_number"
+        android:text="@string/email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.317"
+        app:layout_constraintHorizontal_bias="0.268"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_attendee_home_page" />
 

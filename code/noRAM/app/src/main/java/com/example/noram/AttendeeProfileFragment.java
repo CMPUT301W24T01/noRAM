@@ -82,7 +82,7 @@ public class AttendeeProfileFragment extends Fragment {
         EditText firstName = view.findViewById(R.id.edit_attendee_first_name);
         EditText lastName = view.findViewById(R.id.edit_attendee_last_name);
         EditText homePage = view.findViewById(R.id.edit_attendee_home_page);
-        EditText phone = view.findViewById(R.id.edit_attendee_phone);
+        EditText email = view.findViewById(R.id.edit_attendee_email);
         CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
 
         attendee = MainActivity.attendee;
@@ -91,7 +91,7 @@ public class AttendeeProfileFragment extends Fragment {
         firstName.setText(attendee.getFirstName());
         lastName.setText(attendee.getLastName());
         homePage.setText(attendee.getHomePage());
-        phone.setText(attendee.getPhoneNumber());
+        email.setText(attendee.getEmail());
         allowLocation.setChecked(attendee.getAllowLocation());
 
         // Save the entered information when the save button is clicked
@@ -101,7 +101,7 @@ public class AttendeeProfileFragment extends Fragment {
                 attendee.setFirstName(firstName.getText().toString());
                 attendee.setLastName(lastName.getText().toString());
                 attendee.setHomePage(homePage.getText().toString());
-                attendee.setPhoneNumber(phone.getText().toString());
+                attendee.setEmail(email.getText().toString());
                 attendee.setAllowLocation(allowLocation.isChecked());
             }
         });
@@ -113,7 +113,7 @@ public class AttendeeProfileFragment extends Fragment {
                 firstName.setText(attendee.getFirstName());
                 lastName.setText(attendee.getLastName());
                 homePage.setText(attendee.getHomePage());
-                phone.setText(attendee.getPhoneNumber());
+                email.setText(attendee.getEmail());
                 allowLocation.setChecked(attendee.getAllowLocation());
             }
         });

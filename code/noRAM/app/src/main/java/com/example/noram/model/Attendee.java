@@ -1,7 +1,5 @@
 package com.example.noram.model;
 
-import android.util.Log;
-
 import com.example.noram.MainActivity;
 
 /**
@@ -12,9 +10,7 @@ public class Attendee {
     private String firstName = "";
     private String lastName = "";
     private String homePage = "";
-
-    // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
-    private String phoneNumber = "";
+    private String email = "";
     private String profilePicture = "";
 
     private Boolean allowLocation = false;
@@ -33,16 +29,16 @@ public class Attendee {
      * @param firstName the first name of the attendee
      * @param lastName the last name of the attendee
      * @param homePage the home page of the attendee
-     * @param phoneNumber the phone number of the attendee
+     * @param email the email of the attendee
      * @param profilePicture the profile picture of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String email, String profilePicture, Boolean allowLocation) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
-        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
     }
@@ -116,19 +112,19 @@ public class Attendee {
     }
 
     /**
-     * A method to get the phone number of the attendee
-     * @return the phone number of the attendee
+     * A method to get the email of the attendee
+     * @return the email of the attendee
      */
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * A method to set the phone number of the attendee
-     * @param phoneNumber the phone number of the attendee
+     * A method to set the email of the attendee
+     * @param email the email of the attendee
      */
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setEmail(String email) {
+        this.email = email;
         updateDBAttendee();
     }
 
