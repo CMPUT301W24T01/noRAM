@@ -17,6 +17,8 @@ public class Attendee {
 
     private Boolean allowLocation = false;
 
+    private Boolean defaultProfilePhoto = true;
+
     private String profilePic;
 
 
@@ -172,5 +174,13 @@ public class Attendee {
      */
     public void updateDBAttendee() {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
+    }
+
+    public Boolean getDefaultProfilePhoto() {
+        return defaultProfilePhoto;
+    }
+
+    public void setDefaultProfilePhoto(Boolean defaultProfilePhoto) {
+        this.defaultProfilePhoto = defaultProfilePhoto;
     }
 }

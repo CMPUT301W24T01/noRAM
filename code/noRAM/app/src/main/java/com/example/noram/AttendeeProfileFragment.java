@@ -8,6 +8,8 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +31,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StreamDownloadTask;
+
+import java.io.InputStream;
 
 
 /**
@@ -108,6 +114,24 @@ public class AttendeeProfileFragment extends Fragment{
 
         attendee = MainActivity.attendee;
 
+        // hide delete button if we are using a default profile photo
+        if (attendee.getDefaultProfilePhoto()) {
+            deletePhoto.setVisibility(View.INVISIBLE);
+        }
+
+        StorageReference profileRef = MainActivity.db.getStorage().getReference().child(attendee.getProfilePicture());
+        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
+
+                //Problem! to fix, de-coding the photo is not working
+                // uploading a photo from the firebase
+                InputStream photoStream = taskSnapshot.getStream();
+                Bitmap image = BitmapFactory.decodeStream(photoStream);
+                imageView.setImageBitmap(image);
+            }
+        });
+
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
         lastName.setText(attendee.getLastName());
@@ -168,7 +192,6 @@ public class AttendeeProfileFragment extends Fragment{
 
     private void deletePhoto(){
         String deletePhotoStr = attendee.getProfilePicture();
-        //DocumentReference photoRef = MainActivity.db.getAttendeeRef().document("test");
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -182,15 +205,15 @@ public class AttendeeProfileFragment extends Fragment{
             }
         });
 
+        attendee.setProfilePicture("");
+        attendee.setDefaultProfilePhoto(true);
+        deletePhoto.setVisibility(View.INVISIBLE);
         imageView.setImageURI(null);
     }
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri uri =  data.getData();
-        String uriString = String.valueOf("profile_photos/"+uri.getLastPathSegment());
-
-//        int docInt = sharedAttendee.getIdentifier();
-//        String docStr = String.valueOf(docInt);
+        String uriString = "profile_photos/"+uri.getLastPathSegment();
 
         //future; photoRef will be handeled by Attendee later
         DocumentReference photoRef = MainActivity.db.getAttendeeRef().document("test");
@@ -207,7 +230,6 @@ public class AttendeeProfileFragment extends Fragment{
         Log.d("TestStatement", "inside");
         Log.d("Image URI:", uriString);
         //check if the imageView already has an image
-        //imageView.getImageURI()
         imageView.setImageURI(uri);
         attendee.setProfilePicture(uriString);
         //manuallty set dimensions of the photo? allow only 1x1 box croping
