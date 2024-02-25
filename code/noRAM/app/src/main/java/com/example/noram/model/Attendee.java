@@ -1,6 +1,5 @@
 package com.example.noram.model;
 
-import android.media.Image;
 import com.example.noram.MainActivity;
 
 /**

@@ -1,22 +1,19 @@
 package com.example.noram.model;
 
-import android.media.Image;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A class to represent the database
  */
 public class Database {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference attendeeRef = db.collection("Attendees");
-    private CollectionReference organizerRef = db.collection("Organizers");
-    private CollectionReference adminRef = db.collection("Admins");
-    private CollectionReference photoRef = db.collection("Photos");
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference attendeeRef = db.collection("Attendees");
+    private final CollectionReference organizerRef = db.collection("Organizers");
+    private final CollectionReference adminRef = db.collection("Admins");
+    private final CollectionReference photoRef = db.collection("Photos");
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
     /**

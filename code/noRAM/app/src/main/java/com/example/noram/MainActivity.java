@@ -9,26 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.content.Intent;
-import android.widget.Toast;
-import android.widget.Button;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,37 +87,31 @@ public class MainActivity extends AppCompatActivity {
 
         // https://firebase.google.com/docs/auth/android/anonymous-auth?authuser=1#java
         db.getmAuth().signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInAnonymously:success");
-                            FirebaseUser user = db.getmAuth().getCurrentUser();
-                            updateAdminAccess(user.getUid());
-                            // updateUI(user);
-                            // Get the user's data from the database
-                            db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-                                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                                            attendee = document.toObject(Attendee.class);
-                                        } else {
-                                            Log.d(TAG, "No such document");
-                                        }
-                                    } else {
-                                        Log.d(TAG, "get failed with ", task.getException());
-                                    }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInAnonymously:success");
+                        FirebaseUser user = db.getmAuth().getCurrentUser();
+                        updateAdminAccess(user.getUid());
+                        // updateUI(user);
+                        // Get the user's data from the database
+                        db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                DocumentSnapshot document = task1.getResult();
+                                if (document.exists()) {
+                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                    attendee = document.toObject(Attendee.class);
+                                } else {
+                                    Log.d(TAG, "No such document");
                                 }
-                            });
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInAnonymously:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
+                            } else {
+                                Log.d(TAG, "get failed with ", task1.getException());
+                            }
+                        });
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInAnonymously:failure", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -160,19 +141,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateAdminAccess(String uid) {
         DocumentReference adminRef = db.getAdminRef().document(uid);
-        adminRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+        adminRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
 
-                    // if user is found in the admin collection, show the admin button
-                    if (document.exists()) {
-                        Log.d("AdminAccess", "User granted admin privileges");
-                        adminButton.setVisibility(View.VISIBLE);
-                    } else {
-                        Log.d("AdminAccess", "User does not have admin privileges");
-                    }
+                // if user is found in the admin collection, show the admin button
+                if (document.exists()) {
+                    Log.d("AdminAccess", "User granted admin privileges");
+                    adminButton.setVisibility(View.VISIBLE);
+                } else {
+                    Log.d("AdminAccess", "User does not have admin privileges");
                 }
             }
         });
