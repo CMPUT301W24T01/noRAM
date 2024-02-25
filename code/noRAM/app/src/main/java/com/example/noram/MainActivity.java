@@ -27,7 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private final Database db = new Database();
 
     private Attendee attendee;
-   
+
+    /**
+     * A method to create the main activity
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
