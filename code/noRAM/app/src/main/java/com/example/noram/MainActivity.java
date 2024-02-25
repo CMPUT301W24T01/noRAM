@@ -71,9 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         db.getmAuth().addAuthStateListener(auth -> {
-            if (auth.getCurrentUser() == null) {
-                signInFirebase();
-            }
+            signInFirebase();
         });
     }
 
@@ -99,10 +97,12 @@ public class MainActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot document = task1.getResult();
                                 if (document.exists()) {
-                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                    Toast.makeText(MainActivity.this, "exists", Toast.LENGTH_SHORT).show();
                                     attendee = document.toObject(Attendee.class);
                                 } else {
-                                    Log.d(TAG, "No such document");
+                                    Toast.makeText(MainActivity.this, "new", Toast.LENGTH_SHORT).show();
+                                    attendee = new Attendee(currentUser.getUid());
+                                    attendee.updateDBAttendee();
                                 }
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
@@ -111,26 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInAnonymously:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // Access Attendees collection and check if the user is an attendee
-        // Reference: https://firebase.google.com/docs/firestore/query-data/get-data?authuser=1#java
-        db.getDb().collection("Attendees")
-                .whereEqualTo("uid", currentUser.getUid())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (task.getResult().isEmpty()) {
-                            // If the user is not an attendee, sign them out
-                            db.getmAuth().signOut();
-                        } else {
-                            //
-                            attendee = new Attendee(currentUser.getUid()); // TODO: get the identifier from the database
-                        }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

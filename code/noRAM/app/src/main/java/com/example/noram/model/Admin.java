@@ -3,7 +3,7 @@ package com.example.noram.model;
 /**
  * A class representing an admin
  */
-public class Admin extends UserProfile {
+public class Admin {
     private String identifier;
 
     /**
@@ -11,7 +11,7 @@ public class Admin extends UserProfile {
      * @param identifier the identifier of the admin
      */
     public Admin(String identifier) {
-        super(identifier);
+        this.identifier = identifier;
     }
 
 }

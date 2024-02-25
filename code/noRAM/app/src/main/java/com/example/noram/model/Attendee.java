@@ -1,11 +1,13 @@
 package com.example.noram.model;
 
+import android.util.Log;
+
 import com.example.noram.MainActivity;
 
 /**
  * A class representing an attendee
  */
-public class Attendee extends UserProfile {
+public class Attendee {
     private String identifier;
     private String firstName;
     private String lastName;
@@ -22,7 +24,7 @@ public class Attendee extends UserProfile {
      * @param identifier the identifier of the attendee
      */
     public Attendee(String identifier) {
-        super(identifier);
+        this.identifier = identifier;
     }
 
     /**
@@ -36,30 +38,13 @@ public class Attendee extends UserProfile {
      * @param allowLocation the location allowance of the attendee
      */
     public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
-        super(identifier);
+        this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
-    }
-
-    /**
-     * A method to get the identifier of the attendee
-     * @return the identifier of the attendee
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * A method to set the identifier of the attendee
-     * @param identifier the identifier of the attendee
-     */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-        updateDBAttendee();
     }
 
     /**
@@ -76,6 +61,23 @@ public class Attendee extends UserProfile {
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        updateDBAttendee();
+    }
+
+    /**
+     * A method to get the identifier of the attendee
+     * @return the identifier of the attendee
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * A method to set the identifier of the attendee
+     * @param identifier the identifier of the attendee
+     */
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
         updateDBAttendee();
     }
 
@@ -167,9 +169,8 @@ public class Attendee extends UserProfile {
     /**
      * A method to update the database with the new attendee information
      */
-    private void updateDBAttendee() {
-        MainActivity.db.getDb().collection("attendees").document(identifier).set(this);
+    public void updateDBAttendee() {
+        MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
-
 
 }

@@ -3,7 +3,7 @@ package com.example.noram.model;
 /**
  * A class representing an organizer
  */
-public class Organizer extends UserProfile {
+public class Organizer {
     private String identifier;
 
     /**
@@ -11,7 +11,7 @@ public class Organizer extends UserProfile {
      * @param identifier the identifier of the organizer
      */
     public Organizer(String identifier) {
-        super(identifier);
+        this.identifier = identifier;
     }
 
 
