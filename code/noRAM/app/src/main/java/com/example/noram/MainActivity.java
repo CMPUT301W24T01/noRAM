@@ -2,29 +2,26 @@ package com.example.noram;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.content.Intent;
-import android.widget.Toast;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        db.getmAuth().addAuthStateListener(auth -> {
+            if (auth.getCurrentUser() == null) {
+                signInFirebase();
+            }
+        });
+    }
+
+    /**
+     * Signs in the user using firebase authentication and gets the
+     * attendee associated with the UID.
+     */
+    private void signInFirebase() {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = db.getmAuth().getCurrentUser();
 
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                             db.getmAuth().signOut();
                         } else {
                             //
-                            attendee = new Attendee(Integer.parseInt(currentUser.getUid())); // TODO: get the identifier from the database
+                            attendee = new Attendee(currentUser.getUid()); // TODO: get the identifier from the database
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
