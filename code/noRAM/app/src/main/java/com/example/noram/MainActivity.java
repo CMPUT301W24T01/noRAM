@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
 
-    private static Attendee attendee = null;
+    public static Attendee attendee = null;
 
     private Button adminButton;
 

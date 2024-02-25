@@ -85,10 +85,7 @@ public class AttendeeProfileFragment extends Fragment {
         EditText phone = view.findViewById(R.id.edit_attendee_phone);
         CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
 
-        // TODO: get the attendee from the database to replace this temporary attendee
-        if (attendee == null) {
-            attendee = new Attendee("1234", "John", "Doe", "john.com", "123-456-7890", null, true);
-        }
+        attendee = MainActivity.attendee;
 
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
@@ -101,13 +98,11 @@ public class AttendeeProfileFragment extends Fragment {
         view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: save the attendee profile picture
                 attendee.setFirstName(firstName.getText().toString());
                 attendee.setLastName(lastName.getText().toString());
                 attendee.setHomePage(homePage.getText().toString());
                 attendee.setPhoneNumber(phone.getText().toString());
                 attendee.setAllowLocation(allowLocation.isChecked());
-                // TODO: save the attendee to the database
             }
         });
 
