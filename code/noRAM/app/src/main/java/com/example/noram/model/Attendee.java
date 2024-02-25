@@ -1,5 +1,8 @@
 package com.example.noram.model;
 
+import android.media.Image;
+import com.example.noram.MainActivity;
+
 /**
  * A class representing an attendee
  */
@@ -8,9 +11,11 @@ public class Attendee extends UserProfile {
     private String firstName;
     private String lastName;
     private String homePage;
+
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber;
     private String profilePicture;
+
     private Boolean allowLocation;
 
     /**
@@ -55,6 +60,7 @@ public class Attendee extends UserProfile {
      */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+        updateDBAttendee();
     }
 
     /**
@@ -71,6 +77,7 @@ public class Attendee extends UserProfile {
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        updateDBAttendee();
     }
 
     /**
@@ -87,6 +94,7 @@ public class Attendee extends UserProfile {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+        updateDBAttendee();
     }
 
     /**
@@ -103,6 +111,7 @@ public class Attendee extends UserProfile {
      */
     public void setHomePage(String homePage) {
         this.homePage = homePage;
+        updateDBAttendee();
     }
 
     /**
@@ -119,6 +128,7 @@ public class Attendee extends UserProfile {
      */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        updateDBAttendee();
     }
 
     /**
@@ -135,6 +145,7 @@ public class Attendee extends UserProfile {
      */
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+        updateDBAttendee();
     }
 
     /**
@@ -151,5 +162,15 @@ public class Attendee extends UserProfile {
      */
     public void setAllowLocation(Boolean allowLocation) {
         this.allowLocation = allowLocation;
+        updateDBAttendee();
     }
+
+    /**
+     * A method to update the database with the new attendee information
+     */
+    private void updateDBAttendee() {
+        MainActivity.db.getDb().collection("attendees").document(identifier).set(this);
+    }
+
+
 }
