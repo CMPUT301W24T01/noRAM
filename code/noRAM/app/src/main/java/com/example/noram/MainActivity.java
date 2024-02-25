@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     public static final Database db = new Database();
 
     public static Attendee attendee = null;
-
     private Button adminButton;
 
     /**
@@ -97,7 +96,14 @@ public class MainActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot document = task1.getResult();
                                 if (document.exists()) {
-                                    attendee = document.toObject(Attendee.class);
+                                    // If the user exists, get the user's information
+                                    String firstname = document.getString("firstName");
+                                    String lastname = document.getString("lastName");
+                                    String homepage = document.getString("homePage");
+                                    String phoneNumber = document.getString("phoneNumber");
+                                    String profilePicture = document.getString("profilePicture");
+                                    Boolean allowLocation = document.getBoolean("allowLocation");
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, phoneNumber, profilePicture, allowLocation);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();
