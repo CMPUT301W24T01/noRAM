@@ -7,15 +7,15 @@ import com.example.noram.MainActivity;
  */
 public class Attendee {
     private String identifier;
-    private String firstName;
-    private String lastName;
-    private String homePage;
+    private String firstName = "";
+    private String lastName = "";
+    private String homePage = "";
 
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
-    private String phoneNumber;
-    private String profilePicture;
+    private String phoneNumber = "";
+    private String profilePicture = "";
 
-    private Boolean allowLocation;
+    private Boolean allowLocation = false;
 
     private String profilePic;
 
