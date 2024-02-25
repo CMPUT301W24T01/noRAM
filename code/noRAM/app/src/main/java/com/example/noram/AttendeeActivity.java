@@ -1,15 +1,19 @@
 package com.example.noram;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -33,7 +37,6 @@ public class AttendeeActivity extends AppCompatActivity {
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
-
     /**
      * Setup the activity when it is created.
      * @param savedInstanceState If the activity is being re-initialized after
@@ -62,6 +65,7 @@ public class AttendeeActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, qrFragment, "qr")
                 .commit();
+
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**
              * Updates the Fragment shown in the FragmentContainerView when a navbar

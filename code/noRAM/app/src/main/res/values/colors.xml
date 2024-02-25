@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="button_background_color">#7E8587</color>
+    <color name="add_photo_draw_background">#6BBCD5</color>
+    <color name="darker_blue">#2BA5AF</color>
+    <color name="delete_photo_draw_background">#F42E2E</color>
 </resources>

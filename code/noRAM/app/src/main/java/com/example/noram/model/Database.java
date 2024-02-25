@@ -3,6 +3,7 @@ package com.example.noram.model;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * A class to represent the database
@@ -14,6 +15,8 @@ public class Database {
     private CollectionReference adminRef = db.collection("Admins");
     private CollectionReference photoRef = db.collection("Photos");
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
 
     /**
@@ -111,6 +114,14 @@ public class Database {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * A method to get the cloud storage
+     * @return database
+     */
+    public FirebaseStorage getStorage() {
+        return storage;
     }
 }
 

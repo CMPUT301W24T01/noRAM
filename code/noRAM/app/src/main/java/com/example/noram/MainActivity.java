@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,22 +15,26 @@ import android.content.Intent;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final Database db = new Database();
-   
+    public static Database db = new Database();
+
+    public static Attendee sharedAttendee;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-      
+
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;
         // for now, this will give us a base to start work without clashing against each other.
@@ -38,9 +43,18 @@ public class MainActivity extends AppCompatActivity {
         Button attendeeButton = findViewById(R.id.attendeeButton);
 
         // Start each activity via an intent.
-        adminButton.setOnClickListener(v ->
+        /**adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TESTTTT", "This is a debug message");
+                Log.i("TESTTTT", "This is an informational message");
+                Log.e("TESTTTT", "This is an error message");
+                Log.w("TESTTTT", "This is a warning message");
+            }
+        });**/
+        adminButton.setOnClickListener((v ->
                 startActivity(new Intent(MainActivity.this, AdminActivity.class))
-        );
+                ));
 
         organizerButton.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, OrganizerActivity.class))
@@ -56,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
     }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -83,4 +96,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+
+    /*
+    @Override
+    public void uploadProfilePicture(Uri imageUri) {
+        Object profileRef = db.collection("profilePicture");
+        String filename = "profilePicture.jpg";
+        String storageRef = profileRef.addPhoto().ref("/images/" + filename);
+        String message = "data:image/jpg;base64," + imageUri;
+        storageRef.set(message)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firebase", "ProfilePicture successfully written!");
+                    }
+
+                    ;
+                });
+    }*/
 }
