@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             db.getmAuth().signOut();
                         } else {
                             //
-                            attendee = new Attendee(Integer.parseInt(currentUser.getUid()));
+                            attendee = new Attendee(Integer.parseInt(currentUser.getUid())); // TODO: get the identifier from the database
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
