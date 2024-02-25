@@ -1,7 +1,5 @@
 package com.example.noram.model;
 
-import android.media.Image;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -63,7 +61,7 @@ public class Database {
      * @param identifier the identifier of the attendee
      * @return true if the attendee is added, false otherwise
      */
-    public boolean addAttendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, Image profilePicture, Boolean allowLocation) {
+    public boolean addAttendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
         try {
             attendeeRef.add(new Attendee(identifier, firstName, lastName, homePage, phoneNumber, profilePicture, allowLocation)); // TODO: add the attendee properly
             return true;

@@ -1,19 +1,16 @@
 package com.example.noram.model;
 
-import android.media.Image;
-
 /**
  * A class representing an attendee
  */
 public class Attendee extends UserProfile {
-    private int identifier;
+    private String identifier;
     private String firstName;
     private String lastName;
     private String homePage;
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber;
-    // TODO: ensure that Image is the correct type to use
-    private Image profilePicture;
+    private String profilePicture;
     private Boolean allowLocation;
 
     /**
@@ -24,7 +21,7 @@ public class Attendee extends UserProfile {
      * @param phoneNumber the phone number of the attendee
      *
      */
-    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, Image profilePicture, Boolean allowLocation) {
+    public Attendee(int identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
         super(identifier);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,7 +35,7 @@ public class Attendee extends UserProfile {
      * A method to get the identifier of the attendee
      * @return the identifier of the attendee
      */
-    public int getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
@@ -46,7 +43,7 @@ public class Attendee extends UserProfile {
      * A method to set the identifier of the attendee
      * @param identifier the identifier of the attendee
      */
-    public void setIdentifier(int identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
@@ -118,7 +115,7 @@ public class Attendee extends UserProfile {
      * A method to get the profile picture of the attendee
      * @return the profile picture of the attendee
      */
-    public Image getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
 
@@ -126,7 +123,7 @@ public class Attendee extends UserProfile {
      * A method to set the profile picture of the attendee
      * @param profilePicture the profile picture of the attendee
      */
-    public void setProfilePicture(Image profilePicture) {
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
 
