@@ -97,10 +97,8 @@ public class MainActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot document = task1.getResult();
                                 if (document.exists()) {
-                                    Toast.makeText(MainActivity.this, "exists", Toast.LENGTH_SHORT).show();
                                     attendee = document.toObject(Attendee.class);
                                 } else {
-                                    Toast.makeText(MainActivity.this, "new", Toast.LENGTH_SHORT).show();
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();
                                 }
