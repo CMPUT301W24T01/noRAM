@@ -1,12 +1,16 @@
 package com.example.noram;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+
+import androidx.fragment.app.Fragment;
+
+import com.example.noram.model.Attendee;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,14 +19,7 @@ import android.view.ViewGroup;
  */
 public class AttendeeProfileFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Attendee attendee;
 
     public AttendeeProfileFragment() {
         // Required empty public constructor
@@ -34,7 +31,6 @@ public class AttendeeProfileFragment extends Fragment {
      *
      * @return A new instance of fragment AttendeeProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AttendeeProfileFragment newInstance() {
         AttendeeProfileFragment fragment = new AttendeeProfileFragment();
         Bundle args = new Bundle();
@@ -45,16 +41,58 @@ public class AttendeeProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendee_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_attendee_profile, container, false);
+
+        ImageButton profileImage = view.findViewById(R.id.edit_attendee_image_button);
+        EditText firstName = view.findViewById(R.id.edit_attendee_first_name);
+        EditText lastName = view.findViewById(R.id.edit_attendee_last_name);
+        EditText homePage = view.findViewById(R.id.edit_attendee_home_page);
+        EditText phone = view.findViewById(R.id.edit_attendee_phone);
+        CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
+
+        // TODO: get the attendee from the database
+        if (attendee == null) {
+            attendee = new Attendee(1234, "John", "Doe", "john.com", "123-456-7890", null, true);
+        }
+
+        // Set the fields to the attendee's information
+        firstName.setText(attendee.getFirstName());
+        lastName.setText(attendee.getLastName());
+        homePage.setText(attendee.getHomePage());
+        phone.setText(attendee.getPhoneNumber());
+        allowLocation.setChecked(attendee.getAllowLocation());
+
+        // Save the entered information when the save button is clicked
+        view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: save the attendee profile picture
+                attendee.setFirstName(firstName.getText().toString());
+                attendee.setLastName(lastName.getText().toString());
+                attendee.setHomePage(homePage.getText().toString());
+                attendee.setPhoneNumber(phone.getText().toString());
+                attendee.setAllowLocation(allowLocation.isChecked());
+                // TODO: save the attendee to the database
+            }
+        });
+
+        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstName.setText(attendee.getFirstName());
+                lastName.setText(attendee.getLastName());
+                homePage.setText(attendee.getHomePage());
+                phone.setText(attendee.getPhoneNumber());
+                allowLocation.setChecked(attendee.getAllowLocation());
+            }
+        });
+
+        return view;
     }
 }
