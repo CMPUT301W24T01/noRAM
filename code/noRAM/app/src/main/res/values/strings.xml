@@ -14,4 +14,12 @@
     <string name="signup_button">SIGN UP</string>
     <string name="announcement_text">Announcements</string>
     <string name="checkedin_text">Checked In</string>
+    <string name="attendee_profile_title">Edit Your Profile</string>
+    <string name="confirm">Confirm</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="home_page">Home Page</string>
+    <string name="access_location">Allow event organizers to access your location</string>
+    <string name="save">Save</string>
 </resources>
