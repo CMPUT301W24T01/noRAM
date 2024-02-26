@@ -7,10 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 import java.io.InputStream;
 import java.util.Random;
 import java.util.concurrent.Executor;
@@ -196,11 +202,11 @@ public class Attendee {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void profilePhotoGenerator() {
-        // Temp
-        if (defaultProfilePicture) {
-            profilePicture = "https://www.gravatar.com/avatar/" + Integer.valueOf(firstName) + "?d=identicon";
-            updateDBAttendee();
-        }
+        // Temporary Way to generate a default profile picture
+//        if (defaultProfilePicture) {
+//            profilePicture = "https://www.gravatar.com/avatar/" + Integer.valueOf(firstName) + "?d=identicon";
+//            updateDBAttendee();
+//        }
 
         // Cupcake way
         if (defaultProfilePicture) {
@@ -208,41 +214,13 @@ public class Attendee {
             StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
             StorageReference storageReferenceCupcake = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCake.png");
 
-            Bitmap icingBitmap;
-            Bitmap cherryBitmap;
-            Bitmap cakeBitmap;
+            Bitmap icingBitmap = null;
+            Bitmap cherryBitmap = null;
+            Bitmap cakeBitmap = null;
 
-
-            storageReferenceIcing.getStream().addOnSuccessListener(taskSnapshot -> {
-                Executor executor = Executors.newSingleThreadExecutor();
-                InputStream photoStream = taskSnapshot.getStream();
-                Runnable decodeRunnable = () -> {
-                    icingBitmap = (BitmapFactory.decodeStream(photoStream)).compress(Bitmap.CompressFormat.PNG, 100, icingImage);
-                };
-                executor.execute(decodeRunnable);
-            });
-
-            storageReferenceCherry.getStream().addOnSuccessListener(taskSnapshot -> {
-                Executor executor = Executors.newSingleThreadExecutor();
-                InputStream photoStream = taskSnapshot.getStream();
-                Runnable decodeRunnable = () -> {
-                    cherryBitmap = BitmapFactory.decodeStream(photoStream);
-                };
-                executor.execute(decodeRunnable);
-            });
-
-            storageReferenceCupcake.getStream().addOnSuccessListener(taskSnapshot -> {
-                Executor executor = Executors.newSingleThreadExecutor();
-                InputStream photoStream = taskSnapshot.getStream();
-                Runnable decodeRunnable = () -> {
-                    cakeBitmap = BitmapFactory.decodeStream(photoStream);
-                };
-                executor.execute(decodeRunnable);
-            });
-
+            // Need to get the bitmaps from the storage
 
             int numIdentifier = Integer.parseInt(firstName.toString());
-
             int R = (numIdentifier) % 256;
             int G = (numIdentifier * 10) % 256;
             int B = (numIdentifier * 100) % 256;
@@ -271,10 +249,6 @@ public class Attendee {
             // Draw the cherry on top of the icing
             canvas.drawBitmap(cherryBitmap, cherryX, cherryY, null); // Adjust X and Y coordinates as needed
 
-            // Apply color filters if needed
-            int newIcingColor = Color.BLUE; // Example new icing color
-            int newCherryColor = Color.GREEN; // Example new cherry color
-
             Paint icingPaint = new Paint();
             icingPaint.setColorFilter(new PorterDuffColorFilter(icingColor.toArgb(), PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(icingBitmap, icingX, icingY, icingPaint);
@@ -283,9 +257,9 @@ public class Attendee {
             cherryPaint.setColorFilter(new PorterDuffColorFilter(cherryColor.toArgb(), PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(cherryBitmap, cherryX, cherryY, cherryPaint);
 
-            // TODO: Save the final bitmap to the storage
-            
-
+            String photoPath = String.valueOf("profile_photos/"+identifier+"_default.png");
+            StorageReference storageReference = MainActivity.db.getStorage().getReference().child(photoPath);
+            storageReference.putBytes(finalBitmap.toString().getBytes());
         }
     }
 }
