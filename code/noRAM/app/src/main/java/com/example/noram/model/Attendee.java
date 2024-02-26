@@ -218,7 +218,7 @@ public class Attendee {
             Bitmap cherryBitmap = null;
             Bitmap cakeBitmap = null;
 
-            // Need to get the bitmaps from the storage
+            // TODO: Need to get the bitmaps from the storage
 
             int numIdentifier = Integer.parseInt(firstName.toString());
             int R = (numIdentifier) % 256;
