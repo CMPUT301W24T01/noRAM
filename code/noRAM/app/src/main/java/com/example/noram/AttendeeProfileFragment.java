@@ -36,6 +36,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StreamDownloadTask;
 
 import java.io.InputStream;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -119,16 +121,21 @@ public class AttendeeProfileFragment extends Fragment{
             deletePhoto.setVisibility(View.INVISIBLE);
         }
 
+        // download the profile photo from the cloud storage
         StorageReference profileRef = MainActivity.db.getStorage().getReference().child(attendee.getProfilePicture());
         profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-
-                //Problem! to fix, de-coding the photo is not working
-                // uploading a photo from the firebase
                 InputStream photoStream = taskSnapshot.getStream();
-                Bitmap image = BitmapFactory.decodeStream(photoStream);
-                imageView.setImageBitmap(image);
+
+                // we can't run decodeStream() in the main thread, so we create an executor to
+                // run it instead.
+                Executor executor = Executors.newSingleThreadExecutor();
+                Runnable decodeRunnable = () -> {
+                    Bitmap image = BitmapFactory.decodeStream(photoStream);
+                    imageView.setImageBitmap(image);
+                };
+                executor.execute(decodeRunnable);
             }
         });
 
@@ -180,6 +187,10 @@ public class AttendeeProfileFragment extends Fragment{
 
         return rootView;
     }
+
+    /**
+     * Starts the imagepicker activity
+     */
     private void startImagePicker() {
         //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
         //https://www.youtube.com/watch?v=v6YvUxpgSYQ
@@ -190,6 +201,10 @@ public class AttendeeProfileFragment extends Fragment{
                 .start();
     }
 
+    /**
+     * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
+     * it with teh default profile photo
+     */
     private void deletePhoto(){
         String deletePhotoStr = attendee.getProfilePicture();
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
@@ -205,34 +220,39 @@ public class AttendeeProfileFragment extends Fragment{
             }
         });
 
+        // TODO: replace with default profile photo instead of using none
         attendee.setProfilePicture("");
         attendee.setDefaultProfilePhoto(true);
         deletePhoto.setVisibility(View.INVISIBLE);
         imageView.setImageURI(null);
     }
+
+    /**
+     * ActivityComplete result listener that is called when the photo add activity closes.
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // get image uri and file name from it
         Uri uri =  data.getData();
         String uriString = "profile_photos/"+uri.getLastPathSegment();
 
-        //future; photoRef will be handeled by Attendee later
-        DocumentReference photoRef = MainActivity.db.getAttendeeRef().document("test");
+        // upload file to cloud storage
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(uriString);
-
         storageReference.putFile(uri);
-        photoRef.update("profilePhoto", uriString)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                          @Override
-                                          public void onSuccess(Void unused) {
-                                              Log.d("Firebase", "Photo successfully added!");
-                                          }
-                                      });
-        Log.d("TestStatement", "inside");
-        Log.d("Image URI:", uriString);
-        //check if the imageView already has an image
+
+        // set imageview and update attendee information
         imageView.setImageURI(uri);
         attendee.setProfilePicture(uriString);
-        //manuallty set dimensions of the photo? allow only 1x1 box croping
+        attendee.setDefaultProfilePhoto(false);
+        deletePhoto.setVisibility(View.VISIBLE);
     }
-
 }
