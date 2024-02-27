@@ -37,6 +37,7 @@
         android:ems="10"
         android:hint="@string/first_name"
         android:inputType="text"
+        android:maxLength="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_first_name_label" />
@@ -48,6 +49,7 @@
         android:ems="10"
         android:hint="@string/last_name"
         android:inputType="text"
+        android:maxLength="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_last_name_label" />
@@ -59,6 +61,7 @@
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:maxLength="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_email_label" />
@@ -70,6 +73,7 @@
         android:ems="10"
         android:hint="@string/home_page"
         android:inputType="text"
+        android:maxLength="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_home_page_label" />

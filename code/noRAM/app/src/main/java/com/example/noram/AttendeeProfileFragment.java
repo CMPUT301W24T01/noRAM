@@ -98,11 +98,19 @@ public class AttendeeProfileFragment extends Fragment {
         view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attendee.setFirstName(firstName.getText().toString());
-                attendee.setLastName(lastName.getText().toString());
-                attendee.setHomePage(homePage.getText().toString());
-                attendee.setEmail(email.getText().toString());
-                attendee.setAllowLocation(allowLocation.isChecked());
+                String editFirstName = firstName.getText().toString();
+                String editLastName = lastName.getText().toString();
+                String editHomePage = homePage.getText().toString();
+                String editEmail = email.getText().toString();
+                Boolean editAllowLocation = allowLocation.isChecked();
+
+                if (validateAttendeeFields(editFirstName, editLastName, editHomePage, editEmail)) {
+                    attendee.setFirstName(editFirstName);
+                    attendee.setLastName(editLastName);
+                    attendee.setHomePage(editHomePage);
+                    attendee.setEmail(editEmail);
+                    attendee.setAllowLocation(editAllowLocation);
+                }
             }
         });
 
@@ -119,5 +127,19 @@ public class AttendeeProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * Validate the fields of the attendee information, return true if valid, false otherwise.
+     * If it is not valid display a message saying what is wrong
+     * @param editFirstName the first name that was entered in the field
+     * @param editLastName the last name that was entered in the field
+     * @param editHomePage the home page that was entered in the field
+     * @param editEmail the email that was entered in the field
+     * @return true if all fields are valid, false otherwise
+     */
+    public Boolean validateAttendeeFields(String editFirstName, String editLastName, String editHomePage, String editEmail) {
+        // TODO: Validate the fields
+        return false;
     }
 }
