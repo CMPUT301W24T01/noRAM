@@ -23,15 +23,54 @@ public class AttendeeEventInfo extends AppCompatActivity {
         // TODO: send to message page
     }
 
+    private void checkedInDisplay(){
+        // checked-in event page
+        setContentView(R.layout.attendee_checkedin_event_info);
+
+        // connect announcements button
+        TextView announcements = findViewById(R.id.announcementText);
+        announcements.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeEventInfo.this, AttendeeAnnouncementsActivity.class);
+                intent.putExtra(eventIDLabel, event.getId());
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void notCheckedInDisplay(){
+        // unchecked event page
+        setContentView(R.layout.attendee_event_info);
+
+        // connect signup button
+        Button signupButton = findViewById(R.id.signupButton);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signup();
+            }
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.attendee_event_info);
 
         // retrieve corresponding event in database
         int eventID = getIntent().getIntExtra(eventIDLabel,0);
         // TODO: Actually query database to get corresponding event
         event = new Event();
+
+        // verify if user is already checked-in event: hide/show content in consequence
+        // TODO: check if event is checked-in
+        if(true){
+            checkedInDisplay();
+        }
+        else{
+            notCheckedInDisplay();
+        }
 
         // get all variables from page
         ImageButton backButton = findViewById(R.id.backButton);
@@ -41,16 +80,6 @@ public class AttendeeEventInfo extends AppCompatActivity {
         TextView eventLocation = findViewById(R.id.eventLocation);
         ImageView eventImage = findViewById(R.id.eventImage);
         TextView eventDescription = findViewById(R.id.eventDescription);
-        Button signupButton = findViewById(R.id.signupButton);
-
-        // verify if user is already checked-in event: if not, hide some content
-        // TODO: check if event is checked-in
-        if(true){
-            //displayCheckedIn();
-        }
-        else{
-            //hideCheckedIn();
-        }
 
         // update event info
         eventTitle.setText(event.getName());
@@ -60,17 +89,11 @@ public class AttendeeEventInfo extends AppCompatActivity {
         // TODO: update event image
         eventDescription.setText(event.getDetails());
 
-        // connect buttons
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signup();
-            }
-        });
+        // connect back button
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeEventInfo.this, MainActivity.class));
+                startActivity(new Intent(AttendeeEventInfo.this, AttendeeActivity.class));
             }
         });
 

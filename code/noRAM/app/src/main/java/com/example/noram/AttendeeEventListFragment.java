@@ -18,6 +18,7 @@ import android.widget.ListView;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.NoRAMApp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -130,11 +131,9 @@ public class AttendeeEventListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
-        // TODO: get database and event reference (need ref implemented)
-        /*
+        // get event collection
         eventRef = ((NoRAMApp) AttendeeEventListFragment.this.getActivity().getApplication())
-                .getdatabase().getEventRef();
-         */
+                .getdatabase().getEventsRef();
 
         // get all views and initialize variables
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
@@ -220,8 +219,7 @@ public class AttendeeEventListFragment extends Fragment {
 
 
         // TODO: connect database to all-events and user-events data lists (need ref implemented)
-        /*
-        eventRef.addSnapShotListener(new EventListener<QuerySnapshot>(){
+        eventRef.addSnapshotListener(new EventListener<QuerySnapshot>(){
             @Override
             public void onEvent(QuerySnapshot querySnapshots, FirebaseFirestoreException error){
                 if(error != null){
@@ -233,6 +231,8 @@ public class AttendeeEventListFragment extends Fragment {
                     userEventDataList.clear();
                     for(QueryDocumentSnapshot doc: querySnapshots){
                         // get event's info and create it
+                        Event event = new Event(); // TODO: replace
+                        /*
                         Event event = new Event(Integer.parseInt(doc.getId()),
                                 doc.getString("Name"),
                                 doc.getString("Location"),
@@ -242,7 +242,7 @@ public class AttendeeEventListFragment extends Fragment {
                                 doc.getString("Milestones"),
                                 Boolean.TRUE.equals(doc.getBoolean("TrackLocation"))
                         );
-                        // TODO: Add images to the event (not added to constructor)
+                        */
                         // TODO: Ensure the database fields that are called are correct
                         // TODO: Convert non-strings to correct format
                         // add event to all events list
@@ -256,7 +256,6 @@ public class AttendeeEventListFragment extends Fragment {
                 }
             }
         });
-        */
 
         return rootView;
     }

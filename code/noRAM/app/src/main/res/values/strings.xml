@@ -22,4 +22,5 @@
     <string name="home_page">Home Page</string>
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>
+    <string name="attendee_announcements_title">Event Announcements</string>
 </resources>

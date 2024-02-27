@@ -23,13 +23,13 @@
         android:layout_height="0dp"
         android:background="#00FF0808"
         android:backgroundTint="#00473434"
+        android:contentDescription="House image"
         android:outlineProvider="none"
-        android:src="@drawable/outline_home_24"
+        android:src="@drawable/home_32px"
         app:layout_constraintBottom_toTopOf="@+id/searchInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="#FFFFFF"
-        android:contentDescription="House image"/>
+        app:tint="#FFFFFF" />
 
     <TextView
         android:id="@+id/pageTitle"
