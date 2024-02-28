@@ -7,6 +7,8 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -30,8 +31,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StreamDownloadTask;
 
@@ -121,23 +120,8 @@ public class AttendeeProfileFragment extends Fragment{
             deletePhoto.setVisibility(View.INVISIBLE);
         }
 
-        // download the profile photo from the cloud storage
-        StorageReference profileRef = MainActivity.db.getStorage().getReference().child(attendee.getProfilePicture());
-        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-                InputStream photoStream = taskSnapshot.getStream();
-
-                // we can't run decodeStream() in the main thread, so we create an executor to
-                // run it instead.
-                Executor executor = Executors.newSingleThreadExecutor();
-                Runnable decodeRunnable = () -> {
-                    Bitmap image = BitmapFactory.decodeStream(photoStream);
-                    imageView.setImageBitmap(image);
-                };
-                executor.execute(decodeRunnable);
-            }
-        });
+        // update the profile photo icon
+        downloadAndUpdateProfilePhoto();
 
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
@@ -157,7 +141,7 @@ public class AttendeeProfileFragment extends Fragment{
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deletePhoto();
+                showDeletePhotoConfirmation();
             }
         });
 
@@ -170,7 +154,7 @@ public class AttendeeProfileFragment extends Fragment{
                 attendee.setHomePage(homePage.getText().toString());
                 attendee.setPhoneNumber(phone.getText().toString());
                 attendee.setAllowLocation(allowLocation.isChecked());
-                attendee.profilePhotoGenerator();
+                attendee.generateDefaultProfilePhoto();
             }
         });
 
@@ -203,29 +187,64 @@ public class AttendeeProfileFragment extends Fragment{
     }
 
     /**
+     * Shows a confirmation when a user clicks the delete photo button.
+     */
+    private void showDeletePhotoConfirmation() {
+        // show a confirmation dialog
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete your photo?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePhoto();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
      * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
-     * it with teh default profile photo
+     * it with the default profile photo
      */
     private void deletePhoto(){
-        String deletePhotoStr = attendee.getProfilePicture();
+        String deletePhotoStr = attendee.getProfilePhotoString();
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
-        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("Firebase", "Photo successfully deleted!");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Firebase", "Photo unsuccessfully deleted!");
-            }
-        });
+        storageReference.delete().addOnSuccessListener(
+                unused -> Log.d("Firebase", "Photo successfully deleted!")
+        ).addOnFailureListener(
+                e -> Log.d("Firebase", "Photo unsuccessfully deleted!")
+        );
 
-        // TODO: replace with default profile photo instead of using none
-        attendee.setProfilePicture("");
         attendee.setDefaultProfilePhoto(true);
         deletePhoto.setVisibility(View.INVISIBLE);
-        imageView.setImageURI(null);
+        downloadAndUpdateProfilePhoto();
+    }
+
+    /**
+     * Downloads the attendee's profile photo from cloud storage and update it
+     * in the image view.
+     */
+    private void downloadAndUpdateProfilePhoto() {
+        // download the profile photo from the cloud storage
+        StorageReference profileRef = MainActivity.db.getStorage()
+                .getReference().child(attendee.getProfilePhotoString());
+        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
+                InputStream photoStream = taskSnapshot.getStream();
+
+                // we can't run decodeStream() in the main thread, so we create an executor to
+                // run it instead.
+                Executor executor = Executors.newSingleThreadExecutor();
+                Runnable decodeRunnable = () -> {
+                    Bitmap image = BitmapFactory.decodeStream(photoStream);
+                    imageView.setImageBitmap(image);
+                };
+                executor.execute(decodeRunnable);
+            }
+        });
     }
 
     /**
@@ -244,7 +263,13 @@ public class AttendeeProfileFragment extends Fragment{
 
         // get image uri and file name from it
         Uri uri =  data.getData();
-        String uriString = "profile_photos/"+uri.getLastPathSegment();
+
+        // if there's no uri, we didn't get a new photo, so return.
+        if (uri == null) {
+            return;
+        }
+
+        String uriString = "profile_photos/" + attendee.getIdentifier() + "-upload";
 
         // upload file to cloud storage
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(uriString);
@@ -252,7 +277,6 @@ public class AttendeeProfileFragment extends Fragment{
 
         // set imageview and update attendee information
         imageView.setImageURI(uri);
-        attendee.setProfilePicture(uriString);
         attendee.setDefaultProfilePhoto(false);
         deletePhoto.setVisibility(View.VISIBLE);
     }

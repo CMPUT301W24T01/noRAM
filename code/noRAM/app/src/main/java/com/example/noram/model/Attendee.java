@@ -6,8 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
+
 import com.example.noram.MainActivity;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,13 +23,10 @@ public class Attendee {
 
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber = "";
-    private String profilePicture = "";
 
     private Boolean allowLocation = false;
 
     private Boolean usingDefaultProfilePicture = true;
-
-    private String profilePic;
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -47,16 +43,14 @@ public class Attendee {
      * @param lastName the last name of the attendee
      * @param homePage the home page of the attendee
      * @param phoneNumber the phone number of the attendee
-     * @param profilePicture the profile picture of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, Boolean allowLocation) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
         this.phoneNumber = phoneNumber;
-        this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
         usingDefaultProfilePicture = false;
     }
@@ -147,24 +141,6 @@ public class Attendee {
     }
 
     /**
-     * A method to get the profile picture of the attendee
-     * @return the profile picture of the attendee
-     */
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    /**
-     * A method to set the profile picture of the attendee
-     * @param profilePicture the profile picture of the attendee
-     */
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-        usingDefaultProfilePicture = false;
-        updateDBAttendee();
-    }
-
-    /**
      * A method to get the location allowance of the attendee
      * @return the location allowance of the attendee
      */
@@ -210,16 +186,17 @@ public class Attendee {
      */
     public String getProfilePhotoString() {
         if (usingDefaultProfilePicture) {
-            return getIdentifier() + "-default";
+            return "profile_photos/" + getIdentifier() + "-default";
         } else {
-            return getIdentifier() + "-upload";
+            return "profile_photos/" + getIdentifier() + "-upload";
         }
     }
 
     /**
-     * A method to generate a default profile picture for the attendee
+     * A method to generate a default profile picture for the attendee. Should be called
+     * when the attendee is created so that a photo can immediately be displayed.
      */
-    public void profilePhotoGenerator() {
+    public void generateDefaultProfilePhoto() {
         // Temporary Way to generate a default profile picture
 //        if (defaultProfilePicture) {
 //            profilePicture = "https://www.gravatar.com/avatar/" + Integer.valueOf(firstName) + "?d=identicon";
@@ -227,7 +204,7 @@ public class Attendee {
 //        }
 
         // Cupcake way
-        if (usingDefaultProfilePicture) {
+        if (!usingDefaultProfilePicture) {
             StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
             StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
             StorageReference storageReferenceCupcake = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCake.png");

@@ -105,11 +105,14 @@ public class MainActivity extends AppCompatActivity {
                                     String lastname = document.getString("lastName");
                                     String homepage = document.getString("homePage");
                                     String phoneNumber = document.getString("phoneNumber");
-                                    String profilePicture = document.getString("profilePicture");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, phoneNumber, profilePicture, allowLocation);
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, phoneNumber, allowLocation);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
+
+                                    // TODO: move this logic to the "attendee details" screen that
+                                    // appears when they create a profile the first time.
+                                    attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
                                 }
                             } else {
