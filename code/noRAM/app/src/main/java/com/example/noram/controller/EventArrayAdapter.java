@@ -16,6 +16,9 @@ import com.example.noram.model.Event;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+/**
+ * An adapter that connects a ListView of events with an ArrayList of events.
+ */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;

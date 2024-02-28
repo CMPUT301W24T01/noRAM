@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import com.example.noram.model.NoRAMApp;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -62,9 +61,6 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
-
-        // store database for other activities
-        ((NoRAMApp) getApplication()).setDatabase(db);
     }
 
     /**

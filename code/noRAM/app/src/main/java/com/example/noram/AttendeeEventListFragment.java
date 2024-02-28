@@ -16,9 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.noram.controller.EventArrayAdapter;
-import com.example.noram.model.NoRAMApp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -54,8 +52,10 @@ public class AttendeeEventListFragment extends Fragment {
     private EditText searchInput; // searchbar
     private boolean viewingUserEvents; // indicates if showing all events or just user' events
 
+    /**
+     * Required empty public constructor
+     */
     public AttendeeEventListFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -132,8 +132,7 @@ public class AttendeeEventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get event collection
-        eventRef = ((NoRAMApp) AttendeeEventListFragment.this.getActivity().getApplication())
-                .getdatabase().getEventsRef();
+        eventRef = MainActivity.db.getEventsRef();
 
         // get all views and initialize variables
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);

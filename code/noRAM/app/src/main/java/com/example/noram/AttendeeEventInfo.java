@@ -11,6 +11,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.noram.model.Event;
 
+/**
+ * An activity displaying the information about an event. Depending on event's data, the layout page
+ * will change.
+ */
 public class AttendeeEventInfo extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
     private Event event; // current event being inquired
