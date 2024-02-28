@@ -35,6 +35,14 @@ import com.google.zxing.Result;
  */
 public class QrScanFragment extends Fragment {
 
+    private CodeScanner mCodeScanner;
+
+    private ProgressBar scanLoadingSpinBar;
+
+
+    /**
+     * Empty constructor for QrScanFragment
+     */
     public QrScanFragment() {
         // Required empty public constructor
     }
@@ -52,27 +60,40 @@ public class QrScanFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create the fragment
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    private CodeScanner mCodeScanner;
-
-    private ProgressBar scanLoadingSpinBar;
-
-
-    // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
+    /**
+     * Creates the view for the QRScan Fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return View for the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
         View root = inflater.inflate(R.layout.fragment_qr_scan, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
+        checkInFromQR("test_code");
 
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -129,14 +150,23 @@ public class QrScanFragment extends Fragment {
                 if (document.exists()) {
                     Log.d("DEBUG", "code exists");
                     // TODO: actual event
+                    // TODO: the list of eventsAt needs to be preserved in the attendee class
                     String eventName = (String) document.get("event");
 
                     // Create a batched write to update attendee eventAt and event attendees
                     WriteBatch batch = MainActivity.db.getDb().batch();
-                    DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventName);
-                    batch.update(eventRef, "attendees", FieldValue.arrayUnion("test_attendee"));
-                    DocumentReference attendeeRef = MainActivity.db.getAttendeeRef().document("test_attendee");
-                    batch.update(attendeeRef, "eventsAt", FieldValue.arrayUnion(eventName));
+                    DocumentReference eventRef = MainActivity.db.getEventsRef()
+                            .document(eventName);
+                    batch.update(
+                            eventRef,
+                            "attendees",
+                            FieldValue.arrayUnion(MainActivity.attendee.getIdentifier()));
+                    DocumentReference attendeeRef = MainActivity.db.getAttendeeRef()
+                            .document(MainActivity.attendee.getIdentifier());
+                    batch.update(
+                            attendeeRef,
+                            "eventsAt",
+                            FieldValue.arrayUnion(eventName));
                     batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
