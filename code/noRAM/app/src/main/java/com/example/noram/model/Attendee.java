@@ -1,6 +1,17 @@
 package com.example.noram.model;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.os.Build;
+import androidx.annotation.RequiresApi;
 import com.example.noram.MainActivity;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.Random;
 
 /**
  * A class representing an attendee
@@ -17,10 +28,9 @@ public class Attendee {
 
     private Boolean allowLocation = false;
 
-    private Boolean defaultProfilePhoto = true;
+    private Boolean usingDefaultProfilePicture = true;
 
     private String profilePic;
-
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -48,6 +58,7 @@ public class Attendee {
         this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
+        usingDefaultProfilePicture = false;
     }
 
     /**
@@ -149,6 +160,7 @@ public class Attendee {
      */
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+        usingDefaultProfilePicture = false;
         updateDBAttendee();
     }
 
@@ -176,11 +188,96 @@ public class Attendee {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
 
+    /**
+     * Returns whether or not we are currently using a default profile photo.
+     * @return True if yes, false otherwise.
+     */
     public Boolean getDefaultProfilePhoto() {
-        return defaultProfilePhoto;
+        return usingDefaultProfilePicture;
     }
 
+    /**
+     * Set whether we are currently using a default profile photo
+     * @param defaultProfilePhoto new value.
+     */
     public void setDefaultProfilePhoto(Boolean defaultProfilePhoto) {
-        this.defaultProfilePhoto = defaultProfilePhoto;
+        this.usingDefaultProfilePicture = defaultProfilePhoto;
+    }
+
+    /**
+     * Gets the string for the attendee's profile photo in cloud storage
+     * @return string filepath in cloud storage.
+     */
+    public String getProfilePhotoString() {
+        if (usingDefaultProfilePicture) {
+            return getIdentifier() + "-default";
+        } else {
+            return getIdentifier() + "-upload";
+        }
+    }
+
+    /**
+     * A method to generate a default profile picture for the attendee
+     */
+    public void profilePhotoGenerator() {
+        // Temporary Way to generate a default profile picture
+//        if (defaultProfilePicture) {
+//            profilePicture = "https://www.gravatar.com/avatar/" + Integer.valueOf(firstName) + "?d=identicon";
+//            updateDBAttendee();
+//        }
+
+        // Cupcake way
+        if (usingDefaultProfilePicture) {
+            StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
+            StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
+            StorageReference storageReferenceCupcake = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCake.png");
+
+            Bitmap icingBitmap = null;
+            Bitmap cherryBitmap = null;
+            Bitmap cakeBitmap = null;
+
+            // TODO: Need to get the bitmaps from the storage
+
+            int numIdentifier = Integer.parseInt(firstName.toString());
+            int R = (numIdentifier) % 256;
+            int G = (numIdentifier * 10) % 256;
+            int B = (numIdentifier * 100) % 256;
+
+            Color icingColor = Color.valueOf(R,G,B);
+            Random random = new Random();
+            random.setSeed(firstName.hashCode());
+            int randomNum = random.nextInt(100);
+            Color cherryColor = Color.valueOf(randomNum, randomNum, randomNum);
+
+            // Create a new bitmap for the final composition
+            Bitmap finalBitmap = Bitmap.createBitmap(cakeBitmap.getWidth(), cakeBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(finalBitmap);
+
+            // Draw the cake onto the canvas
+            canvas.drawBitmap(cakeBitmap, 0, 0, null);
+
+            int icingX = 0; // Example icing X coordinate
+            int icingY = 0; // Example icing Y coordinate
+            int cherryX = 0; // Example cherry X coordinate
+            int cherryY = 0; // Example cherry Y coordinate
+
+            // Draw the icing on top of the cake
+            canvas.drawBitmap(icingBitmap, icingX, icingY, null); // Adjust X and Y coordinates as needed
+
+            // Draw the cherry on top of the icing
+            canvas.drawBitmap(cherryBitmap, cherryX, cherryY, null); // Adjust X and Y coordinates as needed
+
+            Paint icingPaint = new Paint();
+            icingPaint.setColorFilter(new PorterDuffColorFilter(icingColor.toArgb(), PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(icingBitmap, icingX, icingY, icingPaint);
+
+            Paint cherryPaint = new Paint();
+            cherryPaint.setColorFilter(new PorterDuffColorFilter(cherryColor.toArgb(), PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(cherryBitmap, cherryX, cherryY, cherryPaint);
+
+            String photoPath = String.valueOf("profile_photos/"+identifier+"_default.png");
+            StorageReference storageReference = MainActivity.db.getStorage().getReference().child(photoPath);
+            storageReference.putBytes(finalBitmap.toString().getBytes());
+        }
     }
 }
