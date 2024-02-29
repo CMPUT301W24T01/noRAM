@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">noRAM</string>
-    <string name="organizerButton">Organizer</string>
-    <string name="attendeeButton">Attendee</string>
+    <string name="organizerButton">Organize an Event</string>
+    <string name="attendeeButton">Check in or Browse Events</string>
     <string name="adminButton">Admin</string>
 
     <string name="event_add_p1_header_text">Create Event - Part 1</string>
@@ -17,4 +17,26 @@
     <string name="event_add_p2_header_text">Create Event - Part 2</string>
     <string name="event_add_p2_gen_QR_button_text">Generate a QR code for this event</string>
     <string name="event_add_p2_upl_QR_button_text">Upload a QR code for this event</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="attendee_profile">Attendee profile</string>
+    <string name="event_list">Event List</string>
+    <string name="scan_qr_code_title">Scan QR Code</string>
+    <string name="my_events_button">My Events</string>
+    <string name="all_events_button">All Events</string>
+    <string name="event_search_hint">Event Name</string>
+    <string name="signup_button">SIGN UP</string>
+    <string name="announcement_text">Announcements</string>
+    <string name="checkedin_text">Checked In</string>
+    <string name="attendee_profile_title">Edit Your Profile</string>
+    <string name="confirm">Confirm</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="home_page">Home Page</string>
+    <string name="access_location">Allow event organizers to access your location</string>
+    <string name="save">Save</string>
+    <string name="attendee_announcements_title">Event Announcements</string>
+>>>>>>> master
 </resources>

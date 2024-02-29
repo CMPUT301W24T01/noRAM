@@ -8,13 +8,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * A class to represent the database
  */
 public class Database {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference attendeeRef = db.collection("Attendees");
-    private CollectionReference organizerRef = db.collection("Organizers");
-    private CollectionReference adminRef = db.collection("Admins");
-    private CollectionReference photoRef = db.collection("Photos");
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference attendeeRef = db.collection("Attendees");
+    private final CollectionReference organizerRef = db.collection("Organizers");
+    private final CollectionReference adminRef = db.collection("Admins");
+    private final CollectionReference photoRef = db.collection("Photos");
+    private final CollectionReference qrRef = db.collection("QRCodes");
+    private final CollectionReference eventsRef = db.collection("Events");
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     /**
      * A method to get the authentication
@@ -57,11 +58,19 @@ public class Database {
     }
 
     /**
+     * Getter method for QR code reference
+     * @return the qr code reference
+     */
+    public CollectionReference getQrRef() {
+        return qrRef;
+    }
+
+    /**
      * A method to add an attendee
      * @param identifier the identifier of the attendee
      * @return true if the attendee is added, false otherwise
      */
-    public boolean addAttendee(int identifier) {
+    public boolean addAttendee(String identifier) {
         try {
             attendeeRef.add(new Attendee(identifier)); // TODO: add the attendee properly
             return true;
@@ -75,7 +84,7 @@ public class Database {
      * @param identifier the identifier of the organizer
      * @return true if the organizer is added, false otherwise
      */
-    public boolean addOrganizer(int identifier) {
+    public boolean addOrganizer(String identifier) {
         try {
             organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
             return true;
@@ -89,7 +98,7 @@ public class Database {
      * @param identifier the identifier of the admin
      * @return true if the admin is added, false otherwise
      */
-    public boolean addAdmin(int identifier) {
+    public boolean addAdmin(String identifier) {
         try {
             adminRef.add(new Admin(identifier)); // TODO: add the admin properly
             return true;
@@ -111,6 +120,10 @@ public class Database {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public CollectionReference getEventsRef() {
+        return eventsRef;
     }
 }
 

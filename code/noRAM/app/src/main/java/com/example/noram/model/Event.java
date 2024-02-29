@@ -1,6 +1,7 @@
 package com.example.noram.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -253,7 +254,7 @@ public class Event {
      * Set whether or not check-in location is tracked
      * @param trackLocation new trackLocation for event
      */
-     public void changeTrackLocation(boolean trackLocation) {
+     public void setTrackLocation(boolean trackLocation) {
         this.trackLocation = trackLocation;
      }
 

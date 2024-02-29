@@ -3,15 +3,15 @@ package com.example.noram.model;
 /**
  * A class representing an organizer
  */
-public class Organizer extends UserProfile {
-    private int identifier;
+public class Organizer {
+    private String identifier;
 
     /**
      * A constructor to create an organizer
      * @param identifier the identifier of the organizer
      */
-    public Organizer(int identifier) {
-        super(identifier);
+    public Organizer(String identifier) {
+        this.identifier = identifier;
     }
 
 
