@@ -38,5 +38,12 @@
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>
     <string name="attendee_announcements_title">Event Announcements</string>
->>>>>>> master
+    <string name="profile">Profile</string>
+    <string name="new_event">New Event</string>
+    <string name="my_events">My Events</string>
+    <string name="scan">Scan</string>
+    <string name="events">Events</string>
+    <string name="event_created_header_text">Event Created!</string>
+    <string name="event_qr_codes_info_text">Here are your event QR codes:</string>
+    >>>>>>> master
 </resources>

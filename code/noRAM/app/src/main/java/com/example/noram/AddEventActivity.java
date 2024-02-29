@@ -96,6 +96,5 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                 new DatePickerFragment().show(getSupportFragmentManager(), "end");
             }
         });
-
     }
 }

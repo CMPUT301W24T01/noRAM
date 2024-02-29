@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <item android:id="@+id/navbar_events"
-        android:title="@string/events"
+    <item android:id="@+id/navbar_my_events"
+        android:title="@string/my_events"
         android:icon="@drawable/event_list_24px" />
-    <item android:id="@+id/navbar_scan"
-        android:title="@string/scan"
-        android:icon="@drawable/qr_code_scanner_24px" />
-    <item android:id="@+id/navbar_profile"
+    <item android:id="@+id/navbar_new_event"
+        android:title="@string/new_event"
+        android:icon="@drawable/add_24px" />
+    <item android:id="@+id/navbar_organizer_profile"
         android:title="@string/profile"
         android:icon="@drawable/person_24px" />
 </menu>

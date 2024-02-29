@@ -1,26 +1,16 @@
 package com.example.noram;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.example.noram.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.zxing.Result;
-
-import org.checkerframework.common.subtyping.qual.Bottom;
 
 public class AttendeeActivity extends AppCompatActivity {
 
@@ -75,11 +65,11 @@ public class AttendeeActivity extends AppCompatActivity {
 
                 // set the selectedFragment to the appropriate fragment
                 int itemID = item.getItemId();
-                if (itemID == R.id.navbar_scan) {
+                if (itemID == NAV_SCAN) {
                     selectedFragment = qrFragment;
-                } else if (itemID == R.id.navbar_events) {
+                } else if (itemID == NAV_EVENTS) {
                     selectedFragment = eventsFragment;
-                } else if (itemID == R.id.navbar_profile) {
+                } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
                 }
 
