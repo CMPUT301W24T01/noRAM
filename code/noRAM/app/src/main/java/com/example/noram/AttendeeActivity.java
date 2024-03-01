@@ -2,6 +2,8 @@ package com.example.noram;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ public class AttendeeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
         TextView headerText = findViewById(R.id.attendee_header_text);
+        ImageButton homeButton = findViewById(R.id.home_button);
         BottomNavigationView navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
@@ -57,6 +60,14 @@ public class AttendeeActivity extends AppCompatActivity {
 
         // Set the initial header text
         headerText.setText(R.string.scan_qr_code_title);
+
+        // create button listener so home button goes back to main page.
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**
