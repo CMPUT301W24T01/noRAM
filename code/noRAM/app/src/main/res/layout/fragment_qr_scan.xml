@@ -8,16 +8,6 @@
     android:orientation="vertical"
     tools:context=".QrScanFragment">
 
-    <TextView
-        android:id="@+id/qrscan_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:foregroundTint="#FFFFFF"
-        android:text="@string/scan_qr_code_title"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp" />
-
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"

@@ -9,11 +9,12 @@
     <string name="event_list">Event List</string>
     <string name="scan_qr_code_title">Scan QR Code</string>
     <string name="attendee_profile_title">Edit Your Profile</string>
+    <string name="attendee_events_title">Browse Events</string>
     <string name="confirm">Confirm</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="email">Email</string>
-    <string name="home_page">Home Page</string>
+    <string name="home_page">Homepage</string>
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>
 </resources>
