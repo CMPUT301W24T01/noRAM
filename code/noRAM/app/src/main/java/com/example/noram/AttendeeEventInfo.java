@@ -97,7 +97,7 @@ public class AttendeeEventInfo extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeEventInfo.this, AttendeeActivity.class));
+                finish();;
             }
         });
 

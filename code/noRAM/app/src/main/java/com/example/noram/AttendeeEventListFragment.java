@@ -171,7 +171,7 @@ public class AttendeeEventListFragment extends Fragment {
             // go back to main menu when home button is clicked
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeEventListFragment.this.getContext(), MainActivity.class));
+                getActivity().finish();
             }
         });
 
