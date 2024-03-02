@@ -6,13 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity">
 
+    <View
+        android:id="@+id/attendee_header"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:background="#00BCD4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:foregroundTint="#FFFFFF"
+        android:padding="8sp"
+        android:src="@drawable/home_32px"
+        app:layout_constraintBottom_toBottomOf="@+id/attendee_header"
+        app:layout_constraintStart_toStartOf="@+id/attendee_header"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="Admin Activity"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/attendee_header" />
 </androidx.constraintlayout.widget.ConstraintLayout>

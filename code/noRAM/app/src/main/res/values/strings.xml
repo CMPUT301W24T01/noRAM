@@ -49,5 +49,6 @@
     <string name="create_event_next_button">Next</string>
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
+    <string name="administrator_page_title">Administrator Page</string>
     >>>>>>> master
 </resources>

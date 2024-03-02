@@ -43,7 +43,7 @@ public class AttendeeEventListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private static final String eventIDLabel = "eventID";
+    public static final String eventIDLabel = "eventID";
 
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
@@ -148,7 +148,6 @@ public class AttendeeEventListFragment extends Fragment {
             // update datalist with results
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
-                Log.d("Gabriel", "QueryIsSuccess");
                 for(QueryDocumentSnapshot doc: querySnapshot){
                     Event event = new Event();
                     event.updateWithDocument(doc);
@@ -165,7 +164,10 @@ public class AttendeeEventListFragment extends Fragment {
      */
     public void displayEvent(Event event){
         Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
-        intent.putExtra(eventIDLabel, event.getId());
+        Bundle bundle = new Bundle();
+        bundle.putString(eventIDLabel, event.getId());
+        intent.putExtras(bundle);
+        Log.d("EventList", "ListID is " + event.getId());
         startActivity(intent);
     }
 
@@ -227,7 +229,6 @@ public class AttendeeEventListFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 searchEvents(editable.toString());
-                Log.d("Gabriel", "AfterTextChanged");
             }
         });
 

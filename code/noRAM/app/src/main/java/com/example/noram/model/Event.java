@@ -2,10 +2,12 @@ package com.example.noram.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.noram.MainActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class to represent an Event
@@ -294,11 +297,17 @@ public class Event {
      * Updates the event given a database 'event' document
      * @param doc The database document containing the fields used to update the event instance
      */
-    public void updateWithDocument(QueryDocumentSnapshot doc){
+    public void updateWithDocument(DocumentSnapshot doc){
+        this.setId(doc.getId());
         this.setName(doc.getString("name"));
         this.setDetails(doc.getString("details"));
         this.setLocation(doc.getString("location"));
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         // TODO: add remaining fields
+        Log.d("Event", Objects.requireNonNull(doc.getId()));
+        if(getName() != null){
+            Log.d("Event", Objects.requireNonNull(doc.getString("name")));
+            Log.d("Event", "Getname: " + this.getName());
+        }
     }
 }
