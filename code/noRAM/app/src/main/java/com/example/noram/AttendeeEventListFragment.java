@@ -2,7 +2,6 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,12 +11,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.noram.controller.EventArrayAdapter;
-import com.google.firebase.firestore.CollectionReference;
 import com.example.noram.model.Event;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -137,7 +137,6 @@ public class AttendeeEventListFragment extends Fragment {
         // get all views and initialize variables
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
         Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
-        ImageButton houseButton = rootView.findViewById(R.id.backButton);
         searchInput = rootView.findViewById(R.id.searchInput);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<Event>();
@@ -165,13 +164,6 @@ public class AttendeeEventListFragment extends Fragment {
             @Override
             public void onClick(View view){
                 displayAllEvents();
-            }
-        });
-        houseButton.setOnClickListener(new View.OnClickListener() {
-            // go back to main menu when home button is clicked
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
             }
         });
 
