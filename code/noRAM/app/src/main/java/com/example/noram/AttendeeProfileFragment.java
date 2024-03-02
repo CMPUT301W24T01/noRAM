@@ -121,7 +121,7 @@ public class AttendeeProfileFragment extends Fragment{
         }
 
         // update the profile photo icon
-        downloadAndUpdateProfilePhoto();
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(), t -> imageView.setImageBitmap(t));
 
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
@@ -219,32 +219,7 @@ public class AttendeeProfileFragment extends Fragment{
 
         attendee.setDefaultProfilePhoto(true);
         deletePhoto.setVisibility(View.INVISIBLE);
-        downloadAndUpdateProfilePhoto();
-    }
-
-    /**
-     * Downloads the attendee's profile photo from cloud storage and update it
-     * in the image view.
-     */
-    private void downloadAndUpdateProfilePhoto() {
-        // download the profile photo from the cloud storage
-        StorageReference profileRef = MainActivity.db.getStorage()
-                .getReference().child(attendee.getProfilePhotoString());
-        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-                InputStream photoStream = taskSnapshot.getStream();
-
-                // we can't run decodeStream() in the main thread, so we create an executor to
-                // run it instead.
-                Executor executor = Executors.newSingleThreadExecutor();
-                Runnable decodeRunnable = () -> {
-                    Bitmap image = BitmapFactory.decodeStream(photoStream);
-                    imageView.setImageBitmap(image);
-                };
-                executor.execute(decodeRunnable);
-            }
-        });
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(), t -> imageView.setImageBitmap(t));
     }
 
     /**
@@ -272,8 +247,7 @@ public class AttendeeProfileFragment extends Fragment{
         String uriString = "profile_photos/" + attendee.getIdentifier() + "-upload";
 
         // upload file to cloud storage
-        StorageReference storageReference = MainActivity.db.getStorage().getReference().child(uriString);
-        storageReference.putFile(uri);
+        MainActivity.db.uploadPhoto(uri, uriString);
 
         // set imageview and update attendee information
         imageView.setImageURI(uri);
