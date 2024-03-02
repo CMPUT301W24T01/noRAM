@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/event_add_p2_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color"
+        android:paddingStart="40sp"
+        android:paddingTop="10sp"
+        android:paddingEnd="40sp"
+        android:paddingBottom="10sp"
+        android:text="@string/event_add_p2_header_text"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/event_add_p2_gen_QR_button"
+        android:layout_width="175dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:background="@color/light_grey"
+        android:padding="10sp"
+        android:text="@string/event_add_p2_gen_QR_button_text"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/event_add_p2_upl_QR_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_add_p2_header"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/event_add_p2_upl_QR_button"
+        android:layout_width="175dp"
+        android:layout_height="100dp"
+        android:layout_margin="150dp"
+        android:layout_marginTop="468dp"
+        android:layout_marginBottom="100dp"
+        android:background="@color/light_grey"
+        android:padding="10sp"
+        android:text="@string/event_add_p2_upl_QR_button_text"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_add_p2_header"
+        app:layout_constraintVertical_bias="0.6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

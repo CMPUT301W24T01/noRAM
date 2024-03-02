@@ -5,7 +5,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -83,7 +82,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
                 // set the selectedFragment to the appropriate fragment
                 int itemID = item.getItemId();
-                if (itemID == R.id.navbar_scan) {
+                if (itemID == NAV_SCAN) {
                     selectedFragment = qrFragment;
                     headerString = getString(R.string.scan_qr_code_title);
                 } else if (itemID == R.id.navbar_events) {
