@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.example.noram.MainActivity;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -287,5 +288,17 @@ public class Event {
 
         promoQR.updateDBQRCode();
         checkInQR.updateDBQRCode();
+    }
+
+    /**
+     * Updates the event given a database 'event' document
+     * @param doc The database document containing the fields used to update the event instance
+     */
+    public void updateWithDocument(QueryDocumentSnapshot doc){
+        this.setName(doc.getString("name"));
+        this.setDetails(doc.getString("details"));
+        this.setLocation(doc.getString("location"));
+        this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
+        // TODO: add remaining fields
     }
 }

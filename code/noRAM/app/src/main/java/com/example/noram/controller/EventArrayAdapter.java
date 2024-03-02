@@ -32,22 +32,24 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        return super.getView(position, convertView, parent);
         View view = convertView;
 
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.event_list_item, parent,false);
         }
 
+        // event data
         Event event = events.get(position);
 
+        // item's fields (UI)
         TextView eventTitle = view.findViewById(R.id.event_title);
         TextView eventTime = view.findViewById(R.id.event_time);
         TextView eventLocation = view.findViewById(R.id.event_location);
 
+        // update fields and return view
         eventTitle.setText(event.getName());
         // TODO: Edit time for correct format
-        eventTime.setText(event.getStartTime() + " to " + event.getEndTime());
+        //eventTime.setText(event.getStartTime() + " to " + event.getEndTime());
         eventLocation.setText(event.getLocation());
 
         return view;
