@@ -1,7 +1,13 @@
 package com.example.noram.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.example.noram.MainActivity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +25,6 @@ public class Event {
     private LocalDateTime endTime;
     private String details;
     private ArrayList<Integer> milestones;
-    private Photo poster;
     private QRCode checkInQR;
     private QRCode promoQR;
     private boolean trackLocation;
@@ -58,9 +63,8 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.poster = new Photo();
-        this.checkInQR = new QRCode(this.id, QRType.SIGN_IN);
-        this.promoQR = new QRCode(this.id, QRType.PROMOTIONAL);
+        this.checkInQR = new QRCode(this.id + "-event", this.id, QRType.SIGN_IN);
+        this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
     }
 
@@ -73,7 +77,6 @@ public class Event {
      * @param endTime date and time (year, month, day, hour, minute) of event end
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
-     * @param poster poster for event
      * @param checkInQR QR code used to check user in to event
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
@@ -86,7 +89,6 @@ public class Event {
             LocalDateTime endTime,
             String details,
             ArrayList<Integer> milestones,
-            Photo poster,
             QRCode checkInQR,
             QRCode promoQR,
             boolean trackLocation) {
@@ -97,7 +99,6 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.poster = poster;
         this.checkInQR = checkInQR;
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
@@ -161,14 +162,6 @@ public class Event {
     }
 
     /**
-     * Returns poster Photo of event
-     * @return poster attribute
-     */
-    public Photo getPoster() {
-        return poster;
-    }
-
-    /**
      * Returns Photo of check-in QR code
      * @return checkInQR attribute
      */
@@ -200,7 +193,6 @@ public class Event {
      */
     public void setId(String id) {
         this.id = id;
-        updateDBEvent();
     }
 
     /**
@@ -209,7 +201,6 @@ public class Event {
      */
     public void setName(String name) {
         this.name = name;
-        updateDBEvent();
     }
 
     /**
@@ -218,7 +209,6 @@ public class Event {
      */
     public void setLocation(String location) {
         this.location = location;
-        updateDBEvent();
     }
 
     /**
@@ -227,7 +217,6 @@ public class Event {
      */
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
-        updateDBEvent();
     }
 
     /**
@@ -236,7 +225,6 @@ public class Event {
      */
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
-        updateDBEvent();
     }
 
     /**
@@ -245,7 +233,6 @@ public class Event {
      */
     public void setDetails(String details) {
         this.details = details;
-        updateDBEvent();
     }
 
     /**
@@ -254,16 +241,6 @@ public class Event {
      */
     public void setMilestones(ArrayList<Integer> milestones) {
         this.milestones = milestones;
-        updateDBEvent();
-    }
-
-    /**
-     * Set poster of event
-     * @param poster new poster for event
-     */
-    public void setPoster(Photo poster) {
-        this.poster = poster;
-        updateDBEvent();
     }
 
     /**
@@ -272,7 +249,6 @@ public class Event {
      */
     public void setCheckInQR(QRCode checkInQR) {
         this.checkInQR = checkInQR;
-        updateDBEvent();
     }
 
     /**
@@ -281,7 +257,6 @@ public class Event {
      */
     public void setPromoQR(QRCode promoQR) {
         this.promoQR = promoQR;
-        updateDBEvent();
     }
 
     /**
@@ -290,7 +265,6 @@ public class Event {
      */
     public void setTrackLocation(boolean trackLocation) {
         this.trackLocation = trackLocation;
-        updateDBEvent();
     }
 
     // Functions
@@ -298,7 +272,6 @@ public class Event {
      * Updates the event in the database
      */
     public void updateDBEvent() {
-        // TODO: once we have better integration, we might not want to call this method in every setter
         Map<String, Object> data = new HashMap<>();
         data.put("id", id);
         data.put("name", name);
@@ -306,10 +279,13 @@ public class Event {
         data.put("startTime", startTime.format(formatter));
         data.put("endTime", endTime.format(formatter));
         data.put("details", details);
-        data.put("milestones", milestones.toArray());
-        data.put("checkInQR", checkInQR.getIdentifier());
-        data.put("promoQR", promoQR.getIdentifier());
+        data.put("milestones", milestones);
+        data.put("checkInQR", checkInQR.getEncodedData());
+        data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
         MainActivity.db.getEventsRef().document(id).set(data);
+
+        promoQR.updateDBQRCode();
+        checkInQR.updateDBQRCode();
     }
 }

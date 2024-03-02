@@ -39,11 +39,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Promotional QR Code:"
+        android:text="@string/promotional_qr_code_info_str"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:translationZ="90dp"
         app:layout_constraintEnd_toEndOf="@+id/promo_background_gradient"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="@+id/promo_background_gradient"
         app:layout_constraintTop_toTopOf="@+id/promo_background_gradient" />
 
@@ -52,11 +53,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Check-In QR Code:"
+        android:text="@string/check_in_qr_code_info_str"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:translationZ="90dp"
         app:layout_constraintEnd_toEndOf="@+id/checkin_background_gradient"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="@+id/checkin_background_gradient"
         app:layout_constraintTop_toTopOf="@+id/checkin_background_gradient" />
 

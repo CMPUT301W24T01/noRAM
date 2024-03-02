@@ -9,13 +9,18 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Class to represent a QR code
+ */
 public class QRCode {
-    private final String identifier;
     private String encodedData;
+    private String associatedEvent;
     private QRType qrCodeType;
     private Bitmap bitmap;
 
@@ -23,22 +28,14 @@ public class QRCode {
 
     /**
      * Default Constructor for a QR code. Generates a unique id.
-     * @param data data string associated with the QR code
+     * @param data event id string associated with the QR code
      * @param type type of the QR code.
      */
-    public QRCode(String data, QRType type) {
-        identifier = UUID.randomUUID().toString();
-        encodedData = data;
+    public QRCode(String data, String eventId, QRType type) {
         qrCodeType = type;
+        associatedEvent = eventId;
+        encodedData = data;
         updateBitmap();
-    }
-
-    /**
-     * Get the identifier for the QR code
-     * @return string identifier for the code.
-     */
-    public String getIdentifier() {
-        return identifier;
     }
 
     /**
@@ -57,6 +54,22 @@ public class QRCode {
         this.encodedData = encodedData;
         updateBitmap();
         updateDBQRCode();
+    }
+
+    /**
+     * Get the associated event id for the QR Code
+     * @return string event id
+     */
+    public String getAssociatedEvent() {
+        return associatedEvent;
+    }
+
+    /**
+     * Set the associated event for the QR code
+     * @param associatedEvent new event id
+     */
+    public void setAssociatedEvent(String associatedEvent) {
+        this.associatedEvent = associatedEvent;
     }
 
     /**
@@ -89,9 +102,9 @@ public class QRCode {
      */
     public void updateDBQRCode() {
         Map<String, Object> data = new HashMap<>();
-        data.put("event", encodedData);
+        data.put("event", associatedEvent);
         data.put("type", qrCodeType.toString());
-        MainActivity.db.getAttendeeRef().document(identifier).set(data);
+        MainActivity.db.getQrRef().document(encodedData).set(data);
     }
 
     /**
@@ -102,7 +115,7 @@ public class QRCode {
         BitMatrix qrBitMatrix;
         try {
             // encode QR code and convert the encoded code to a bitmap
-            qrBitMatrix = qrWriter.encode(this.encodedData, BarcodeFormat.QR_CODE, 200, 200);
+            qrBitMatrix = qrWriter.encode(this.encodedData, BarcodeFormat.QR_CODE, 400, 400);
             bitmap = Bitmap.createBitmap(qrBitMatrix.getWidth(), qrBitMatrix.getHeight(), Bitmap.Config.RGB_565);
             for (int x = 0; x < qrBitMatrix.getWidth(); x++) {
                 for (int y = 0; y < qrBitMatrix.getHeight(); y++) {
