@@ -304,10 +304,5 @@ public class Event {
         this.setLocation(doc.getString("location"));
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         // TODO: add remaining fields
-        Log.d("Event", Objects.requireNonNull(doc.getId()));
-        if(getName() != null){
-            Log.d("Event", Objects.requireNonNull(doc.getString("name")));
-            Log.d("Event", "Getname: " + this.getName());
-        }
     }
 }

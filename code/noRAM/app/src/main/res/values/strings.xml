@@ -50,5 +50,9 @@
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
     <string name="administrator_page_title">Administrator Page</string>
+    <string name="admin_view_events_button">View Events</string>
+    <string name="admin_view_profiles_button">View Profiles</string>
+    <string name="admin_view_images_button">View Images</string>
+    <string name="admin_label">Admin Mode</string>
     >>>>>>> master
 </resources>
