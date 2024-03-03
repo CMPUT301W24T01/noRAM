@@ -1,23 +1,34 @@
 package com.example.noram.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import com.example.noram.MainActivity;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class to represent an Event
  */
 public class Event {
-    private int id;
+    private String id;
     private String name;
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String details;
     private ArrayList<Integer> milestones;
-    private Photo poster;
-    private Photo checkInQR;
-    private Photo promoQR;
+    private QRCode checkInQR;
+    private QRCode promoQR;
     private boolean trackLocation;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     // Constructors
     /**
@@ -36,7 +47,15 @@ public class Event {
      * @param milestones list of attendance milestones to track
      * @param trackLocation is location tracking of check-ins enabled
      */
-    public Event(int id, String name, String location, LocalDateTime startTime, LocalDateTime endTime, String details, ArrayList<Integer> milestones, boolean trackLocation) {
+    public Event(
+            String id,
+            String name,
+            String location,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String details,
+            ArrayList<Integer> milestones,
+            boolean trackLocation) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -44,9 +63,8 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.poster = new Photo();
-        this.checkInQR = new Photo();
-        this.promoQR = new Photo();
+        this.checkInQR = new QRCode(this.id + "-event", this.id, QRType.SIGN_IN);
+        this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
     }
 
@@ -59,12 +77,21 @@ public class Event {
      * @param endTime date and time (year, month, day, hour, minute) of event end
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
-     * @param poster poster for event
      * @param checkInQR QR code used to check user in to event
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      */
-    public Event(int id, String name, String location, LocalDateTime startTime, LocalDateTime endTime, String details, ArrayList<Integer> milestones, Photo poster, Photo checkInQR, Photo promoQR, boolean trackLocation) {
+    public Event(
+            String id,
+            String name,
+            String location,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String details,
+            ArrayList<Integer> milestones,
+            QRCode checkInQR,
+            QRCode promoQR,
+            boolean trackLocation) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -72,7 +99,6 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.poster = poster;
         this.checkInQR = checkInQR;
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
@@ -83,7 +109,7 @@ public class Event {
      * Returns id of event
      * @return id attribute
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -136,18 +162,10 @@ public class Event {
     }
 
     /**
-     * Returns poster Photo of event
-     * @return poster attribute
-     */
-    public Photo getPoster() {
-        return poster;
-    }
-
-    /**
      * Returns Photo of check-in QR code
      * @return checkInQR attribute
      */
-    public Photo getCheckInQR() {
+    public QRCode getCheckInQR() {
         return checkInQR;
     }
 
@@ -155,7 +173,7 @@ public class Event {
      * Returns Photo of promotional QR code
      * @return promoQR attribute
      */
-    public Photo getPromoQR() {
+    public QRCode getPromoQR() {
         return promoQR;
     }
 
@@ -173,7 +191,7 @@ public class Event {
      * Set id of event
      * @param id new id for event
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -226,18 +244,10 @@ public class Event {
     }
 
     /**
-     * Set poster of event
-     * @param poster new poster for event
-     */
-    public void setPoster(Photo poster) {
-        this.poster = poster;
-    }
-
-    /**
      * Set check-in QR code of event
      * @param checkInQR new checkInQR for event
      */
-    public void setCheckInQR(Photo checkInQR) {
+    public void setCheckInQR(QRCode checkInQR) {
         this.checkInQR = checkInQR;
     }
 
@@ -245,7 +255,7 @@ public class Event {
      * Set promotional QR code of event
      * @param promoQR new promoQR for event
      */
-    public void setPromoQR(Photo promoQR) {
+    public void setPromoQR(QRCode promoQR) {
         this.promoQR = promoQR;
     }
 
@@ -253,9 +263,29 @@ public class Event {
      * Set whether or not check-in location is tracked
      * @param trackLocation new trackLocation for event
      */
-     public void changeTrackLocation(boolean trackLocation) {
+    public void setTrackLocation(boolean trackLocation) {
         this.trackLocation = trackLocation;
-     }
+    }
 
-     // Functions
+    // Functions
+    /**
+     * Updates the event in the database
+     */
+    public void updateDBEvent() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", id);
+        data.put("name", name);
+        data.put("location", location);
+        data.put("startTime", startTime.format(formatter));
+        data.put("endTime", endTime.format(formatter));
+        data.put("details", details);
+        data.put("milestones", milestones);
+        data.put("checkInQR", checkInQR.getEncodedData());
+        data.put("promoQR", promoQR.getEncodedData());
+        data.put("trackLocation", trackLocation);
+        MainActivity.db.getEventsRef().document(id).set(data);
+
+        promoQR.updateDBQRCode();
+        checkInQR.updateDBQRCode();
+    }
 }
