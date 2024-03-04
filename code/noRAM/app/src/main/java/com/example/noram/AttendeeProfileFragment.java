@@ -22,13 +22,20 @@ import androidx.fragment.app.Fragment;
 import com.example.noram.model.Attendee;
 
 /**
- * A {@link Fragment} subclass that displays and allows editing of attendee information.
- * Use the {@link AttendeeProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass.
+ * AttendeeProfileFragment is a fragment that displays the attendee's profile information
+ * It allows the user to edit their information and save it to the database.
+ * It also displays information about their profile stored in the database.
  */
 public class AttendeeProfileFragment extends Fragment {
 
+    private ImageButton profileImage;
     private Attendee attendee;
+    private EditText firstName;
+    private EditText lastName;
+    private EditText homePage;
+    private EditText email;
+    private CheckBox allowLocation;
 
     /**
      * This is the default constructor for the fragment.
@@ -80,16 +87,16 @@ public class AttendeeProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_attendee_profile, container, false);
 
         // Get the fields from the view
-        ImageButton profileImage = view.findViewById(R.id.edit_attendee_image_button);
-        EditText firstName = view.findViewById(R.id.edit_attendee_first_name);
-        EditText lastName = view.findViewById(R.id.edit_attendee_last_name);
-        EditText homePage = view.findViewById(R.id.edit_attendee_home_page);
-        EditText email = view.findViewById(R.id.edit_attendee_email);
-        CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
+        profileImage = view.findViewById(R.id.edit_attendee_image_button);
+        firstName = view.findViewById(R.id.edit_attendee_first_name);
+        lastName = view.findViewById(R.id.edit_attendee_last_name);
+        homePage = view.findViewById(R.id.edit_attendee_home_page);
+        email = view.findViewById(R.id.edit_attendee_email);
+        allowLocation = view.findViewById(R.id.edit_attendee_location_box);
 
         attendee = MainActivity.attendee;
 
-        setFields(attendee, view);
+        setFields(attendee);
 
         // Save the entered information when the save button is clicked
         view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
@@ -116,7 +123,7 @@ public class AttendeeProfileFragment extends Fragment {
         view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFields(attendee, view);
+                setFields(attendee);
             }
         });
         return view;
@@ -134,23 +141,15 @@ public class AttendeeProfileFragment extends Fragment {
         attendee = MainActivity.attendee;
 
         if (view != null) {
-            setFields(attendee, view);
+            setFields(attendee);
         }
     }
 
     /**
      * Set the fields of the view to the attendee's information
      * @param attendee the attendee whose information is being displayed
-     * @param view the view that is being displayed
      */
-    public void setFields(Attendee attendee, View view) {
-        // Get the necessary fields from the view
-        EditText firstName = view.findViewById(R.id.edit_attendee_first_name);
-        EditText lastName = view.findViewById(R.id.edit_attendee_last_name);
-        EditText homePage = view.findViewById(R.id.edit_attendee_home_page);
-        EditText email = view.findViewById(R.id.edit_attendee_email);
-        CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
-
+    public void setFields(Attendee attendee) {
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
         lastName.setText(attendee.getLastName());
