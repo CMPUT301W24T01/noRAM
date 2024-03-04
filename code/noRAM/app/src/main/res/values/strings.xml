@@ -8,12 +8,20 @@
     <string name="attendee_profile">Attendee profile</string>
     <string name="event_list">Event List</string>
     <string name="scan_qr_code_title">Scan QR Code</string>
+    <string name="my_events_button">My Events</string>
+    <string name="all_events_button">All Events</string>
+    <string name="event_search_hint">Event Name</string>
+    <string name="signup_button">SIGN UP</string>
+    <string name="announcement_text">Announcements</string>
+    <string name="checkedin_text">Checked In</string>
     <string name="attendee_profile_title">Edit Your Profile</string>
+    <string name="attendee_events_title">Browse Events</string>
     <string name="confirm">Confirm</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="email">Email</string>
-    <string name="home_page">Home Page</string>
+    <string name="home_page">Homepage</string>
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>
+    <string name="attendee_announcements_title">Event Announcements</string>
 </resources>

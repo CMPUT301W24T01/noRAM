@@ -1,26 +1,19 @@
 package com.example.noram;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.example.noram.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.zxing.Result;
-
-import org.checkerframework.common.subtyping.qual.Bottom;
 
 public class AttendeeActivity extends AppCompatActivity {
 
@@ -45,6 +38,8 @@ public class AttendeeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
+        TextView headerText = findViewById(R.id.attendee_header_text);
+        ImageButton homeButton = findViewById(R.id.home_button);
         BottomNavigationView navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
@@ -62,6 +57,18 @@ public class AttendeeActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, qrFragment, "qr")
                 .commit();
+
+        // Set the initial header text
+        headerText.setText(R.string.scan_qr_code_title);
+
+        // create button listener so home button goes back to main page.
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**
              * Updates the Fragment shown in the FragmentContainerView when a navbar
@@ -72,20 +79,26 @@ public class AttendeeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
+                String headerString = "";
 
                 // set the selectedFragment to the appropriate fragment
                 int itemID = item.getItemId();
                 if (itemID == R.id.navbar_scan) {
                     selectedFragment = qrFragment;
+                    headerString = getString(R.string.scan_qr_code_title);
                 } else if (itemID == R.id.navbar_events) {
                     selectedFragment = eventsFragment;
+                    headerString = getString(R.string.attendee_events_title);
                 } else if (itemID == R.id.navbar_profile) {
                     selectedFragment = profileFragment;
+                    headerString = getString(R.string.attendee_profile_title);
                 }
 
                 if (selectedFragment == null) {
                     return false;
                 } else {
+                    // update the header text
+                    headerText.setText(headerString);
                     // update the fragment container to show the selected fragment.
                     fragmentManager.beginTransaction()
                             .hide(activeFragment)
