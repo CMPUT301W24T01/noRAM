@@ -2,6 +2,9 @@ package com.example.noram.model;
 
 import com.example.noram.MainActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A class representing an attendee
  */
@@ -12,8 +15,8 @@ public class Attendee {
     private String homePage = "";
     private String email = "";
     private String profilePicture = "";
-
     private Boolean allowLocation = false;
+    private List<String> eventsCheckedInto = new ArrayList<>();
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -33,7 +36,7 @@ public class Attendee {
      * @param profilePicture the profile picture of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String email, String profilePicture, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String email, String profilePicture, Boolean allowLocation, List<String> eventsCheckedInto) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,6 +44,7 @@ public class Attendee {
         this.email = email;
         this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
+        this.eventsCheckedInto = eventsCheckedInto;
     }
 
     /**
@@ -163,10 +167,25 @@ public class Attendee {
     }
 
     /**
+     * Get the list of events an attendee is checked into
+     * @return List of event ids
+     */
+    public List<String> getEventsCheckedInto() {
+        return eventsCheckedInto;
+    }
+
+    /**
+     * Set the list of events an attendee is checked into
+     * @param eventsCheckedInto new list
+     */
+    public void setEventsCheckedInto(List<String> eventsCheckedInto) {
+        this.eventsCheckedInto = eventsCheckedInto;
+    }
+
+    /**
      * A method to update the database with the new attendee information
      */
     public void updateDBAttendee() {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
-
 }

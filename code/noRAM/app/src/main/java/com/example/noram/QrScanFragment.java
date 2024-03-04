@@ -21,8 +21,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.zxing.Result;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -130,37 +134,29 @@ public class QrScanFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 Log.d("DEBUG", "got qr code");
 
-                if (document.exists()) {
-                    Log.d("DEBUG", "code exists");
-                    // TODO: actual event
-                    // TODO: the list of eventsAt needs to be preserved in the attendee class
-                    String eventName = (String) document.get("event");
-
-                    // Create a batched write to update attendee eventAt and event attendees
-                    WriteBatch batch = MainActivity.db.getDb().batch();
-                    DocumentReference eventRef = MainActivity.db.getEventsRef()
-                            .document(eventName);
-                    batch.update(
-                            eventRef,
-                            "attendees",
-                            FieldValue.arrayUnion(MainActivity.attendee.getIdentifier()));
-                    DocumentReference attendeeRef = MainActivity.db.getAttendeeRef()
-                            .document(MainActivity.attendee.getIdentifier());
-                    batch.update(
-                            attendeeRef,
-                            "eventsAt",
-                            FieldValue.arrayUnion(eventName));
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                showCheckInSuccess(eventName);
-                            } else {
-                                showCheckInFailure("batch write failed.");
-                            }
-                        }
-                    });
+                if (!document.exists()) {
+                    return;
                 }
+
+                Log.d("DEBUG", "code exists");
+                // Get event id
+                String eventId = (String) document.get("event");
+                MainActivity.attendee.getEventsCheckedInto().add(eventId);
+
+                // run a transaction on the event to update attendee list
+                DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
+                MainActivity.db.getDb().runTransaction(new Transaction.Function<Void>() {
+                       @Nullable
+                       @Override
+                       public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                           DocumentSnapshot snapshot = transaction.get(eventRef);
+                           List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
+                           checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+                           transaction.update(eventRef,"checkedInAttendees", checkedInAttendees);
+                           return null;
+                       }
+                   }
+                );
             }
         });
     }

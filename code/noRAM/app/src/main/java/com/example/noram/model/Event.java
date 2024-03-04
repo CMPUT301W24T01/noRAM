@@ -3,6 +3,7 @@ package com.example.noram.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to represent an Event
@@ -19,6 +20,8 @@ public class Event {
     private Photo checkInQR;
     private Photo promoQR;
     private boolean trackLocation;
+
+    private List<String> checkedInAttendees;
 
     // Constructors
     /**
@@ -254,9 +257,25 @@ public class Event {
      * Set whether or not check-in location is tracked
      * @param trackLocation new trackLocation for event
      */
-     public void setTrackLocation(boolean trackLocation) {
+    public void setTrackLocation(boolean trackLocation) {
         this.trackLocation = trackLocation;
      }
 
-     // Functions
+    /**
+     * Get the list of checked in attendees
+      * @return list of attendee identifiers
+     */
+    public List<String> getCheckedInAttendees() {
+        return checkedInAttendees;
+    }
+
+    /**
+     * Set the list of checked in attendees
+     * @param checkedInAttendees new list of checked in attendees
+     */
+    public void setCheckedInAttendees(List<String> checkedInAttendees) {
+        this.checkedInAttendees = checkedInAttendees;
+    }
+
+    // Functions
 }
