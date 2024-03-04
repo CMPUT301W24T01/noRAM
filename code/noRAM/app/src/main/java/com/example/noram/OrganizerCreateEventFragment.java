@@ -30,9 +30,12 @@ import java.util.stream.Stream;
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 
     // Attributes
-    int year;
-    int month;
-    int day;
+    int startYear;
+    int startMonth;
+    int startDay;
+    int endYear;
+    int endMonth;
+    int endDay;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
@@ -176,20 +179,26 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     // Listeners
     @Override
     public void pushDate(int year, int month, int day, String tag) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        if (tag.equals("start")) {
+            startYear = year;
+            startMonth = month;
+            startDay = day;
+        }
+        else {
+            endYear = year;
+            endMonth = month;
+            endDay = day;
+        }
         new TimePickerFragment().show(getChildFragmentManager(), tag);
     }
 
     @Override
     public void pushTime(int hour, int minute, String tag) {
-        LocalDateTime dateTime = LocalDateTime.of(this.year, this.month, this.day, hour, minute);
         if (tag.equals("start")) {
-            startTime = dateTime;
+            startTime = LocalDateTime.of(startYear, startMonth, startDay, hour, minute);
         }
         else {
-            endTime = dateTime;
+            endTime = LocalDateTime.of(endYear, endMonth, endDay, hour, minute);
         }
     }
 
