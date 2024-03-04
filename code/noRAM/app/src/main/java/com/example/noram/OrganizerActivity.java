@@ -16,8 +16,14 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.time.LocalDateTime;
+
 public class OrganizerActivity extends AppCompatActivity {
 
+    // Attributes
+    private int year;
+    private int month;
+    private int day;
     public static final int NAV_NEW_EVENT = R.id.navbar_new_event;
     public static final int NAV_MY_EVENTS = R.id.navbar_my_events;
     public static final int NAV_PROFILE = R.id.navbar_organizer_profile;
@@ -35,21 +41,22 @@ public class OrganizerActivity extends AppCompatActivity {
 
         BottomNavigationView navBar = findViewById(R.id.organizer_bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_fragment_container_view);
-        navBar.setSelectedItemId(NAV_NEW_EVENT);
-        activeFragment = newEventFragment;
+        navBar.setSelectedItemId(NAV_MY_EVENTS);
+        activeFragment = myEventsFragment;
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_fragment_container_view, myEventsFragment, "myEvents")
-                .hide(myEventsFragment)
+                .commit();
+        fragmentManager.beginTransaction()
+                .add(R.id.organizer_fragment_container_view, newEventFragment, "newEvent")
+                .hide(newEventFragment)
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_fragment_container_view, profileFragment, "profile")
                 .hide(profileFragment)
                 .commit();
-        fragmentManager.beginTransaction()
-                .add(R.id.organizer_fragment_container_view, newEventFragment, "newEvent")
-                .commit();
+
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**
              * Updates the Fragment shown in the FragmentContainerView when a navbar

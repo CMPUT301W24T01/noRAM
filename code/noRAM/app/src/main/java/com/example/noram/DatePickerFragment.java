@@ -8,22 +8,33 @@ import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    // Listener interface
     public interface DatePickerDialogListener {
         void pushDate(int year, int month, int day, String tag);
     }
-
     private DatePickerDialogListener listener;
+
+
+    // Constructors
+//    DatePickerFragment () {}
+//    DatePickerFragment(Fragment fragment) {
+//        listener = (DatePickerFragment.DatePickerDialogListener) fragment;
+//    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof DatePickerDialogListener) {
             listener = (DatePickerDialogListener) context;
+        }
+        else if (getParentFragment() != null) {
+            listener = (DatePickerFragment.DatePickerDialogListener) getParentFragment();
         }
         else {
             throw new RuntimeException(context + " must implement DatePickerDialogListener");

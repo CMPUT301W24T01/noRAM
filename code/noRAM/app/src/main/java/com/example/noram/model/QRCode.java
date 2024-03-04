@@ -25,7 +25,6 @@ public class QRCode {
     private Bitmap bitmap;
 
     // Constructors
-
     /**
      * Default Constructor for a QR code. Generates a unique id.
      * @param data event id string associated with the QR code
@@ -42,9 +41,10 @@ public class QRCode {
      * Get the encoded data of the QR code
      * @return string of encoded data
      */
-    public String getEncodedData() {
-        return encodedData;
-    }
+//    public String getEncodedData() {
+//        return encodedData;
+//    }
+    public String getEncodedData() {return "hi";}
 
     /**
      * Update the encoded data of the QR code
