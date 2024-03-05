@@ -90,14 +90,11 @@ public class AttendeeActivity extends AppCompatActivity {
                 int itemID = item.getItemId();
                 if (itemID == NAV_SCAN) {
                     selectedFragment = qrFragment;
+                    headerString = getString(R.string.scan_qr_code_title);
                 } else if (itemID == NAV_EVENTS) {
                     selectedFragment = eventsFragment;
-                } else if (itemID == NAV_PROFILE) {
-                    headerString = getString(R.string.scan_qr_code_title);
-                } else if (itemID == R.id.navbar_events) {
-                    selectedFragment = eventsFragment;
                     headerString = getString(R.string.attendee_events_title);
-                } else if (itemID == R.id.navbar_profile) {
+                } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
                     headerString = getString(R.string.attendee_profile_title);
                 }
