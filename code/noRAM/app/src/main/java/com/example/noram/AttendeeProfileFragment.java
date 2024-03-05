@@ -156,7 +156,7 @@ public class AttendeeProfileFragment extends Fragment{
                 attendee.setHomePage(homePage.getText().toString());
                 attendee.setPhoneNumber(phone.getText().toString());
                 attendee.setAllowLocation(allowLocation.isChecked());
-                attendee.generateDefaultProfilePhoto();
+
             }
         });
 

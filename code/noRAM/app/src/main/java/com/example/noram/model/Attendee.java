@@ -204,6 +204,7 @@ public class Attendee {
 //            updateDBAttendee();
 //        }
 
+        // TODO: Christiaan to finish
         // Cupcake way
         if (!usingDefaultProfilePicture) {
             StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
