@@ -28,6 +28,12 @@
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
+            android:name=".AddEventQROptionsActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".AddEventCompleteActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
