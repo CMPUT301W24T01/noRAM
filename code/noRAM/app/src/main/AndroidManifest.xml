@@ -36,6 +36,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="androidx.core.content.FileProvider"
+            android:name="com.example.noram.ShareHelper"
+            android:exported="false"
+            android:grantUriPermissions="true">
+                <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

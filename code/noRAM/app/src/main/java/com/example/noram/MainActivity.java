@@ -20,7 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
-
+    public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
     private Button adminButton;
 
