@@ -47,7 +47,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         eventTitle.setText(event.getName());
         // TODO: Edit time for correct format
-        eventTime.setText(event.getStartTime() + " to " + event.getEndTime());
+        eventTime.setText(String.format("%s to %s", event.getStartTime(), event.getEndTime()));
         eventLocation.setText(event.getLocation());
 
         return view;

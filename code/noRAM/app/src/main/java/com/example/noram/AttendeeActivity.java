@@ -16,8 +16,12 @@ import com.example.noram.model.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * The AttendeeActivity class is the main activity for the Attendee user type.
+ * It contains the navigation bar, header, and fragment container to display
+ * all of the information available to the attendee and allow for navigation.
+ */
 public class AttendeeActivity extends AppCompatActivity implements GoToEventListener {
-
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
@@ -85,13 +89,13 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
 
                 // set the selectedFragment to the appropriate fragment
                 int itemID = item.getItemId();
-                if (itemID == R.id.navbar_scan) {
+                if (itemID == NAV_SCAN) {
                     selectedFragment = qrFragment;
                     headerString = getString(R.string.scan_qr_code_title);
-                } else if (itemID == R.id.navbar_events) {
+                } else if (itemID == NAV_EVENTS) {
                     selectedFragment = eventsFragment;
                     headerString = getString(R.string.attendee_events_title);
-                } else if (itemID == R.id.navbar_profile) {
+                } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
                     headerString = getString(R.string.attendee_profile_title);
                 }
