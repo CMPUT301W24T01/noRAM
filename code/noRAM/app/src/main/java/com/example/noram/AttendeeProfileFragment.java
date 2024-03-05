@@ -8,25 +8,34 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
 
 /**
- * A {@link Fragment} subclass that displays and allows editing of attendee information.
- * Use the {@link AttendeeProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass.
+ * AttendeeProfileFragment is a fragment that displays the attendee's profile information
+ * It allows the user to edit their information and save it to the database.
+ * It also displays information about their profile stored in the database.
  */
 public class AttendeeProfileFragment extends Fragment {
 
+    private ImageButton profileImage;
     private Attendee attendee;
+    private EditText firstName;
+    private EditText lastName;
+    private EditText homePage;
+    private EditText email;
+    private CheckBox allowLocation;
 
     /**
      * This is the default constructor for the fragment.
@@ -78,31 +87,35 @@ public class AttendeeProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_attendee_profile, container, false);
 
         // Get the fields from the view
-        ImageButton profileImage = view.findViewById(R.id.edit_attendee_image_button);
-        EditText firstName = view.findViewById(R.id.edit_attendee_first_name);
-        EditText lastName = view.findViewById(R.id.edit_attendee_last_name);
-        EditText homePage = view.findViewById(R.id.edit_attendee_home_page);
-        EditText email = view.findViewById(R.id.edit_attendee_email);
-        CheckBox allowLocation = view.findViewById(R.id.edit_attendee_location_box);
+        profileImage = view.findViewById(R.id.edit_attendee_image_button);
+        firstName = view.findViewById(R.id.edit_attendee_first_name);
+        lastName = view.findViewById(R.id.edit_attendee_last_name);
+        homePage = view.findViewById(R.id.edit_attendee_home_page);
+        email = view.findViewById(R.id.edit_attendee_email);
+        allowLocation = view.findViewById(R.id.edit_attendee_location_box);
 
         attendee = MainActivity.attendee;
 
-        // Set the fields to the attendee's information
-        firstName.setText(attendee.getFirstName());
-        lastName.setText(attendee.getLastName());
-        homePage.setText(attendee.getHomePage());
-        email.setText(attendee.getEmail());
-        allowLocation.setChecked(attendee.getAllowLocation());
+        setFields(attendee);
 
         // Save the entered information when the save button is clicked
         view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attendee.setFirstName(firstName.getText().toString());
-                attendee.setLastName(lastName.getText().toString());
-                attendee.setHomePage(homePage.getText().toString());
-                attendee.setEmail(email.getText().toString());
-                attendee.setAllowLocation(allowLocation.isChecked());
+                String editFirstName = firstName.getText().toString();
+                String editLastName = lastName.getText().toString();
+                String editHomePage = homePage.getText().toString();
+                String editEmail = email.getText().toString();
+                Boolean editAllowLocation = allowLocation.isChecked();
+
+                // Validate name and email fields
+                if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
+                    attendee.setFirstName(editFirstName);
+                    attendee.setLastName(editLastName);
+                    attendee.setHomePage(editHomePage);
+                    attendee.setEmail(editEmail);
+                    attendee.setAllowLocation(editAllowLocation);
+                }
             }
         });
 
@@ -110,14 +123,66 @@ public class AttendeeProfileFragment extends Fragment {
         view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstName.setText(attendee.getFirstName());
-                lastName.setText(attendee.getLastName());
-                homePage.setText(attendee.getHomePage());
-                email.setText(attendee.getEmail());
-                allowLocation.setChecked(attendee.getAllowLocation());
+                setFields(attendee);
             }
         });
-
         return view;
+    }
+
+    /**
+     * This method is called when the fragment is resumed.
+     * It sets the fields to the attendee's information,
+     * ensuring that any unsaved changes are reset.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        View view = getView();
+        attendee = MainActivity.attendee;
+
+        if (view != null) {
+            setFields(attendee);
+        }
+    }
+
+    /**
+     * Set the fields of the view to the attendee's information
+     * @param attendee the attendee whose information is being displayed
+     */
+    public void setFields(Attendee attendee) {
+        // Set the fields to the attendee's information
+        firstName.setText(attendee.getFirstName());
+        lastName.setText(attendee.getLastName());
+        homePage.setText(attendee.getHomePage());
+        email.setText(attendee.getEmail());
+        allowLocation.setChecked(attendee.getAllowLocation());
+    }
+
+    /**
+     * Validate the fields of the attendee information, return true if valid, false otherwise.
+     * If it is not valid display a message saying what is wrong
+     * @param editFirstName the first name that was entered in the field
+     * @param editLastName the last name that was entered in the field
+     * @param editEmail the email that was entered in the field
+     * @return true if all fields are valid, false otherwise
+     */
+    public Boolean validateAttendeeFields(String editFirstName, String editLastName, String editEmail) {
+        if (editFirstName.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter your first name", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (editLastName.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter your last name", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (editEmail.isEmpty()) {
+            Toast.makeText(getContext(), "Please enter your email", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(editEmail).matches()) {
+            Toast.makeText(getContext(), "Please enter a valid email", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 }

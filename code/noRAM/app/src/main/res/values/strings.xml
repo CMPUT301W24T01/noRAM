@@ -30,11 +30,12 @@
     <string name="announcement_text">Announcements</string>
     <string name="checkedin_text">Checked In</string>
     <string name="attendee_profile_title">Edit Your Profile</string>
+    <string name="attendee_events_title">Browse Events</string>
     <string name="confirm">Confirm</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="email">Email</string>
-    <string name="home_page">Home Page</string>
+    <string name="home_page">Homepage</string>
     <string name="access_location">Allow event organizers to access your location</string>
     <string name="save">Save</string>
     <string name="attendee_announcements_title">Event Announcements</string>
@@ -48,5 +49,4 @@
     <string name="create_event_next_button">Next</string>
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
-    >>>>>>> master
 </resources>
