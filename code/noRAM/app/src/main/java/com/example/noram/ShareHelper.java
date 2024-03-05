@@ -16,6 +16,7 @@ import java.io.IOException;
  * Typical usage would be as follows:
  * ShareHelper shareHelper = new ShareHelper();
  * Intent shareIntent = shareHelper.generateShareIntent(myBitmap, "filename", getApplicationContext());
+ * startActivity(Intent.createChooser(shareIntent, null)) 
  */
 public class ShareHelper extends FileProvider {
     /**
