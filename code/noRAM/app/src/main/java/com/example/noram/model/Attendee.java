@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.hardware.camera2.params.BlackLevelPattern;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.storage.StorageReference;
@@ -45,14 +46,14 @@ public class Attendee {
      * @param phoneNumber the phone number of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, Boolean allowLocation, Boolean defaultPhoto) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
         this.phoneNumber = phoneNumber;
         this.allowLocation = allowLocation;
-        usingDefaultProfilePicture = false;
+        this.usingDefaultProfilePicture = defaultPhoto;
     }
 
     /**
