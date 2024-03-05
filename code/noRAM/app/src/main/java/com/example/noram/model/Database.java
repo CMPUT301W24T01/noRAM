@@ -137,8 +137,11 @@ public class Database {
      * This is intended as a utility so that photo download is consistent through the app.
      * @param photoRef path to the photo in cloud storage
      * @param completeFunction function to be called once the download is complete. Should be passed using
-     *                         a lambda, e.g. t -> imageView.setImageBitmap(t). The function passed should
-     *                         take in only one argument, a Bitmap, which will be the downloaded image.
+     *                         a lambda, e.g. t -> myFunction(t). The function passed should take in
+     *                         only one argument, a Bitmap, which will be the downloaded image.
+     *                         Note that if the function you call is going to update the UI, you will
+     *                         most likely need to wrap it in runOnUiThread(() -> myFunction(t)). This
+     *                         prevents an error from modifying the UI outside of the UI thread.
      */
     public void downloadPhoto(String photoRef, Consumer<Bitmap> completeFunction) {
         StorageReference profileRef = storage.getReference().child(photoRef);
@@ -150,8 +153,8 @@ public class Database {
                 // we can't run decodeStream() in the main thread, so we create an executor to
                 // run it instead.
                 Executor executor = Executors.newSingleThreadExecutor();
-                Runnable decodeRunnable = () -> {
 
+                Runnable decodeRunnable = () -> {
                     Bitmap image = BitmapFactory.decodeStream(photoStream);
 
                     // call the passed function

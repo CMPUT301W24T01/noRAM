@@ -121,7 +121,9 @@ public class AttendeeProfileFragment extends Fragment{
         }
 
         // update the profile photo icon
-        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(), t -> imageView.setImageBitmap(t));
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
+                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+
 
         // Set the fields to the attendee's information
         firstName.setText(attendee.getFirstName());
@@ -219,7 +221,8 @@ public class AttendeeProfileFragment extends Fragment{
 
         attendee.setDefaultProfilePhoto(true);
         deletePhoto.setVisibility(View.INVISIBLE);
-        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(), t -> imageView.setImageBitmap(t));
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
+                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
     }
 
     /**
