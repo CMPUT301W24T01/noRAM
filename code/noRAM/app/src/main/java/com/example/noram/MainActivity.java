@@ -9,13 +9,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
         attendeeButton.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, AttendeeActivity.class))
         );
+
+        // hide buttons until the user is fully signed in
+        organizerButton.setVisibility(View.INVISIBLE);
+        attendeeButton.setVisibility(View.INVISIBLE);
+
+        // Hide the info fragment
+        findViewById(R.id.main_fragment_container_view).setVisibility(View.GONE);
 
         // ask for camera permission
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
@@ -108,6 +121,16 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();
                                 }
+                                // If the user's information is not complete, show the info fragment
+                                if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {
+                                    initializeAttendeeProfile();
+                                } else {
+                                    // Show the buttons after the user is signed in and remove progress bar
+                                    findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                }
+                                findViewById(R.id.progressBar).setVisibility(View.GONE);
+
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -118,6 +141,19 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Initialize the attendee profile by opening the profile fragment.
+     * This is called when the user's information is not complete.
+     */
+    private void initializeAttendeeProfile() {
+        findViewById(R.id.main_fragment_container_view).setVisibility(View.VISIBLE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment profileFragment = AttendeeProfileFragment.newInstance(true);
+        fragmentManager.beginTransaction()
+                .add(R.id.main_fragment_container_view, profileFragment, "profile")
+                .commit();
     }
 
     /**

@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.noram.model.Attendee;
 
@@ -36,6 +37,7 @@ public class AttendeeProfileFragment extends Fragment {
     private EditText homePage;
     private EditText email;
     private CheckBox allowLocation;
+    private Boolean firstEntry;
 
     /**
      * This is the default constructor for the fragment.
@@ -47,14 +49,28 @@ public class AttendeeProfileFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment.
+     * @param firstEntry This is the main user argument, whether this is the initial info entry for a user
+     * on the app.
      *
      * @return A new instance of fragment AttendeeProfileFragment.
      */
-    public static AttendeeProfileFragment newInstance() {
+    public static AttendeeProfileFragment newInstance(Boolean firstEntry) {
         AttendeeProfileFragment fragment = new AttendeeProfileFragment();
         Bundle args = new Bundle();
+        args.putBoolean("firstEntry", firstEntry);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    /**
+     * This method is called when the fragment is created.
+     * @param args This is the bundle of arguments that are passed to the fragment.
+     * The main user argument is whether this is the initial info entry for a user
+     */
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        firstEntry = args.getBoolean("firstEntry");
     }
 
     /**
@@ -115,6 +131,17 @@ public class AttendeeProfileFragment extends Fragment {
                     attendee.setHomePage(editHomePage);
                     attendee.setEmail(editEmail);
                     attendee.setAllowLocation(editAllowLocation);
+
+                    // Close the fragment if this is the first entry
+                    if (firstEntry) {
+                        FragmentActivity activity = getActivity();
+                        if (activity != null) {
+                            activity.findViewById(R.id.main_fragment_container_view).setVisibility(View.GONE);
+                            activity.findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
+                            activity.findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                            activity.getSupportFragmentManager().beginTransaction().remove(AttendeeProfileFragment.this).commit();
+                        }
+                    }
                 }
             }
         });
