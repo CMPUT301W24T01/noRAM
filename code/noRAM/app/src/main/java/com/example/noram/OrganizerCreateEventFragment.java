@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerCreateEventFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for creating event as organizer
  */
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 
@@ -39,7 +37,9 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-
+    /**
+     * Default constructor
+     */
     public OrganizerCreateEventFragment() {
         // Required empty public constructor
     }
@@ -47,33 +47,36 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment OrganizerCreateEventFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static OrganizerCreateEventFragment newInstance() {
-        OrganizerCreateEventFragment fragment = new OrganizerCreateEventFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new OrganizerCreateEventFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        // Initialize fragment
-        super.onCreate(savedInstanceState);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_organizer_create_event, null);
-    }
-
+    /**
+     * Instantiate user interface view of fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @return The root View of the inflated hierarchy
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_organizer_create_event, container, false);
-        return root;
+        return inflater.inflate(R.layout.fragment_organizer_create_event, container, false);
     }
 
+    /**
+     * Initialize fragment upon complete creation of view hierarchy
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
@@ -97,6 +100,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
 
         // Set on-click listeners for buttons
         editStartTime.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for Start Data/Time button
+             * Calls Date and Time picker fragments
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 new DatePickerFragment().show(getChildFragmentManager(), "start");
@@ -104,6 +112,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         });
 
         editEndTime.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for End Data/Time button
+             * Calls DatePickerFragment
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 new DatePickerFragment().show(getChildFragmentManager(), "end");
@@ -111,6 +124,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for next button
+             * Checks inputted values for proper inputs before proceeding with event creation
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
 
@@ -131,7 +149,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 else if (endTime == null) {errorText = "End Time";}
                 else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
 
-                // Only continue if inputs are valid
+                // Only continue to next step of event creation if inputs are valid
                 if (errorText == null) {
                     Intent intent = new Intent(getActivity(), AddEventQROptionsActivity.class);
                     Bundle bundle = new Bundle();
@@ -169,6 +187,10 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
 
         // TODO: implement poster upload
         uploadPosterButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for poster upload button
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
 
@@ -177,6 +199,16 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     }
 
     // Listeners
+
+    /**
+     * Function from interface of DatePickerFragment
+     * Receives date information from DatePickerFragment
+     * Calls TimePickerFragment
+     * @param year number of selected year
+     * @param month number of selected month
+     * @param day number of selected day
+     * @param tag either "start" or "end" to indicate which datetime to set
+     */
     @Override
     public void pushDate(int year, int month, int day, String tag) {
         if (tag.equals("start")) {
@@ -192,6 +224,14 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         new TimePickerFragment().show(getChildFragmentManager(), tag);
     }
 
+    /**
+     * Function from interface of TimePickerFragment
+     * Receives date information from TimePickerFragment
+     * Combines with previous data from DatePickerFragment to make LocalDateTime
+     * @param hour number of selected hour
+     * @param minute number of selected minute
+     * @param tag either "start" or "end" to indicate which datetime to set
+     */
     @Override
     public void pushTime(int hour, int minute, String tag) {
         if (tag.equals("start")) {
@@ -209,18 +249,13 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
      * @return true if all characters in milestones is digit or comma, false otherwise
      */
     private boolean isValidMilestoneList(String milestones) {
-        if (milestones.isEmpty()) {
-            return true;
-        }
-        else {
+        if (!milestones.isEmpty()) {
             for (char c : milestones.toCharArray()) {
                 if (!(Character.isDigit(c) || c == ',')) {
                     return false;
                 }
             }
-            return true;
         }
+        return true;
     }
-
-
 }

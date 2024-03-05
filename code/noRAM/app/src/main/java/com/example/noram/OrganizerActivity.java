@@ -6,34 +6,33 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.time.LocalDateTime;
-
+/**
+ * Class the represents organizer functions with bottom navigation bar
+ */
 public class OrganizerActivity extends AppCompatActivity {
 
     // Attributes
-    private int year;
-    private int month;
-    private int day;
     public static final int NAV_NEW_EVENT = R.id.navbar_new_event;
     public static final int NAV_MY_EVENTS = R.id.navbar_my_events;
     public static final int NAV_PROFILE = R.id.navbar_organizer_profile;
-
     private final Fragment newEventFragment = OrganizerCreateEventFragment.newInstance();
     private final Fragment profileFragment = OrganizerProfileFragment.newInstance();
     private final Fragment myEventsFragment = OrganizerEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
 
+    /**
+     * Initialized the activity
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
