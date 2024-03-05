@@ -196,19 +196,12 @@ public class Attendee {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
 
-
     /**
      * A method to generate a default profile picture for the attendee
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void profilePhotoGenerator() {
-        // Temporary Way to generate a default profile picture
-//        if (defaultProfilePicture) {
-//            profilePicture = "https://www.gravatar.com/avatar/" + Integer.valueOf(firstName) + "?d=identicon";
-//            updateDBAttendee();
-//        }
-
-        // Cupcake way
+        
         if (defaultProfilePicture) {
             StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
             StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
