@@ -17,6 +17,8 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -88,12 +90,18 @@ public class QrScanFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
+        GoToEventListener goToEventListener;
+        if (activity instanceof GoToEventListener) {
+            goToEventListener = (GoToEventListener) activity;
+        } else {
+            throw new IllegalArgumentException("Activity must extend goToEventListener");
+        }
         View root = inflater.inflate(R.layout.fragment_qr_scan, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
-        checkInFromQR("test_code");
+        goToEventListener.goToEvent(null);
 
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -141,22 +149,32 @@ public class QrScanFragment extends Fragment {
                 Log.d("DEBUG", "code exists");
                 // Get event id
                 String eventId = (String) document.get("event");
-                MainActivity.attendee.getEventsCheckedInto().add(eventId);
 
-                // run a transaction on the event to update attendee list
+                // todo: update w proper event class
+                String qrType = "checkin";
+
                 DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
-                MainActivity.db.getDb().runTransaction(new Transaction.Function<Void>() {
-                       @Nullable
-                       @Override
-                       public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                           DocumentSnapshot snapshot = transaction.get(eventRef);
-                           List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
-                           checkedInAttendees.add(MainActivity.attendee.getIdentifier());
-                           transaction.update(eventRef,"checkedInAttendees", checkedInAttendees);
-                           return null;
-                       }
-                   }
-                );
+                if (qrType.equals("checkin")) {
+                    MainActivity.attendee.getEventsCheckedInto().add(eventId);
+
+                    // run a transaction on the event to update attendee list
+                    MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+                        DocumentSnapshot snapshot = transaction.get(eventRef);
+                        List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
+                        checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+                        transaction.update(eventRef,"checkedInAttendees", checkedInAttendees);
+                        return null;
+                    });
+                } else if (qrType.equals("promo")) {
+                    // TODO: probably need to make event comparable
+                    eventRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            // TODO: get event from db fully
+
+                        }
+                    });
+                }
             }
         });
     }

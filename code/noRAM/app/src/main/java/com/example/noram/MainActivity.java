@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                     String email = document.getString("email");
                                     String profilePicture = document.getString("profilePicture");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation);
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation, new ArrayList<>());
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();

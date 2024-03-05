@@ -12,10 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.noram.model.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class AttendeeActivity extends AppCompatActivity {
+public class AttendeeActivity extends AppCompatActivity implements GoToEventListener {
 
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
@@ -26,6 +27,7 @@ public class AttendeeActivity extends AppCompatActivity {
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
+    private BottomNavigationView navBar;
 
     /**
      * Setup the activity when it is created.
@@ -38,9 +40,9 @@ public class AttendeeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
-        TextView headerText = findViewById(R.id.attendee_header_text);
         ImageButton homeButton = findViewById(R.id.home_button);
-        BottomNavigationView navBar = findViewById(R.id.bottom_nav);
+        TextView headerText = findViewById(R.id.attendee_header_text);
+        navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
         activeFragment = qrFragment;
@@ -112,5 +114,17 @@ public class AttendeeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Go to the event passed by event by navigating to it
+     * @param event event to go to
+     */
+    @Override
+    public void goToEvent(Event event) {
+        // Navigate the navbar to the events page, then call the events page to programmatically
+        // click the right event.
+        navBar.setSelectedItemId(R.id.navbar_events);
+        ((AttendeeEventListFragment) eventsFragment).viewEventPage(event);
     }
 }

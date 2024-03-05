@@ -1,5 +1,7 @@
 package com.example.noram.model;
 
+import androidx.annotation.Nullable;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -275,6 +277,23 @@ public class Event {
      */
     public void setCheckedInAttendees(List<String> checkedInAttendees) {
         this.checkedInAttendees = checkedInAttendees;
+    }
+
+    /**
+     * Check for equality between an event and another object
+     * @param obj object to check for equality
+     * @return true if equal, false otherwise.
+     */
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Event other = (Event) obj;
+        return this.getId() == other.getId();
     }
 
     // Functions

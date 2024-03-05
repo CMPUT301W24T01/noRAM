@@ -250,4 +250,17 @@ public class AttendeeEventListFragment extends Fragment {
 
         return rootView;
     }
+
+    /**
+     * Function to programmatically move to an event's info page
+     * @param event event to move to
+     */
+    public void viewEventPage(Event event) {
+        // get the position of the event and programmatically click it.
+        int position = allEventDataList.indexOf(event);
+        allEventList.performItemClick(
+                allEventList.getAdapter().getView(position, null, null),
+                position,
+                allEventList.getAdapter().getItemId(position));
+    }
 }
