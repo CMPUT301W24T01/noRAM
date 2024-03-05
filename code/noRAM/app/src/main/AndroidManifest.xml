@@ -28,9 +28,6 @@
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".AddEventActivity"
-            android:exported="false" />
-        <activity
             android:name=".AddEventQROptionsActivity"
             android:exported="false"/>
         <activity
