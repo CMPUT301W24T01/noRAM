@@ -43,8 +43,8 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="androidx.core.content.FileProvider"
-            android:name="com.example.noram.ShareHelper"
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.noram.ShareHelper"
             android:exported="false"
             android:grantUriPermissions="true">
                 <meta-data
