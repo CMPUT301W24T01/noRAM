@@ -17,7 +17,10 @@
         android:text="@string/event_add_p2_header_text"
         android:textColor="@color/white"
         android:textSize="28sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/event_add_p2_gen_QR_button"
