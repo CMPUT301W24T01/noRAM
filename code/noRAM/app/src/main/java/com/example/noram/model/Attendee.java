@@ -1,26 +1,17 @@
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.net.Uri;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
+import android.hardware.camera2.params.BlackLevelPattern;
+
 import com.example.noram.MainActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * A class representing an attendee
@@ -33,11 +24,10 @@ public class Attendee {
 
     // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
     private String phoneNumber = "";
-    private String profilePicture = "";
 
     private Boolean allowLocation = false;
 
-    private Boolean defaultProfilePicture;
+    private Boolean usingDefaultProfilePicture = true;
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -45,7 +35,6 @@ public class Attendee {
      */
     public Attendee(String identifier) {
         this.identifier = identifier;
-        defaultProfilePicture = true;
     }
 
     /**
@@ -55,18 +44,16 @@ public class Attendee {
      * @param lastName the last name of the attendee
      * @param homePage the home page of the attendee
      * @param phoneNumber the phone number of the attendee
-     * @param profilePicture the profile picture of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, String profilePicture, Boolean allowLocation) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, Boolean allowLocation, Boolean defaultPhoto) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
         this.phoneNumber = phoneNumber;
-        this.profilePicture = profilePicture;
         this.allowLocation = allowLocation;
-        defaultProfilePicture = false;
+        this.usingDefaultProfilePicture = defaultPhoto;
     }
 
     /**
@@ -155,24 +142,6 @@ public class Attendee {
     }
 
     /**
-     * A method to get the profile picture of the attendee
-     * @return the profile picture of the attendee
-     */
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    /**
-     * A method to set the profile picture of the attendee
-     * @param profilePicture the profile picture of the attendee
-     */
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-        defaultProfilePicture = false;
-        updateDBAttendee();
-    }
-
-    /**
      * A method to get the location allowance of the attendee
      * @return the location allowance of the attendee
      */
@@ -195,14 +164,44 @@ public class Attendee {
     public void updateDBAttendee() {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
+    
+    /**
+     * Returns whether or not we are currently using a default profile photo.
+     * @return True if yes, false otherwise.
+     */
+    public Boolean getDefaultProfilePhoto() {
+        return usingDefaultProfilePicture;
+    }
 
     /**
-     * A method to generate a default profile picture for the attendee
+     * Set whether we are currently using a default profile photo
+     * @param defaultProfilePhoto new value.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void profilePhotoGenerator() {
-        
-        if (defaultProfilePicture) {
+    public void setDefaultProfilePhoto(Boolean defaultProfilePhoto) {
+        this.usingDefaultProfilePicture = defaultProfilePhoto;
+    }
+
+    /**
+     * Gets the string for the attendee's profile photo in cloud storage
+     * @return string filepath in cloud storage.
+     */
+    public String getProfilePhotoString() {
+        if (usingDefaultProfilePicture) {
+            return "profile_photos/" + getIdentifier() + "-default";
+        } else {
+            return "profile_photos/" + getIdentifier() + "-upload";
+        }
+    }
+
+    /**
+     * A method to generate a default profile picture for the attendee. Should be called
+     * when the attendee is created so that a photo can immediately be displayed.
+     */
+    public void generateDefaultProfilePhoto() {
+
+        // TODO: Christiaan to finish
+        // Cupcake way
+        if (!usingDefaultProfilePicture) {
             StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
             StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
             StorageReference storageReferenceCupcake = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCake.png");
