@@ -66,6 +66,7 @@ public class Event {
         this.checkInQR = new QRCode(this.id + "-event", this.id, QRType.SIGN_IN);
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
+        this.checkedInAttendees = new ArrayList<>();
     }
 
     /**
@@ -80,6 +81,7 @@ public class Event {
      * @param checkInQR QR code used to check user in to event
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
+     * @param checkedInAttendees list of checked in attendees
      */
     public Event(
             String id,
@@ -91,7 +93,8 @@ public class Event {
             ArrayList<Integer> milestones,
             QRCode checkInQR,
             QRCode promoQR,
-            boolean trackLocation) {
+            boolean trackLocation,
+            List<String> checkedInAttendees) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -102,6 +105,7 @@ public class Event {
         this.checkInQR = checkInQR;
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
+        this.checkedInAttendees = checkedInAttendees;
     }
 
     // Getters
@@ -316,6 +320,7 @@ public class Event {
         data.put("checkInQR", checkInQR.getEncodedData());
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
+        data.put("checkedInAttendees", checkedInAttendees);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();

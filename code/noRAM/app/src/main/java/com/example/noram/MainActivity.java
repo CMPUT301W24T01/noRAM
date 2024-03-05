@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,9 +91,10 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInAnonymously:success");
+                        Log.d(TAG, "UID: " + currentUser.getUid());
                         FirebaseUser user = db.getmAuth().getCurrentUser();
                         updateAdminAccess(user.getUid());
-                        // updateUI(user);
+
                         // Get the user's data from the database
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
@@ -105,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
                                     String email = document.getString("email");
                                     String profilePicture = document.getString("profilePicture");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation, new ArrayList<>());
+                                    List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation, eventsCheckedInto);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();

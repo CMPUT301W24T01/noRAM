@@ -9,24 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.noram.model.Event;
+import com.example.noram.model.QRType;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
-import com.google.firebase.firestore.WriteBatch;
-import com.google.zxing.Result;
 
 import java.util.List;
 
@@ -40,6 +32,7 @@ public class QrScanFragment extends Fragment {
     private CodeScanner mCodeScanner;
 
     private ProgressBar scanLoadingSpinBar;
+    private GoToEventListener goToEventListener;
 
 
     /**
@@ -90,7 +83,6 @@ public class QrScanFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
-        GoToEventListener goToEventListener;
         if (activity instanceof GoToEventListener) {
             goToEventListener = (GoToEventListener) activity;
         } else {
@@ -101,91 +93,82 @@ public class QrScanFragment extends Fragment {
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
-        goToEventListener.goToEvent(null);
 
         // Set up QR Code decode callback to check into event
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO in future need to check if promo or checkin code.
-                        String qrDecoded = result.getText();
-                        checkInFromQR(qrDecoded);
-                        scanLoadingSpinBar.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        });
+        mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
+            String qrDecoded = result.getText();
+            processQRCode(qrDecoded);
+            scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        }));
 
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCodeScanner.startPreview();
-            }
-        });
+        scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
 
         return root;
     }
 
     /**
-     * Checks the app user into the event associated with the scanned qr code
+     * Processes the scanned QR code based on the encoded data
      * @param qrCodeString qr code encoded string
      */
-    private void checkInFromQR(String qrCodeString) {
+    private void processQRCode(String qrCodeString) {
         DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
-        Log.d("DEBUG", "trying to checkin");
+
         doc.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                Log.d("DEBUG", "got qr code");
-
-                if (!document.exists()) {
+                DocumentSnapshot qrDocument = task.getResult();
+                if (!qrDocument.exists()) {
+                    showCheckInFailure("Event not found for the QR code.");
                     return;
                 }
 
                 Log.d("DEBUG", "code exists");
-                // Get event id
-                String eventId = (String) document.get("event");
+                // Get event id and qr type
+                String eventId = (String) qrDocument.get("event");
+                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
 
-                // todo: update w proper event class
-                String qrType = "checkin";
+                // Create an event object that has the same ID as the event we are looking for.
+                // When comparing events, we just check for the same ID, so we only need this
+                // in order to go to the proper event from the event list.
+                Event event = new Event();
+                event.setId(eventId);
 
-                DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
-                if (qrType.equals("checkin")) {
-                    MainActivity.attendee.getEventsCheckedInto().add(eventId);
-
-                    // run a transaction on the event to update attendee list
-                    MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
-                        DocumentSnapshot snapshot = transaction.get(eventRef);
-                        List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
-                        checkedInAttendees.add(MainActivity.attendee.getIdentifier());
-                        transaction.update(eventRef,"checkedInAttendees", checkedInAttendees);
-                        return null;
-                    });
-                } else if (qrType.equals("promo")) {
-                    // TODO: probably need to make event comparable
-                    eventRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            // TODO: get event from db fully
-
-                        }
-                    });
+                if (qrType == QRType.SIGN_IN) {
+                    signInToEvent(eventId);
+                    showCheckInSuccess();
                 }
+                // tell the activity to go to the event
+                goToEventListener.goToEvent(event);
             }
         });
     }
 
     /**
-     * Shows a toast when check in succeeds
-     * @param event name of the event to include in message
+     * Sign in the current user to the event given by eventID
+     * @param eventId ID string of the event
      */
-    private void showCheckInSuccess(String event) {
+    private void signInToEvent(String eventId) {
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
+        MainActivity.attendee.getEventsCheckedInto().add(eventId);
+        MainActivity.attendee.updateDBAttendee();
+
+        // run a transaction on the event to update attendee list
+        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
+
+            checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
+            return null;
+        });
+    }
+
+    /**
+     * Shows a toast when check in succeeds
+     */
+    private void showCheckInSuccess() {
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getActivity(), "Signed into " + event + "!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Successfully checked in!", Toast.LENGTH_SHORT).show();
     }
 
     /**
