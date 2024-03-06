@@ -203,7 +203,13 @@ public class Attendee {
         }
     }
 
-    private Bitmap changeColor(Bitmap src, int color_1, int color_1_replacement) {
+    /**
+     * A method to change the color of the default profile picture
+     * @param src the source bitmap
+     * @param color_1_replacement the color to replace the default color with
+     * @return the new bitmap with the color replaced
+     */
+    private Bitmap changeColor(Bitmap src, int color_1_replacement) {
         int width = src.getWidth();
         int height = src.getHeight();
         int[] pixels = new int[width * height];
@@ -212,9 +218,7 @@ public class Attendee {
 
         Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
 
-        int R, G, B;
         int pixel;
-
 
         // iteration through pixels
         for (int y = 0; y < height; ++y) {
@@ -222,18 +226,9 @@ public class Attendee {
                 // get current index in 2D-matrix
                 int index = y * width + x;
                 pixel = pixels[index];
-
-                if (pixel == -1) {
+                if(pixel == -1) {
                     pixels[index] = color_1_replacement;
                 }
-//                if(pixel > -68000 && pixel < -65000) {
-//                    Log.d("SUCCESS", "Pixel: " + pixel);
-//                    //change A-RGB individually
-//                    R = color_1 >> 16 & 0xFF;
-//                    G = color_1 >> 8 & 0xFF;
-//                    B = color_1 & 0xFF;
-//                    pixels[index] = Color.rgb(R,G,B);
-//                }
             }
         }
         bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
@@ -248,8 +243,6 @@ public class Attendee {
         // Cupcake way
         if (usingDefaultProfilePicture) {
 
-            firstName = "christiaan";
-
             StringBuilder builder = new StringBuilder();
             for (char c : firstName.toCharArray()) {
                 builder.append((int)c);
@@ -259,12 +252,9 @@ public class Attendee {
             int G = (numIdentifier * 10) % 256;
             int B = (numIdentifier * 100) % 256;
             int icingColor = R << 16 | G << 8 | B;
-
-            // make a log of the first name
-            Log.d("DEFAULT GENERATOR", "icing: " + Color.WHITE + " name: " + firstName);
-
+            
             Consumer<Bitmap> downloadConsumer = bitmap -> {
-                Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor);
+                Bitmap finalBitmap = changeColor(bitmap, icingColor);
 
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
                 finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
