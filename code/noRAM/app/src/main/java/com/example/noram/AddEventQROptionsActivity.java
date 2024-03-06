@@ -2,14 +2,9 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.noram.model.Event;
 
 /**
  * Activity for the QR code options when creating an event
@@ -27,7 +22,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_add_p2);
+        setContentView(R.layout.organizer_activity_create_event_p2);
         Bundle bundle = getIntent().getExtras();
 
         Button generateButton = findViewById(R.id.event_add_p2_gen_QR_button);

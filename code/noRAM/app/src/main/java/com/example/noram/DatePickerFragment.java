@@ -16,6 +16,45 @@ import java.util.Calendar;
  */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    // Attributes
+    int year;
+    int month;
+    int day;
+
+    // Constructors
+    /**
+     * Default constructor
+     */
+    public DatePickerFragment () {
+        setDefaults();
+    }
+
+    /**
+     * Constructor with inputted date
+     * Values can be negative to represent not being set
+     * Inputted dates are used as default display
+     * @param year number of year
+     * @param month number of month
+     * @param day number of day
+     */
+    public DatePickerFragment (int year, int month, int day) {
+        if (year < 0 || month < 0 || day < 0) {
+            setDefaults();
+        }
+        else {
+            this.year = year;
+            this.month = month - 1;
+            this.day = day;
+        }
+    }
+
+    private void setDefaults() {
+        Calendar c = Calendar.getInstance();
+        this.year = c.get(Calendar.YEAR);
+        this.month = c.get(Calendar.MONTH);
+        this.day = c.get(Calendar.DAY_OF_MONTH);
+    }
+
     /**
      * Interface to be implemented by parent activity/fragment
      */
@@ -58,12 +97,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current date as the default date in the picker.
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
         // Create a new instance of DatePickerDialog and return it.
         return new DatePickerDialog(requireContext(), this, year, month, day);
     }
@@ -79,7 +112,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
      */
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date the user picks.
-        listener.pushDate(year, month, day, getTag());
+        listener.pushDate(year, month + 1, day, getTag());
     }
 }
 
