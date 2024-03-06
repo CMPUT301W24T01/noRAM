@@ -303,6 +303,8 @@ public class Event {
         this.setDetails(doc.getString("details"));
         this.setLocation(doc.getString("location"));
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
+        this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
+        this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         // TODO: add remaining fields
     }
 }

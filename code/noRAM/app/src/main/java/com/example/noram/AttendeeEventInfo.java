@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -89,7 +91,13 @@ public class AttendeeEventInfo extends AppCompatActivity {
                 // update page's info
                 eventTitle.setText(event.getName());
                 eventDescription.setText(event.getDetails());
-                eventLocation.setText(event.getLocation());
+                LocalDateTime startTime = event.getStartTime();
+                eventLocation.setText(String.format("%s from %s - %s @ %s",
+                        startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
+                        startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+                        event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
+                        event.getLocation()
+                ));
                 //Log.d("EventInfo", event.getName());
                 //Log.d("EventInfo", event.getDetails());
                 //Log.d("EventInfo", event.getLocation());

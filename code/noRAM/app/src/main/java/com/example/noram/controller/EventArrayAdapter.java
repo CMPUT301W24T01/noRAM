@@ -1,6 +1,7 @@
 package com.example.noram.controller;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.example.noram.R;
 import com.example.noram.model.Event;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +51,12 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         // update fields and return view
         eventTitle.setText(event.getName());
-        eventTime.setText(String.format("%s to %s", event.getStartTime(), event.getEndTime()));
+        LocalDateTime startTime = event.getStartTime();
+        eventTime.setText(String.format("%s from %s - %s",
+                startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
+                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma"))
+        ));
         eventLocation.setText(event.getLocation());
 
         return view;

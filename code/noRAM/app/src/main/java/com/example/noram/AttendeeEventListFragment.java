@@ -27,6 +27,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -273,9 +277,12 @@ public class AttendeeEventListFragment extends Fragment {
                         event.updateWithDocument(doc);
                         allEventDataList.add(event);
                         allEventAdapter.notifyDataSetChanged();
+
                         // if user correspond, add event to myEvents list
                         // TODO: check in database how to find corresponding user
-                        if(false) {
+                        ArrayList<String> attendees = (ArrayList<String>) doc.get("attendees");
+
+                        if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                             userEventDataList.add(event);
                             userEventAdapter.notifyDataSetChanged();
                         }
