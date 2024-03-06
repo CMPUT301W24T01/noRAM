@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminActivity">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/administrator_page_title"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/events_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/events_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="20sp"
+        android:text="@string/admin_view_events_button"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/page_title"
+        app:layout_constraintBottom_toTopOf="@+id/profiles_button"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/profiles_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="20sp"
+        android:text="@string/admin_view_profiles_button"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/events_button"
+        app:layout_constraintBottom_toTopOf="@+id/images_button"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/images_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="20sp"
+        android:text="@string/admin_view_images_button"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profiles_button"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
