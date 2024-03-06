@@ -27,7 +27,7 @@ public class AttendeeActivity extends AppCompatActivity {
     public static final int NAV_PROFILE = R.id.navbar_profile;
 
     private final Fragment qrFragment = QrScanFragment.newInstance();
-    private final Fragment profileFragment = AttendeeProfileFragment.newInstance(false);
+    private final Fragment profileFragment = AttendeeProfileFragment.newInstance();
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;

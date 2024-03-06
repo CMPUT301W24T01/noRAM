@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
@@ -65,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         // hide buttons until the user is fully signed in
         organizerButton.setVisibility(View.INVISIBLE);
         attendeeButton.setVisibility(View.INVISIBLE);
-
-        // Hide the info fragment
-        findViewById(R.id.main_fragment_container_view).setVisibility(View.GONE);
 
         // ask for camera permission
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
@@ -121,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.updateDBAttendee();
                                 }
-                                // If the user's information is not complete, show the info fragment
+                                // If the user's information is not complete, show the info activity
                                 if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {
                                     initializeAttendeeProfile();
                                 } else {
@@ -144,16 +139,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialize the attendee profile by opening the profile fragment.
+     * Initialize the attendee profile by opening the profile activity.
      * This is called when the user's information is not complete.
      */
     private void initializeAttendeeProfile() {
-        findViewById(R.id.main_fragment_container_view).setVisibility(View.VISIBLE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment profileFragment = AttendeeProfileFragment.newInstance(true);
-        fragmentManager.beginTransaction()
-                .add(R.id.main_fragment_container_view, profileFragment, "profile")
-                .commit();
+        startActivity(new Intent(MainActivity.this, ProfileEntryActivity.class));
+        finish();
     }
 
     /**
