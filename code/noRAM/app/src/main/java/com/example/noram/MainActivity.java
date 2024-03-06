@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                                     String homepage = document.getString("homePage");
                                     String email = document.getString("email");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    Boolean defaultPhoto = document.getBoolean("usingDefaultProfilePicture");
+                                    Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
                                     List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                 } else {

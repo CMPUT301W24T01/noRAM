@@ -22,7 +22,7 @@ public class Attendee {
     private Boolean allowLocation = false;
     private List<String> eventsCheckedInto = new ArrayList<>();
 
-    private Boolean usingDefaultProfilePicture = true;
+    private Boolean usingDefaultProfilePhoto = true;
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -49,7 +49,7 @@ public class Attendee {
         this.email = email;
         this.allowLocation = allowLocation;
         this.eventsCheckedInto = eventsCheckedInto;
-        this.usingDefaultProfilePicture = defaultPhoto;
+        this.usingDefaultProfilePhoto = defaultPhoto;
     }
 
     /**
@@ -182,7 +182,7 @@ public class Attendee {
      * @return True if yes, false otherwise.
      */
     public Boolean getDefaultProfilePhoto() {
-        return usingDefaultProfilePicture;
+        return usingDefaultProfilePhoto;
     }
 
     /**
@@ -190,7 +190,7 @@ public class Attendee {
      * @param defaultProfilePhoto new value.
      */
     public void setDefaultProfilePhoto(Boolean defaultProfilePhoto) {
-        this.usingDefaultProfilePicture = defaultProfilePhoto;
+        this.usingDefaultProfilePhoto = defaultProfilePhoto;
     }
 
     /**
@@ -198,7 +198,7 @@ public class Attendee {
      * @return string filepath in cloud storage.
      */
     public String getProfilePhotoString() {
-        if (usingDefaultProfilePicture) {
+        if (usingDefaultProfilePhoto) {
             return "profile_photos/" + getIdentifier() + "-default";
         } else {
             return "profile_photos/" + getIdentifier() + "-upload";
@@ -243,7 +243,7 @@ public class Attendee {
      */
     public void generateDefaultProfilePhoto() {
         // Cupcake way
-        if (usingDefaultProfilePicture) {
+        if (usingDefaultProfilePhoto) {
 
             StringBuilder builder = new StringBuilder();
             for (char c : firstName.toCharArray()) {
