@@ -69,6 +69,7 @@ public class QRCode {
      */
     public void setAssociatedEvent(String associatedEvent) {
         this.associatedEvent = associatedEvent;
+        updateDBQRCode();
     }
 
     /**

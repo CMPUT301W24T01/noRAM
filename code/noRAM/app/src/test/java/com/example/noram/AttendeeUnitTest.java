@@ -1,15 +1,23 @@
 package com.example.noram;
 
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.example.noram.model.Attendee;
 
+import org.junit.Test;
+
+import java.util.ArrayList;
+
+/**
+ * Tests for the Attendee class
+ */
 public class AttendeeUnitTest {
     /**
      * Tests that the constructor properly sets fields for an attendee
@@ -22,11 +30,13 @@ public class AttendeeUnitTest {
         String last = "b";
         String page = "page.com";
         String email = "a@page.com";
-        String profPic = "temp";
+        Boolean profPic = false;
         Boolean allowLoc = true;
+        ArrayList<String> checkedInto = new ArrayList<>();
+        checkedInto.add("test");
 
         // Act
-        Attendee testAttendee = new Attendee(identifier, name, last, page, email, profPic, allowLoc);
+        Attendee testAttendee = new Attendee(identifier, name, last, page, email, allowLoc, profPic, checkedInto);
 
         // Assert
         assertEquals(identifier, testAttendee.getIdentifier());
@@ -35,6 +45,8 @@ public class AttendeeUnitTest {
         assertEquals(page, testAttendee.getHomePage());
         assertEquals(email, testAttendee.getEmail());
         assertEquals(allowLoc, testAttendee.getAllowLocation());
+        assertEquals(profPic, testAttendee.getDefaultProfilePhoto());
+        assertEquals(checkedInto, testAttendee.getEventsCheckedInto());
     }
 
     /**
@@ -51,8 +63,9 @@ public class AttendeeUnitTest {
         assertEquals("", attendee.getFirstName());
         assertEquals("", attendee.getLastName());
         assertEquals("", attendee.getHomePage());
-        assertEquals("", attendee.getProfilePicture());
+        assertEquals(true, attendee.getDefaultProfilePhoto());
         assertEquals("", attendee.getEmail());
+        assertTrue(attendee.getEventsCheckedInto().isEmpty());
     }
 
     /**
@@ -63,32 +76,27 @@ public class AttendeeUnitTest {
         // Arrange
         // setup mocking
         Attendee attendee = mock(Attendee.class);
-        final int[] methodCalledCount = {0};
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                methodCalledCount[0] += 1;
-                return null;
-            }
-        }).when(attendee).updateDBAttendee();
+        doNothing().when(attendee).updateDBAttendee();
         doCallRealMethod().when(attendee).setAllowLocation(any(Boolean.class));
         doCallRealMethod().when(attendee).setFirstName(any(String.class));
         doCallRealMethod().when(attendee).setLastName(any(String.class));
         doCallRealMethod().when(attendee).setEmail(any(String.class));
         doCallRealMethod().when(attendee).setHomePage(any(String.class));
         doCallRealMethod().when(attendee).setIdentifier(any(String.class));
-        doCallRealMethod().when(attendee).setProfilePicture(any(String.class));
+        doCallRealMethod().when(attendee).setDefaultProfilePhoto(any(Boolean.class));
+        doCallRealMethod().when(attendee).setEventsCheckedInto(any(ArrayList.class));
 
         // Act
-        attendee.setProfilePicture("a");
         attendee.setAllowLocation(true);
         attendee.setIdentifier("a");
         attendee.setFirstName("a");
         attendee.setLastName("a");
         attendee.setHomePage("a");
         attendee.setEmail("a");
+        attendee.setDefaultProfilePhoto(false);
+        attendee.setEventsCheckedInto(new ArrayList<>());
 
         // Assert
-        assertEquals(7, methodCalledCount[0]);
+        verify(attendee, times(8)).updateDBAttendee();
     }
 }

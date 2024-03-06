@@ -168,6 +168,7 @@ public class Attendee {
      */
     public void setEventsCheckedInto(List<String> eventsCheckedInto) {
         this.eventsCheckedInto = eventsCheckedInto;
+        updateDBAttendee();
     }
 
     /**
@@ -191,6 +192,7 @@ public class Attendee {
      */
     public void setDefaultProfilePhoto(Boolean defaultProfilePhoto) {
         this.usingDefaultProfilePhoto = defaultProfilePhoto;
+        updateDBAttendee();
     }
 
     /**
