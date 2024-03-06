@@ -212,7 +212,7 @@ public class Attendee {
 
         Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
 
-        int A, R, G, B;
+        int R, G, B;
         int pixel;
 
 
@@ -223,12 +223,12 @@ public class Attendee {
                 int index = y * width + x;
                 pixel = pixels[index];
 
-                if(pixel > -100000 && pixel < -20000) {
+                if(pixel > -68000 && pixel < -65000) {
                     Log.d("SUCCESS", "Pixel: " + pixel);
                     //change A-RGB individually
-                    R = 0;
-                    G = 255;
-                    B = 0;
+                    R = color_1 >> 16 & 0xFF;
+                    G = color_1 >> 8 & 0xFF;
+                    B = color_1 & 0xFF;
                     pixels[index] = Color.rgb(R,G,B);
                 }
             }
@@ -244,6 +244,8 @@ public class Attendee {
     public void generateDefaultProfilePhoto() {
         // Cupcake way
         if (usingDefaultProfilePicture) {
+
+            firstName = "christiaan";
 
             StringBuilder builder = new StringBuilder();
             for (char c : firstName.toCharArray()) {
