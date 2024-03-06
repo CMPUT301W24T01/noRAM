@@ -7,10 +7,15 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.camera2.params.BlackLevelPattern;
+import android.net.Uri;
+import android.os.Environment;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URI;
 import java.util.Random;
 
 /**
@@ -164,7 +169,7 @@ public class Attendee {
     public void updateDBAttendee() {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
-    
+
     /**
      * Returns whether or not we are currently using a default profile photo.
      * @return True if yes, false otherwise.
@@ -194,64 +199,100 @@ public class Attendee {
     }
 
     /**
+     * A method to save the image to the device
+     * @param finalBitmap the bitmap of the image
+     * @param image_name the name of the image
+     * @return the URI of the image
+     */
+    private Uri saveImage(Bitmap finalBitmap, String image_name) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        File file = new File(myDir, image_name);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Uri.fromFile(file);
+    }
+
+    /**
+     * A method to change the color of the image
+     * @param src the bitmap of the image
+     * @param color_1 the color to change
+     * @param color_1_replacement the replacement color
+     * @param color_2 the color to change
+     * @param color_2_replacement the replacement color
+     * @return the bitmap of the image with the color changed
+     */
+    private Bitmap changeColor(Bitmap src, int color_1, int color_1_replacement, int color_2, int color_2_replacement) {
+        int width = src.getWidth();
+        int height = src.getHeight();
+        int[] pixels = new int[width * height];
+        // get pixel array from source
+        src.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+
+        int A, R, G, B;
+        int pixel;
+
+        // iteration through pixels
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                // get current index in 2D-matrix
+                int index = y * width + x;
+                pixel = pixels[index];
+                if(pixel == color_1) {
+                    //change A-RGB individually
+                    A = Color.alpha(color_1_replacement);
+                    R = Color.red(color_1_replacement);
+                    G = Color.green(color_1_replacement);
+                    B = Color.blue(color_1_replacement);
+                    pixels[index] = Color.argb(A,R,G,B);
+                } else if(pixel == color_2) {
+                    //change A-RGB individually
+                    A = Color.alpha(color_2_replacement);
+                    R = Color.red(color_2_replacement);
+                    G = Color.green(color_2_replacement);
+                    B = Color.blue(color_2_replacement);
+                    pixels[index] = Color.argb(A,R,G,B);
+                }
+            }
+        }
+        bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmOut;
+    }
+
+    /**
      * A method to generate a default profile picture for the attendee. Should be called
      * when the attendee is created so that a photo can immediately be displayed.
      */
     public void generateDefaultProfilePhoto() {
 
-        // TODO: Christiaan to finish
         // Cupcake way
+
         if (!usingDefaultProfilePicture) {
-            StorageReference storageReferenceIcing = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeIcing.png");
-            StorageReference storageReferenceCherry = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCherry.png");
-            StorageReference storageReferenceCupcake = MainActivity.db.getStorage().getReference().child("profile_pictures/cupcakeCake.png");
-
-            Bitmap icingBitmap = null;
-            Bitmap cherryBitmap = null;
-            Bitmap cakeBitmap = null;
-
-            // TODO: Need to get the bitmaps from the storage
-
-            int numIdentifier = Integer.parseInt(firstName.toString());
+            int numIdentifier = Integer.parseInt(firstName);
             int R = (numIdentifier) % 256;
             int G = (numIdentifier * 10) % 256;
             int B = (numIdentifier * 100) % 256;
+            int icingColor = R << 16 | G << 8 | B;
 
-            Color icingColor = Color.valueOf(R,G,B);
             Random random = new Random();
             random.setSeed(firstName.hashCode());
             int randomNum = random.nextInt(100);
-            Color cherryColor = Color.valueOf(randomNum, randomNum, randomNum);
+            int cherryColor = randomNum << 16 | randomNum << 8 | randomNum;
 
-            // Create a new bitmap for the final composition
-            Bitmap finalBitmap = Bitmap.createBitmap(cakeBitmap.getWidth(), cakeBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(finalBitmap);
+            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", (t) -> changeColor(t, Color.WHITE, icingColor, Color.RED, cherryColor));
 
-            // Draw the cake onto the canvas
-            canvas.drawBitmap(cakeBitmap, 0, 0, null);
-
-            int icingX = 0; // Example icing X coordinate
-            int icingY = 0; // Example icing Y coordinate
-            int cherryX = 0; // Example cherry X coordinate
-            int cherryY = 0; // Example cherry Y coordinate
-
-            // Draw the icing on top of the cake
-            canvas.drawBitmap(icingBitmap, icingX, icingY, null); // Adjust X and Y coordinates as needed
-
-            // Draw the cherry on top of the icing
-            canvas.drawBitmap(cherryBitmap, cherryX, cherryY, null); // Adjust X and Y coordinates as needed
-
-            Paint icingPaint = new Paint();
-            icingPaint.setColorFilter(new PorterDuffColorFilter(icingColor.toArgb(), PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(icingBitmap, icingX, icingY, icingPaint);
-
-            Paint cherryPaint = new Paint();
-            cherryPaint.setColorFilter(new PorterDuffColorFilter(cherryColor.toArgb(), PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(cherryBitmap, cherryX, cherryY, cherryPaint);
-
-            String photoPath = String.valueOf("profile_photos/"+identifier+"_default.png");
-            StorageReference storageReference = MainActivity.db.getStorage().getReference().child(photoPath);
-            storageReference.putBytes(finalBitmap.toString().getBytes());
+            Uri imageURI = saveImage(finalBitmap, identifier+"_default.png");
+            MainActivity.db.uploadPhoto(imageURI,"profile_photos/"+identifier+"_default.png");
         }
     }
 }
