@@ -41,10 +41,9 @@ public class QRCode {
      * Get the encoded data of the QR code
      * @return string of encoded data
      */
-//    public String getEncodedData() {
-//        return encodedData;
-//    }
-    public String getEncodedData() {return "hi";}
+    public String getEncodedData() {
+        return encodedData;
+    }
 
     /**
      * Update the encoded data of the QR code
