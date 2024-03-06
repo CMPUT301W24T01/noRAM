@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Event;
+import com.example.noram.model.QRCode;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -54,8 +55,8 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         // share buttons
         ImageView shareCheckInButton = findViewById(R.id.share_checkin);
         ImageView sharePromoButton = findViewById(R.id.share_promo);
-        shareCheckInButton.setOnClickListener(v -> shareQRCode());
-        sharePromoButton.setOnClickListener(v -> shareQRCode());
+        shareCheckInButton.setOnClickListener(v -> shareQRCode(event.getCheckInQR()));
+        sharePromoButton.setOnClickListener(v -> shareQRCode(event.getPromoQR()));
 
         Button goToEventButton = findViewById(R.id.event_details_button);
         goToEventButton.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +74,11 @@ public class AddEventCompleteActivity extends AppCompatActivity {
 
     /**
      * Opens a UI to share a QR code
+     * @param qrCode qr code to share
      */
-    private void shareQRCode() {
-        // TODO: implement for 01.06.01
+    private void shareQRCode(QRCode qrCode) {
+        ShareHelper shareHelper = new ShareHelper();
+        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getEncodedData(), getApplicationContext());
+        startActivity(Intent.createChooser(shareIntent, null));
     }
 }
