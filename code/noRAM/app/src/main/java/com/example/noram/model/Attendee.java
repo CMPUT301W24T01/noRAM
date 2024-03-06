@@ -21,6 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Consumer;
 
 /**
@@ -262,9 +265,11 @@ public class Attendee {
 
         // color information
         int pixel;
+        int[] pixelArray;
 
         // iteration through pixels
         for (int y = 0; y < height; ++y) {
+
             for (int x = 0; x < width; ++x) {
                 // get current index in 2D-matrix
                 int index = y * width + x;
@@ -274,6 +279,13 @@ public class Attendee {
                     // change color
                     pixels[index] = color_1_replacement;
                 }
+
+                if (!Arrays.asList(pixels).contains(pixel)) {
+                    // add the color to the array
+                    pixels = Arrays.copyOf(pixels, pixels.length + 1);
+                    pixels[pixels.length - 1] = pixel;
+                }
+
             }
         }
 
