@@ -110,7 +110,7 @@ public class QRCode {
     /**
      * Updates the Bitmap to contain the encoded string.
      */
-    private void updateBitmap() {
+    public void updateBitmap() {
         QRCodeWriter qrWriter = new QRCodeWriter();
         BitMatrix qrBitMatrix;
         try {

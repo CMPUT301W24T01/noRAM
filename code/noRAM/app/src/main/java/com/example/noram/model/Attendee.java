@@ -168,5 +168,4 @@ public class Attendee {
     public void updateDBAttendee() {
         MainActivity.db.getAttendeeRef().document(identifier).set(this);
     }
-
 }
