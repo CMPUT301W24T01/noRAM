@@ -3,6 +3,7 @@ package com.example.noram.model;
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -325,5 +326,20 @@ public class Event {
 
         promoQR.updateDBQRCode();
         checkInQR.updateDBQRCode();
+    }
+
+    /**
+     * Updates the event given a database 'event' document
+     * @param doc The database document containing the fields used to update the event instance
+     */
+    public void updateWithDocument(DocumentSnapshot doc){
+        this.setId(doc.getId());
+        this.setName(doc.getString("name"));
+        this.setDetails(doc.getString("details"));
+        this.setLocation(doc.getString("location"));
+        this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
+        this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
+        this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
+        // TODO: add remaining fields
     }
 }
