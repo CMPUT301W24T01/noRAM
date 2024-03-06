@@ -139,6 +139,7 @@ public class QrScanFragment extends Fragment {
                 }
                 // tell the activity to go to the event
                 goToEventListener.goToEvent(event);
+                scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });
     }

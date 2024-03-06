@@ -1,5 +1,7 @@
 package com.example.noram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
@@ -167,7 +170,7 @@ public class AttendeeEventListFragment extends Fragment {
      * @param event The event whose information need to be displayed
      */
     public void displayEvent(Event event){
-        Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
+        Intent intent = new Intent(getActivity(), AttendeeEventInfo.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         intent.putExtras(bundle);
@@ -299,6 +302,7 @@ public class AttendeeEventListFragment extends Fragment {
      * @param event event to move to
      */
     public void viewEventPage(Event event) {
+
         // get the position of the event and programmatically click it.
         int position = allEventDataList.indexOf(event);
         allEventList.performItemClick(

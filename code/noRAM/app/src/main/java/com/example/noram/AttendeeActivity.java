@@ -31,6 +31,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
     private BottomNavigationView navBar;
+    private TextView headerText;
 
     /**
      * Setup the activity when it is created.
@@ -44,7 +45,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
         ImageButton homeButton = findViewById(R.id.home_button);
-        TextView headerText = findViewById(R.id.attendee_header_text);
+        headerText = findViewById(R.id.attendee_header_text);
         navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
@@ -83,40 +84,47 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
              */
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                String headerString = "";
-
-                // set the selectedFragment to the appropriate fragment
-                int itemID = item.getItemId();
-                if (itemID == NAV_SCAN) {
-                    selectedFragment = qrFragment;
-                    headerString = getString(R.string.scan_qr_code_title);
-                } else if (itemID == NAV_EVENTS) {
-                    selectedFragment = eventsFragment;
-                    headerString = getString(R.string.attendee_events_title);
-                } else if (itemID == NAV_PROFILE) {
-                    selectedFragment = profileFragment;
-                    headerString = getString(R.string.attendee_profile_title);
-                }
-
-                if (selectedFragment == null) {
-                    return false;
-                } else {
-                    // update the header text
-                    headerText.setText(headerString);
-                    // update the fragment container to show the selected fragment.
-                    fragmentManager.beginTransaction()
-                            .hide(activeFragment)
-                            .show(selectedFragment)
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                            .replace(R.id.fragment_container_view, selectedFragment)
-                            .commit();
-                    return true;
-                }
+                return navigateTo(item);
             }
         });
+    }
+
+    /**
+     * Navigate to the corresponding menu item
+     * @param item menuItem to navigate to
+     * @return true if navigation succeeded, else false
+     */
+    private boolean navigateTo(MenuItem item) {
+        Fragment selectedFragment = null;
+        String headerString = "";
+
+        // set the selectedFragment to the appropriate fragment
+        int itemID = item.getItemId();
+        if (itemID == NAV_SCAN) {
+            selectedFragment = qrFragment;
+            headerString = getString(R.string.scan_qr_code_title);
+        } else if (itemID == NAV_EVENTS) {
+            selectedFragment = eventsFragment;
+            headerString = getString(R.string.attendee_events_title);
+        } else if (itemID == NAV_PROFILE) {
+            selectedFragment = profileFragment;
+            headerString = getString(R.string.attendee_profile_title);
+        }
+
+        if (selectedFragment == null) {
+            return false;
+        } else {
+            // update the header text
+            headerText.setText(headerString);
+            // update the fragment container to show the selected fragment.
+            fragmentManager.beginTransaction()
+                    .hide(activeFragment)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .show(selectedFragment)
+                    .commitNow();
+            activeFragment = selectedFragment;
+            return true;
+        }
     }
 
     /**
@@ -127,7 +135,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     public void goToEvent(Event event) {
         // Navigate the navbar to the events page, then call the events page to programmatically
         // click the right event.
-        navBar.setSelectedItemId(R.id.navbar_events);
+        navBar.setSelectedItemId(NAV_EVENTS);
         ((AttendeeEventListFragment) eventsFragment).viewEventPage(event);
     }
 }
