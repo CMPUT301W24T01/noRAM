@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
                                     // TODO: move this logic to the "attendee details" screen that
                                     // appears when they create a profile the first time.
+                                    Log.d("DEBUG", "generating profile picture");
+                                    attendee.setFirstName("TestName");
                                     attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
                                 }

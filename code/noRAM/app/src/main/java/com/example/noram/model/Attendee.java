@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.params.BlackLevelPattern;
 import android.net.Uri;
 import android.os.Environment;
@@ -13,10 +14,13 @@ import android.os.Environment;
 import com.example.noram.MainActivity;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Random;
+import java.util.function.Consumer;
 
 /**
  * A class representing an attendee
@@ -199,29 +203,6 @@ public class Attendee {
     }
 
     /**
-     * A method to save the image to the device
-     * @param finalBitmap the bitmap of the image
-     * @param image_name the name of the image
-     * @return the URI of the image
-     */
-    private Uri saveImage(Bitmap finalBitmap, String image_name) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        File file = new File(myDir, image_name);
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Uri.fromFile(file);
-    }
-
-    /**
      * A method to change the color of the image
      * @param src the bitmap of the image
      * @param color_1 the color to change
@@ -274,11 +255,13 @@ public class Attendee {
      * when the attendee is created so that a photo can immediately be displayed.
      */
     public void generateDefaultProfilePhoto() {
-
         // Cupcake way
-
-        if (!usingDefaultProfilePicture) {
-            int numIdentifier = Integer.parseInt(firstName);
+        if (usingDefaultProfilePicture) {
+            StringBuilder builder = new StringBuilder();
+            for (char c : firstName.toCharArray()) {
+                builder.append((int)c);
+            }
+            int numIdentifier = new BigInteger(builder.toString()).intValue();
             int R = (numIdentifier) % 256;
             int G = (numIdentifier * 10) % 256;
             int B = (numIdentifier * 100) % 256;
@@ -289,10 +272,19 @@ public class Attendee {
             int randomNum = random.nextInt(100);
             int cherryColor = randomNum << 16 | randomNum << 8 | randomNum;
 
-            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", (t) -> changeColor(t, Color.WHITE, icingColor, Color.RED, cherryColor));
+            Consumer<Bitmap> downloadConsumer = bitmap -> {
+                Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor, Color.RED, cherryColor);
 
-            Uri imageURI = saveImage(finalBitmap, identifier+"_default.png");
-            MainActivity.db.uploadPhoto(imageURI,"profile_photos/"+identifier+"_default.png");
+                ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream);
+                byte[] data = byteOutputStream.toByteArray();
+
+                MainActivity.db.getStorage().getReference()
+                        .child("profile_photos/" + getIdentifier() + "-default")
+                        .putBytes(data);
+
+            };
+            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
     }
 }
