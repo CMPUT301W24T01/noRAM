@@ -25,13 +25,11 @@ public class AttendeeActivity extends AppCompatActivity {
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
-
     private final Fragment qrFragment = QrScanFragment.newInstance();
     private final Fragment profileFragment = AttendeeProfileFragment.newInstance();
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
-
     /**
      * Setup the activity when it is created.
      * @param savedInstanceState If the activity is being re-initialized after

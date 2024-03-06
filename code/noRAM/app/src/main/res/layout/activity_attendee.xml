@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".AttendeeActivity">
 
-
     <View
         android:id="@+id/attendee_header"
         android:layout_width="0dp"

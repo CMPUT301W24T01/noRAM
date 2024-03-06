@@ -7,7 +7,12 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +20,17 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.StorageReference;
+
 
 /**
  * A {@link Fragment} subclass.
@@ -27,7 +38,12 @@ import com.example.noram.model.Attendee;
  * It allows the user to edit their information and save it to the database.
  * It also displays information about their profile stored in the database.
  */
-public class AttendeeProfileFragment extends Fragment {
+public class AttendeeProfileFragment extends Fragment{
+
+    private ImageView imageView;
+    private FloatingActionButton addPhoto;
+
+    private FloatingActionButton deletePhoto;
 
     private ImageButton profileImage;
     private Attendee attendee;
@@ -43,7 +59,6 @@ public class AttendeeProfileFragment extends Fragment {
     public AttendeeProfileFragment() {
         // Required empty public constructor
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment.
@@ -87,7 +102,9 @@ public class AttendeeProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_attendee_profile, container, false);
 
         // Get the fields from the view
-        profileImage = view.findViewById(R.id.edit_attendee_image_button);
+        imageView = view.findViewById(R.id.image_view);
+        addPhoto = view.findViewById(R.id.add_photo);
+        deletePhoto = view.findViewById(R.id.delete_photo);
         firstName = view.findViewById(R.id.edit_attendee_first_name);
         lastName = view.findViewById(R.id.edit_attendee_last_name);
         homePage = view.findViewById(R.id.edit_attendee_home_page);
@@ -97,6 +114,30 @@ public class AttendeeProfileFragment extends Fragment {
         attendee = MainActivity.attendee;
 
         setFields(attendee);
+
+        // hide delete button if we are using a default profile photo
+        if (attendee.getDefaultProfilePhoto()) {
+            deletePhoto.setVisibility(View.INVISIBLE);
+        }
+
+        // update the profile photo icon
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
+                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+
+        //set on click listener to add photo when pressed
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startImagePicker();
+            }
+        });
+
+        deletePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeletePhotoConfirmation();
+            }
+        });
 
         // Save the entered information when the save button is clicked
         view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
@@ -127,6 +168,89 @@ public class AttendeeProfileFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    /**
+     * Starts the imagepicker activity
+     */
+    private void startImagePicker() {
+        //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
+        //https://www.youtube.com/watch?v=v6YvUxpgSYQ
+        ImagePicker.with(AttendeeProfileFragment.this)
+                .crop(1,1)                                 // Crop image(Optional), Check Customization for more option
+                .compress(1024)                 // Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+    }
+
+    /**
+     * Shows a confirmation when a user clicks the delete photo button.
+     */
+    private void showDeletePhotoConfirmation() {
+        // show a confirmation dialog
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete your photo?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePhoto();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
+     * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
+     * it with the default profile photo
+     */
+    private void deletePhoto(){
+        String deletePhotoStr = attendee.getProfilePhotoString();
+        StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
+        storageReference.delete().addOnSuccessListener(
+                unused -> Log.d("Firebase", "Photo successfully deleted!")
+        ).addOnFailureListener(
+                e -> Log.d("Firebase", "Photo unsuccessfully deleted!")
+        );
+
+        attendee.setDefaultProfilePhoto(true);
+        deletePhoto.setVisibility(View.INVISIBLE);
+        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
+                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+    }
+
+    /**
+     * ActivityComplete result listener that is called when the photo add activity closes.
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // get image uri and file name from it
+        Uri uri =  data.getData();
+
+        // if there's no uri, we didn't get a new photo, so return.
+        if (uri == null) {
+            return;
+        }
+
+        String uriString = "profile_photos/" + attendee.getIdentifier() + "-upload";
+
+        // upload file to cloud storage
+        MainActivity.db.uploadPhoto(uri, uriString);
+
+        // set imageview and update attendee information
+        imageView.setImageURI(uri);
+        attendee.setDefaultProfilePhoto(false);
+        deletePhoto.setVisibility(View.VISIBLE);
     }
 
     /**

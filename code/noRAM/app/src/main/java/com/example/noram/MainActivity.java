@@ -24,7 +24,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
-
+    public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
     private Button adminButton;
 
@@ -37,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-      
+
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;
         // for now, this will give us a base to start work without clashing against each other.
@@ -48,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         Button attendeeButton = findViewById(R.id.attendeeButton);
 
         // Start each activity via an intent.
-        adminButton.setOnClickListener(v ->
+        adminButton.setOnClickListener((v ->
                 startActivity(new Intent(MainActivity.this, AdminActivity.class))
-        );
+                ));
 
         organizerButton.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, OrganizerActivity.class))
@@ -103,17 +104,24 @@ public class MainActivity extends AppCompatActivity {
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot document = task1.getResult();
+
                                 if (document.exists()) {
                                     // If the user exists, get the user's information
                                     String firstname = document.getString("firstName");
                                     String lastname = document.getString("lastName");
                                     String homepage = document.getString("homePage");
                                     String email = document.getString("email");
-                                    String profilePicture = document.getString("profilePicture");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, profilePicture, allowLocation);
+                                    Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
+
+                                    // TODO: move this logic to the "attendee details" screen that
+                                    // appears when they create a profile the first time.
+                                    Log.d("DEBUG", "generating profile picture");
+                                    attendee.setFirstName("TestName");
+                                    attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
                                 }
                                 // If the user's information is not complete, show the info activity
