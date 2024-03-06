@@ -340,6 +340,9 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
-        // TODO: add remaining fields
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
+        this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
+        this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
     }
 }

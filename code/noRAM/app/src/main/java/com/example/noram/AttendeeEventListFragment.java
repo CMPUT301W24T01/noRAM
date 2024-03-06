@@ -42,14 +42,6 @@ import java.util.Set;
  */
 public class AttendeeEventListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     public static final String eventIDLabel = "eventID";
 
     private CollectionReference eventRef; // list of events in database
@@ -77,7 +69,6 @@ public class AttendeeEventListFragment extends Fragment {
      *
      * @return A new instance of fragment AttendeeEventListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AttendeeEventListFragment newInstance() {
         AttendeeEventListFragment fragment = new AttendeeEventListFragment();
         Bundle args = new Bundle();
@@ -85,13 +76,14 @@ public class AttendeeEventListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create the fragment
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     /**
