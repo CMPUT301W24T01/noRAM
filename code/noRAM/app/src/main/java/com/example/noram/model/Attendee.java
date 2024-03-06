@@ -1,26 +1,11 @@
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.hardware.camera2.params.BlackLevelPattern;
-import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
 
 import com.example.noram.MainActivity;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.math.BigInteger;
-import java.net.URI;
-import java.util.Random;
 import java.util.function.Consumer;
 
 /**
@@ -31,10 +16,7 @@ public class Attendee {
     private String firstName = "";
     private String lastName = "";
     private String homePage = "";
-
-    // Phone number is stored as a string to avoid overflow and to deal with any character if necessary
-    private String phoneNumber = "";
-
+    private String email = "";
     private Boolean allowLocation = false;
 
     private Boolean usingDefaultProfilePicture = true;
@@ -53,15 +35,15 @@ public class Attendee {
      * @param firstName the first name of the attendee
      * @param lastName the last name of the attendee
      * @param homePage the home page of the attendee
-     * @param phoneNumber the phone number of the attendee
+     * @param email the email of the attendee
      * @param allowLocation the location allowance of the attendee
      */
-    public Attendee(String identifier, String firstName, String lastName, String homePage, String phoneNumber, Boolean allowLocation, Boolean defaultPhoto) {
+    public Attendee(String identifier, String firstName, String lastName, String homePage, String email, Boolean allowLocation, Boolean defaultPhoto) {
         this.identifier = identifier;
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePage = homePage;
-        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.allowLocation = allowLocation;
         this.usingDefaultProfilePicture = defaultPhoto;
     }
@@ -135,19 +117,19 @@ public class Attendee {
     }
 
     /**
-     * A method to get the phone number of the attendee
-     * @return the phone number of the attendee
+     * A method to get the email of the attendee
+     * @return the email of the attendee
      */
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * A method to set the phone number of the attendee
-     * @param phoneNumber the phone number of the attendee
+     * A method to set the email of the attendee
+     * @param email the email of the attendee
      */
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setEmail(String email) {
+        this.email = email;
         updateDBAttendee();
     }
 

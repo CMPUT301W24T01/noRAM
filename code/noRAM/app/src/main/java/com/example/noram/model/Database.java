@@ -29,10 +29,10 @@ public class Database {
     private final CollectionReference organizerRef = db.collection("Organizers");
     private final CollectionReference adminRef = db.collection("Admins");
     private final CollectionReference photoRef = db.collection("Photos");
+    private final CollectionReference qrRef = db.collection("QRCodes");
+    private final CollectionReference eventsRef = db.collection("Events");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-
 
     /**
      * A method to get the authentication
@@ -72,6 +72,22 @@ public class Database {
      */
     public CollectionReference getAdminRef() {
         return adminRef;
+    }
+
+    /**
+     * Getter method for QR code reference
+     * @return the qr code reference
+     */
+    public CollectionReference getQrRef() {
+        return qrRef;
+    }
+
+    /**
+     * Getter method for the Events reference
+     * @return the events reference
+     */
+    public CollectionReference getEventsRef() {
+        return eventsRef;
     }
 
     /**
