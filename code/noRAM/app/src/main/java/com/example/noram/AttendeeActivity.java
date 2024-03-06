@@ -24,7 +24,6 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
-
     private final Fragment qrFragment = QrScanFragment.newInstance();
     private final Fragment profileFragment = AttendeeProfileFragment.newInstance();
     private final Fragment eventsFragment = AttendeeEventListFragment.newInstance();
