@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.params.BlackLevelPattern;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.storage.StorageReference;
@@ -202,16 +203,7 @@ public class Attendee {
         }
     }
 
-    /**
-     * A method to change the color of the image
-     * @param src the bitmap of the image
-     * @param color_1 the color to change
-     * @param color_1_replacement the replacement color
-     * @param color_2 the color to change
-     * @param color_2_replacement the replacement color
-     * @return the bitmap of the image with the color changed
-     */
-    private Bitmap changeColor(Bitmap src, int color_1, int color_1_replacement, int color_2, int color_2_replacement) {
+    private Bitmap changeColor(Bitmap src, int color_1, int color_1_replacement) {
         int width = src.getWidth();
         int height = src.getHeight();
         int[] pixels = new int[width * height];
@@ -223,26 +215,21 @@ public class Attendee {
         int A, R, G, B;
         int pixel;
 
+
         // iteration through pixels
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 // get current index in 2D-matrix
                 int index = y * width + x;
                 pixel = pixels[index];
-                if(pixel == color_1) {
+
+                if(pixel > -100000 && pixel < -20000) {
+                    Log.d("SUCCESS", "Pixel: " + pixel);
                     //change A-RGB individually
-                    A = Color.alpha(color_1_replacement);
-                    R = Color.red(color_1_replacement);
-                    G = Color.green(color_1_replacement);
-                    B = Color.blue(color_1_replacement);
-                    pixels[index] = Color.argb(A,R,G,B);
-                } else if(pixel == color_2) {
-                    //change A-RGB individually
-                    A = Color.alpha(color_2_replacement);
-                    R = Color.red(color_2_replacement);
-                    G = Color.green(color_2_replacement);
-                    B = Color.blue(color_2_replacement);
-                    pixels[index] = Color.argb(A,R,G,B);
+                    R = 0;
+                    G = 255;
+                    B = 0;
+                    pixels[index] = Color.rgb(R,G,B);
                 }
             }
         }
@@ -257,6 +244,7 @@ public class Attendee {
     public void generateDefaultProfilePhoto() {
         // Cupcake way
         if (usingDefaultProfilePicture) {
+
             StringBuilder builder = new StringBuilder();
             for (char c : firstName.toCharArray()) {
                 builder.append((int)c);
@@ -267,16 +255,14 @@ public class Attendee {
             int B = (numIdentifier * 100) % 256;
             int icingColor = R << 16 | G << 8 | B;
 
-            Random random = new Random();
-            random.setSeed(firstName.hashCode());
-            int randomNum = random.nextInt(100);
-            int cherryColor = randomNum << 16 | randomNum << 8 | randomNum;
+            // make a log of the first name
+            Log.d("DEFAULT GENERATOR", "icing: " + Color.WHITE + " name: " + firstName);
 
             Consumer<Bitmap> downloadConsumer = bitmap -> {
-                Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor, Color.RED, cherryColor);
+                Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor);
 
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
+                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream);
                 byte[] data = byteOutputStream.toByteArray();
 
                 MainActivity.db.getStorage().getReference()
@@ -284,7 +270,7 @@ public class Attendee {
                         .putBytes(data);
 
             };
-            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
+            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.jpg", downloadConsumer);
         }
     }
 }
