@@ -37,7 +37,7 @@
             android:id="@+id/image_view"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="16dp"
             android:background="@color/button_background_color"
 
             android:padding="5dp"
@@ -48,16 +48,6 @@
             app:shapeAppearanceOverlay="@style/circle"
             app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="5dp" />
-
-        <View
-            android:id="@+id/attendee_profile_header"
-            android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:background="#00BCD4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/edit_attendee_first_name"
