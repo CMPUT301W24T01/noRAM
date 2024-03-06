@@ -3,7 +3,6 @@
     <string name="organizerButton">Organize an Event</string>
     <string name="attendeeButton">Check in or Browse Events</string>
     <string name="adminButton">Admin</string>
-
     <string name="event_add_p1_header_text">Create Event - Part 1</string>
     <string name="event_add_p1_upload_poster_button">Upload Event Poster</string>
     <string name="event_add_p1_name_hint">Event Name</string>
@@ -18,7 +17,6 @@
     <string name="event_add_p2_gen_QR_button_text">Generate a QR code for this event</string>
     <string name="event_add_p2_upl_QR_button_text">Upload a QR code for this event</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attendee_profile">Attendee profile</string>
     <string name="event_list">Event List</string>
