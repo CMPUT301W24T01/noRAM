@@ -276,7 +276,7 @@ public class Attendee {
                 Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor, Color.RED, cherryColor);
 
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream);
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
                 byte[] data = byteOutputStream.toByteArray();
 
                 MainActivity.db.getStorage().getReference()
