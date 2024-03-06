@@ -223,14 +223,17 @@ public class Attendee {
                 int index = y * width + x;
                 pixel = pixels[index];
 
-                if(pixel > -68000 && pixel < -65000) {
-                    Log.d("SUCCESS", "Pixel: " + pixel);
-                    //change A-RGB individually
-                    R = color_1 >> 16 & 0xFF;
-                    G = color_1 >> 8 & 0xFF;
-                    B = color_1 & 0xFF;
-                    pixels[index] = Color.rgb(R,G,B);
+                if (pixel == -1) {
+                    pixels[index] = color_1_replacement;
                 }
+//                if(pixel > -68000 && pixel < -65000) {
+//                    Log.d("SUCCESS", "Pixel: " + pixel);
+//                    //change A-RGB individually
+//                    R = color_1 >> 16 & 0xFF;
+//                    G = color_1 >> 8 & 0xFF;
+//                    B = color_1 & 0xFF;
+//                    pixels[index] = Color.rgb(R,G,B);
+//                }
             }
         }
         bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
@@ -264,7 +267,7 @@ public class Attendee {
                 Bitmap finalBitmap = changeColor(bitmap, Color.WHITE, icingColor);
 
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteOutputStream);
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
                 byte[] data = byteOutputStream.toByteArray();
 
                 MainActivity.db.getStorage().getReference()
@@ -272,7 +275,7 @@ public class Attendee {
                         .putBytes(data);
 
             };
-            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.jpg", downloadConsumer);
+            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
     }
 }
