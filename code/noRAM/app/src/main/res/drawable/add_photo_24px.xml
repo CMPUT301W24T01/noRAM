@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_photo">
+
+<!-- Background shape -->
+<item android:id="@+id/background_shape">
+    <shape
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:shape="rectangle">
+        <corners android:radius="4555dp" />
+        <solid android:color="@color/add_photo_draw_background" />
+    </shape>
+</item>
+<!-- Icon -->
+<item android:id="@+id/icon" android:drawable="@drawable/add_photo_draw_foreground"
+    android:gravity="center" />
+</layer-list>
