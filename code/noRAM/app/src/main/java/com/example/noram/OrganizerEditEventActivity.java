@@ -1,8 +1,9 @@
 package com.example.noram;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.content.Intent;
+
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,16 +44,16 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     int endMinute;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    AppCompatButton applyButton;
-    AppCompatButton cancelButton;
-    TextView editName;
-    TextView editLocation;
-    AppCompatButton editStartDateTime;
-    AppCompatButton editEndDateTime;
-    TextView editDetails;
-    TextView editMilestones;
-    AppCompatButton uploadPosterButton;
-    CheckBox trackLocationCheck;
+    private AppCompatButton applyButton;
+    private AppCompatButton cancelButton;
+    private TextView editName;
+    private TextView editLocation;
+    private AppCompatButton editStartDateTime;
+    private AppCompatButton editEndDateTime;
+    private TextView editDetails;
+    private TextView editMilestones;
+    private AppCompatButton uploadPosterButton;
+    private CheckBox trackLocationCheck;
 
     // Main behaviour
     /**
@@ -251,6 +252,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         });
 
         // TODO: implement poster upload
+
         uploadPosterButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for poster upload button
@@ -264,8 +266,6 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
 
     }
 
-
-    // Listeners
     /**
      * Function from interface of DatePickerFragment
      * Receives date information from DatePickerFragment

@@ -9,15 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
-import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.noram.model.Organizer;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static final Database db = new Database();
     public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
+    public static Organizer organizer = null;
     private Button adminButton;
 
     /**

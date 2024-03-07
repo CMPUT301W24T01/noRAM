@@ -58,5 +58,4 @@ dependencies {
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
 
-
 }
