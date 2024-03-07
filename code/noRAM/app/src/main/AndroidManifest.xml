@@ -37,6 +37,9 @@
             android:name=".AddEventCompleteActivity"
             android:exported="false" />
         <activity
+            android:name=".OrganizerEditEventActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -45,6 +48,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AttendeeEventInfo"
+            android:exported="false"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.noram.ShareHelper"

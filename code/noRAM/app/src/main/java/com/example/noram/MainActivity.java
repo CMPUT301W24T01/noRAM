@@ -9,23 +9,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Organizer;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Objects;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
     public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
+    public static Organizer organizer = null;
     private Button adminButton;
 
     /**
@@ -97,8 +98,9 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInAnonymously:success");
+                        Log.d(TAG, "UID: " + currentUser.getUid());
                         FirebaseUser user = db.getmAuth().getCurrentUser();
-                        // updateUI(user);
+
                         // Get the user's data from the database
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
@@ -112,13 +114,10 @@ public class MainActivity extends AppCompatActivity {
                                     String email = document.getString("email");
                                     Boolean allowLocation = document.getBoolean("allowLocation");
                                     Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
-                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto);
+                                    List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
+                                    attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
-
-                                    // TODO: move this logic to the "attendee details" screen that
-                                    // appears when they create a profile the first time.
-                                    Log.d("DEBUG", "generating profile picture");
                                     attendee.updateDBAttendee();
                                 }
                                 // If the user's information is not complete, show the info activity

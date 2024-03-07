@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -26,7 +27,9 @@ public class OrganizerActivity extends AppCompatActivity {
     private final Fragment myEventsFragment = OrganizerEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
+    private TextView header;
 
+    // Main behaviour
     /**
      * Initialized the activity
      * @param savedInstanceState If the activity is being re-initialized after
@@ -38,21 +41,23 @@ public class OrganizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer);
 
-        BottomNavigationView navBar = findViewById(R.id.organizer_bottom_nav);
-        FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_fragment_container_view);
+        BottomNavigationView navBar = findViewById(R.id.organizer_activity_bottom_nav);
+        FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
         navBar.setSelectedItemId(NAV_MY_EVENTS);
         activeFragment = myEventsFragment;
+        header = findViewById(R.id.organizer_activity_edit_event_header);
+        header.setText(R.string.organizer_fragment_event_list_header);
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
-                .add(R.id.organizer_fragment_container_view, myEventsFragment, "myEvents")
+                .add(R.id.organizer_activity_fragment_container_view, myEventsFragment, "myEvents")
                 .commit();
         fragmentManager.beginTransaction()
-                .add(R.id.organizer_fragment_container_view, newEventFragment, "newEvent")
+                .add(R.id.organizer_activity_fragment_container_view, newEventFragment, "newEvent")
                 .hide(newEventFragment)
                 .commit();
         fragmentManager.beginTransaction()
-                .add(R.id.organizer_fragment_container_view, profileFragment, "profile")
+                .add(R.id.organizer_activity_fragment_container_view, profileFragment, "profile")
                 .hide(profileFragment)
                 .commit();
 
@@ -69,28 +74,32 @@ public class OrganizerActivity extends AppCompatActivity {
 
                 // set the selectedFragment to the appropriate fragment
                 int itemID = item.getItemId();
+                int headerText;
                 if (itemID == NAV_NEW_EVENT) {
                     selectedFragment = newEventFragment;
+                    headerText = R.string.organizer_fragment_create_event_p1_header;
                 } else if (itemID == NAV_MY_EVENTS) {
                     selectedFragment = myEventsFragment;
+                    headerText = R.string.organizer_fragment_event_list_header;
                 } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
+                    headerText = R.string.organizer_fragment_profile_header;
+                }
+                else {
+                    return false;
                 }
 
-                if (selectedFragment == null) {
-                    return false;
-                } else {
-                    // update the fragment container to show the selected fragment.
-                    fragmentManager.beginTransaction()
-                            .hide(activeFragment)
-                            .show(selectedFragment)
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                            .replace(R.id.organizer_fragment_container_view, selectedFragment)
-                            .commit();
-                    return true;
-                }
+                // update the fragment container to show the selected fragment.
+                fragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(selectedFragment)
+                        .commitNow();
+                activeFragment = selectedFragment;
+
+                // set header and return
+                header.setText(headerText);
+                return true;
             }
         });
     }

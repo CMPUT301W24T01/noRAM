@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="rectangle">
+        <item name="cornerSize">20dp</item>
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
+
+</resources>
