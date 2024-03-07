@@ -47,4 +47,6 @@
     <string name="create_event_next_button">Next</string>
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
+    <string name="finish">Finish</string>
+    <string name="continue_text">Continue</string>
 </resources>

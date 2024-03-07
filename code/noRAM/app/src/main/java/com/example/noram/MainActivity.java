@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInAnonymously:success");
                         FirebaseUser user = db.getmAuth().getCurrentUser();
-                        updateAdminAccess(user.getUid());
                         // updateUI(user);
                         // Get the user's data from the database
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
@@ -120,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                                     // TODO: move this logic to the "attendee details" screen that
                                     // appears when they create a profile the first time.
                                     Log.d("DEBUG", "generating profile picture");
-                                    attendee.setFirstName("TestName");
-                                    attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
                                 }
                                 // If the user's information is not complete, show the info activity
@@ -131,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                     // Show the buttons after the user is signed in and remove progress bar
                                     findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
                                     findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                    updateAdminAccess(user.getUid());
                                 }
                                 findViewById(R.id.progressBar).setVisibility(View.GONE);
 

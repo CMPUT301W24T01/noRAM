@@ -156,6 +156,7 @@ public class AttendeeProfileFragment extends Fragment{
                     attendee.setHomePage(editHomePage);
                     attendee.setEmail(editEmail);
                     attendee.setAllowLocation(editAllowLocation);
+                    attendee.generateDefaultProfilePhoto();
                 }
             }
         });
