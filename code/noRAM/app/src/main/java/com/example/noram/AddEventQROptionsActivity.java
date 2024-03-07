@@ -31,7 +31,6 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
 
         // TODO: implement for US 01.01.02 - will need to pass info somehow
         uploadButton.setOnClickListener(v -> completeEventCreation(bundle));
-
         generateButton.setOnClickListener(v -> completeEventCreation(bundle));
     }
 

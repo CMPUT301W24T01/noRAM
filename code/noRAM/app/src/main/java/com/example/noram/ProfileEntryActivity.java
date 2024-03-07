@@ -1,10 +1,3 @@
-/*
-This file is used to display the attendee's profile information and allow for editing.
-Outstanding Issues:
-- The attendee's information is not saved to the database.
-- The attendee's profile picture is not the correct type.
- */
-
 package com.example.noram;
 
 import android.app.AlertDialog;
@@ -14,115 +7,62 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Attendee;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.StorageReference;
 
-
-/**
- * A {@link Fragment} subclass.
- * AttendeeProfileFragment is a fragment that displays the attendee's profile information
- * It allows the user to edit their information and save it to the database.
- * It also displays information about their profile stored in the database.
- */
-public class AttendeeProfileFragment extends Fragment{
+public class ProfileEntryActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private FloatingActionButton addPhoto;
-
     private FloatingActionButton deletePhoto;
-
-    private ImageButton profileImage;
     private Attendee attendee;
     private EditText firstName;
     private EditText lastName;
     private EditText homePage;
     private EditText email;
     private CheckBox allowLocation;
+    private Button finish_button;
+    private Button continue_button;
 
-    /**
-     * This is the default constructor for the fragment.
-     */
-    public AttendeeProfileFragment() {
-        // Required empty public constructor
-    }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment.
-     *
-     * @return A new instance of fragment AttendeeProfileFragment.
-     */
-    public static AttendeeProfileFragment newInstance() {
-        AttendeeProfileFragment fragment = new AttendeeProfileFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /**
-     * This method is called when the fragment is created.
-     * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    /**
-     * This method is called when the fragment is created, it initializes the
-     * information and sets up listeners.
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return The view to be displayed with all attached listeners
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_attendee_profile, container, false);
+        setContentView(R.layout.activity_profile_entry);
 
         // Get the fields from the view
-        imageView = view.findViewById(R.id.image_view);
-        addPhoto = view.findViewById(R.id.add_photo);
-        deletePhoto = view.findViewById(R.id.delete_photo);
-        firstName = view.findViewById(R.id.edit_attendee_first_name);
-        lastName = view.findViewById(R.id.edit_attendee_last_name);
-        homePage = view.findViewById(R.id.edit_attendee_home_page);
-        email = view.findViewById(R.id.edit_attendee_email);
-        allowLocation = view.findViewById(R.id.edit_attendee_location_box);
+        imageView = findViewById(R.id.image_view);
+        addPhoto = findViewById(R.id.add_photo);
+        deletePhoto = findViewById(R.id.delete_photo);
+        firstName = findViewById(R.id.edit_attendee_first_name);
+        lastName = findViewById(R.id.edit_attendee_last_name);
+        homePage = findViewById(R.id.edit_attendee_home_page);
+        email = findViewById(R.id.edit_attendee_email);
+        allowLocation = findViewById(R.id.edit_attendee_location_box);
+        finish_button = findViewById(R.id.profile_entry_finish_button);
+        continue_button = findViewById(R.id.profile_entry_continue_button);
 
         attendee = MainActivity.attendee;
 
         setFields(attendee);
 
-        // hide delete button if we are using a default profile photo
-        if (attendee.getDefaultProfilePhoto()) {
-            deletePhoto.setVisibility(View.INVISIBLE);
-        }
-
-        // update the profile photo icon
-        MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
-                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+        // Hide the profile picture and buttons initially
+        imageView.setVisibility(View.INVISIBLE);
+        addPhoto.setVisibility(View.INVISIBLE);
+        deletePhoto.setVisibility(View.INVISIBLE);
+        finish_button.setVisibility(View.INVISIBLE);
 
         //set on click listener to add photo when pressed
         addPhoto.setOnClickListener(new View.OnClickListener() {
@@ -139,42 +79,26 @@ public class AttendeeProfileFragment extends Fragment{
             }
         });
 
-        // Save the entered information when the save button is clicked
-        view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
+        // Save the entered information and switch screens when the continue button is clicked
+        continue_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String editFirstName = firstName.getText().toString();
-                String editLastName = lastName.getText().toString();
-                String editHomePage = homePage.getText().toString();
-                String editEmail = email.getText().toString();
-                Boolean editAllowLocation = allowLocation.isChecked();
-
-                // Validate name and email fields
-                if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
-                    attendee.setFirstName(editFirstName);
-                    attendee.setLastName(editLastName);
-                    attendee.setHomePage(editHomePage);
-                    attendee.setEmail(editEmail);
-                    attendee.setAllowLocation(editAllowLocation);
-
-                    if (attendee.getDefaultProfilePhoto()) {
-                        attendee.generateAndReturnDefaultProfilePhoto(t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
-                    } else {
-                        attendee.generateDefaultProfilePhoto();
-                    }
-                }
+                continueForm();
             }
         });
 
-        // Revert the changes when the cancel button is clicked
-        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
+        // Redirect to the main activity after pressing the finish button
+        finish_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFields(attendee);
+                Intent intent = new Intent(ProfileEntryActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
-        return view;
     }
+
+
 
     /**
      * Starts the imagepicker activity
@@ -182,7 +106,7 @@ public class AttendeeProfileFragment extends Fragment{
     private void startImagePicker() {
         //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
         //https://www.youtube.com/watch?v=v6YvUxpgSYQ
-        ImagePicker.with(AttendeeProfileFragment.this)
+        ImagePicker.with(this)
                 .crop(1,1)                                 // Crop image(Optional), Check Customization for more option
                 .compress(1024)                 // Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
@@ -194,7 +118,7 @@ public class AttendeeProfileFragment extends Fragment{
      */
     private void showDeletePhotoConfirmation() {
         // show a confirmation dialog
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(this)
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete your photo?")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -207,9 +131,6 @@ public class AttendeeProfileFragment extends Fragment{
                 .show();
     }
 
-
-    // TODO: make sure the most recent default profile shows up if the user changes their name while
-    //  using a real picture then deletes it. This is a minor issue, but it would be nice to fix.
     /**
      * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
      * it with the default profile photo
@@ -226,7 +147,7 @@ public class AttendeeProfileFragment extends Fragment{
         attendee.setDefaultProfilePhoto(true);
         deletePhoto.setVisibility(View.INVISIBLE);
         MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
-                t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                t -> this.runOnUiThread(() -> imageView.setImageBitmap(t)));
     }
 
     /**
@@ -262,21 +183,6 @@ public class AttendeeProfileFragment extends Fragment{
         deletePhoto.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * This method is called when the fragment is resumed.
-     * It sets the fields to the attendee's information,
-     * ensuring that any unsaved changes are reset.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        View view = getView();
-        attendee = MainActivity.attendee;
-
-        if (view != null) {
-            setFields(attendee);
-        }
-    }
 
     /**
      * Set the fields of the view to the attendee's information
@@ -292,6 +198,53 @@ public class AttendeeProfileFragment extends Fragment{
     }
 
     /**
+     * Continue the form by saving the entered information and switching screens
+     */
+    public void continueForm() {
+        String editFirstName = firstName.getText().toString();
+        String editLastName = lastName.getText().toString();
+        String editHomePage = homePage.getText().toString();
+        String editEmail = email.getText().toString();
+        Boolean editAllowLocation = allowLocation.isChecked();
+
+        // Validate name and email fields
+        if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
+            // update the attendee's information
+            attendee.setFirstName(editFirstName);
+            attendee.setLastName(editLastName);
+            attendee.setHomePage(editHomePage);
+            attendee.setEmail(editEmail);
+            attendee.setAllowLocation(editAllowLocation);
+            attendee.generateAndReturnDefaultProfilePhoto(t -> ProfileEntryActivity.this.runOnUiThread(() -> imageView.setImageBitmap(t)));
+
+            // hide the rest of the fields
+            firstName.setVisibility(View.INVISIBLE);
+            lastName.setVisibility(View.INVISIBLE);
+            homePage.setVisibility(View.INVISIBLE);
+            email.setVisibility(View.INVISIBLE);
+            allowLocation.setVisibility(View.INVISIBLE);
+            findViewById(R.id.attendee_first_name_label).setVisibility(View.INVISIBLE);
+            findViewById(R.id.attendee_last_name_label).setVisibility(View.INVISIBLE);
+            findViewById(R.id.attendee_home_page_label).setVisibility(View.INVISIBLE);
+            findViewById(R.id.attendee_email_label).setVisibility(View.INVISIBLE);
+            continue_button.setVisibility(View.INVISIBLE);
+
+            // Show the profile image
+            imageView.setVisibility(View.VISIBLE);
+            addPhoto.setVisibility(View.VISIBLE);
+            findViewById(R.id.profile_entry_finish_button).setVisibility(View.VISIBLE);
+
+            // show the delete button if the default photo is not being used
+            if (!attendee.getDefaultProfilePhoto()) {
+                deletePhoto.setVisibility(View.VISIBLE);
+            }
+
+            // update the page header
+            ((TextView) findViewById(R.id.profile_entry_header)).setText("Add A Profile Picture");
+        }
+    }
+
+    /**
      * Validate the fields of the attendee information, return true if valid, false otherwise.
      * If it is not valid display a message saying what is wrong
      * @param editFirstName the first name that was entered in the field
@@ -301,19 +254,19 @@ public class AttendeeProfileFragment extends Fragment{
      */
     public Boolean validateAttendeeFields(String editFirstName, String editLastName, String editEmail) {
         if (editFirstName.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your first name", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter your first name", Toast.LENGTH_LONG).show();
             return false;
         }
         if (editLastName.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your last name", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter your last name", Toast.LENGTH_LONG).show();
             return false;
         }
         if (editEmail.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your email", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter your email", Toast.LENGTH_LONG).show();
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(editEmail).matches()) {
-            Toast.makeText(getContext(), "Please enter a valid email", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

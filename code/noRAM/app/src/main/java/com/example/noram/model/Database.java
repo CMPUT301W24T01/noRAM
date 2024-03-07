@@ -1,10 +1,9 @@
 package com.example.noram.model;
 
+import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 
-import com.example.noram.MainActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -15,9 +14,7 @@ import com.google.firebase.storage.StreamDownloadTask;
 
 import java.io.InputStream;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -202,5 +199,6 @@ public class Database {
     public FirebaseStorage getStorage() {
         return storage;
     }
+
 }
 
