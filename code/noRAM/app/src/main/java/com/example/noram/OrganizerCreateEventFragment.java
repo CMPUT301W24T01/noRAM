@@ -48,31 +48,38 @@ import java.util.concurrent.Executors;
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 
     // Attributes
-    int startYear;
+    int startYear = -1;
     int startMonth;
     int startDay;
-    int endYear;
+    int startHour;
+    int startMinute;
+    int endYear = -1;
     int endMonth;
     int endDay;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    int endHour;
+    int endMinute;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private AppCompatButton editStartDateTime;
+    private AppCompatButton editEndDateTime;
+    View createdView;
 
     private Uri imageUri;
 
-    private AppCompatButton editStartTime;
+    AppCompatButton editStartTime;
     private AppCompatButton editEndTime;
-    private FloatingActionButton addPhoto;
+    FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
 
-    private TextView editName;
-    private TextView editLocation;
-    private TextView editDetails;
-    private TextView editMilestones;
-    private CheckBox trackLocationCheck;
+    TextView editName;
+    TextView editLocation;
+    TextView editDetails;
+    TextView editMilestones;
+    CheckBox trackLocationCheck;
     private ImageView imageView;
-    private Button nextButton;
+    Button nextButton;
 
-
+    // Constructors
     /**
      * Default constructor
      */
@@ -89,6 +96,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         return new OrganizerCreateEventFragment();
     }
 
+    // Main behaviour
     /**
      * This method is called when the fragment is created.
      * @param savedInstanceState If the fragment is being re-created from
@@ -110,43 +118,43 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
      * from a previous saved state as given here.
      * @return The root View of the inflated hierarchy
      */
-
-    /**
-     * Initialize fragment upon complete creation of view hierarchy
-     * view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-
-     @Override
-     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_con_layout_organizer_create_event, container, false);
+        return inflater.inflate(R.layout.organizer_fragment_create_event_p1, container, false);
+    }
+
+    /**
+     * Initialize fragment upon complete creation of view hierarchy
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         // Initialize fragment upon display
         super.onViewCreated(view, savedInstanceState);
+        createdView = view;
 
         // Find views
-        editStartTime = view.findViewById(R.id.event_startTime_button);
-        editEndTime = view.findViewById(R.id.event_endTime_button);
-        addPhoto = view.findViewById(R.id.add_photo);
-        deletePhoto = view.findViewById(R.id.delete_photo);
-        //make delete photo button invisible in the beginning
-        deletePhoto.setVisibility(View.INVISIBLE);
+        editName = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_name_text);
+        editLocation = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_location_text);
+        editStartDateTime = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button);
+        editEndDateTime = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button);
+        editDetails = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_details_text);
+        editMilestones  = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_milestones_text);
+        trackLocationCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_trackLocation_check);
+        nextButton = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_next_button);
 
-        editName = view.findViewById(R.id.event_name);
-        editLocation = view.findViewById(R.id.event_location);
-        editDetails = view.findViewById(R.id.event_details);
-        editMilestones  = view.findViewById(R.id.event_milestones_text);
-        trackLocationCheck = view.findViewById(R.id.event_trackLocation_check);
         imageView = view.findViewById(R.id.image_view);
-        nextButton = view.findViewById(R.id.event_next_button);
+        deletePhoto = view.findViewById(R.id.delete_photo);
+        deletePhoto.setVisibility(View.INVISIBLE);
+        addPhoto = view.findViewById(R.id.add_photo);
 
         // Set on-click listeners for buttons
-        editStartTime.setOnClickListener(new View.OnClickListener() {
+        editStartDateTime.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for Start Data/Time button
              * Calls Date and Time picker fragments
@@ -154,10 +162,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
              */
             @Override
             public void onClick(View v) {
-                new DatePickerFragment().show(getChildFragmentManager(), "start");
+                new DatePickerFragment(startYear, startMonth, startDay).show(getChildFragmentManager(), "start");
             }
         });
-        editEndTime.setOnClickListener(new View.OnClickListener() {
+
+        editEndDateTime.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for End Data/Time button
              * Calls DatePickerFragment
@@ -165,9 +174,10 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
              */
             @Override
             public void onClick(View v) {
-                new DatePickerFragment().show(getChildFragmentManager(), "end");
+                new DatePickerFragment(endYear, endMonth, endDay).show(getChildFragmentManager(), "end");
             }
         });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for next button
@@ -180,8 +190,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 // Get inputs
                 String name = editName.getText().toString();
                 String location = editLocation.getText().toString();
-                // startTime
-                // endTime
+                // startTime already got
+                // endTime already got
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
@@ -190,8 +200,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 String errorText = null;
                 if (name.isEmpty()) {errorText = "Name";}
                 else if (location.isEmpty()) {errorText = "Location";}
-                else if (startTime == null) {errorText = "Start Time";}
-                else if (endTime == null) {errorText = "End Time";}
+                else if (startDateTime == null) {errorText = "Start Time";}
+                else if (endDateTime == null) {errorText = "End Time";}
                 else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
 
                 // Only continue to next step of event creation if inputs are valid
@@ -217,8 +227,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putString("location", location);
                     bundle.putString("details", details);
                     bundle.putIntegerArrayList("milestones", new ArrayList<>(milestones));
-                    bundle.putSerializable("startTime", startTime);
-                    bundle.putSerializable("endTime", endTime);
+                    bundle.putSerializable("startTime", startDateTime);
+                    bundle.putSerializable("endTime", endDateTime);
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
                     intent.putExtras(bundle);
@@ -230,6 +240,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 }
             }
         });
+
         //set on click listener to add photo when pressed
         addPhoto.setOnClickListener(new View.OnClickListener() {
             /**
@@ -242,6 +253,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 startImagePicker();
             }
         });
+
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for deletePhoto button
@@ -253,8 +265,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
-        return view;
     };
+
     /**
      * Starts the imagepicker activity
      */
@@ -267,6 +279,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
                 .start();
     }
+
     /**
      * ActivityComplete result listener that is called when the photo add activity closes.
      * @param requestCode The integer request code originally supplied to
@@ -309,6 +322,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     /**
      * Button listener to delete a photo. Removes the photo from the imageView, sets uri to null,
      * and sets the default photo to grey.
@@ -318,6 +332,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         imageView.setImageURI(imageUri);
         deletePhoto.setVisibility(View.INVISIBLE);
     }
+
     /**
      * Function from interface of DatePickerFragment
      * Receives date information from DatePickerFragment
@@ -330,17 +345,27 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     @Override
     public void pushDate(int year, int month, int day, String tag) {
         if (tag.equals("start")) {
+
+            // Set start date attributes
             startYear = year;
             startMonth = month;
             startDay = day;
+
+            // Call timepicker
+            new TimePickerFragment(startHour, startMinute).show(getChildFragmentManager(), tag);
         }
         else {
+
+            // Set end date attributes
             endYear = year;
             endMonth = month;
             endDay = day;
+
+            // Call timepicker
+            new TimePickerFragment(endHour, endMinute).show(getChildFragmentManager(), tag);
         }
-        new TimePickerFragment().show(getChildFragmentManager(), tag);
     }
+
     /**
      * Function from interface of TimePickerFragment
      * Receives date information from TimePickerFragment
@@ -352,12 +377,39 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     @Override
     public void pushTime(int hour, int minute, String tag) {
         if (tag.equals("start")) {
-            startTime = LocalDateTime.of(startYear, startMonth, startDay, hour, minute);
+            // Set start time attributes
+            startHour = hour;
+            startMinute = minute;
+
+            // Set startDateTime
+            startDateTime = LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute);
+
+            // Update button text with set startDateTime
+            editStartDateTime.setText(
+                    String.format(
+                            getContext().getString(R.string.organizer_fragment_create_event_p1_startTime_set),
+                            startMonth, startDay, startYear, startHour, startMinute
+                    )
+            );
         }
         else {
-            endTime = LocalDateTime.of(endYear, endMonth, endDay, hour, minute);
+            // Set end time attributes
+            endHour = hour;
+            endMinute = minute;
+
+            // Set endDateTime
+            endDateTime = LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute);
+
+            // Update button text with set endDateTime
+            editEndDateTime.setText(
+                    String.format(
+                            getContext().getString(R.string.organizer_fragment_create_event_p1_endTime_set),
+                            endMonth, endDay, endYear, endHour, endMinute
+                    )
+            );
         }
     }
+
     // Helper functions
     /**
      * Checks whether or not inputted string is valid comma-separated numbers

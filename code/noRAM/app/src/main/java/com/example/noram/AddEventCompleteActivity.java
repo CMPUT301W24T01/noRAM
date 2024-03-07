@@ -32,7 +32,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_created);
+        setContentView(R.layout.organizer_activity_create_event_completed);
 
         // extract event from bundle, add it to database
         Bundle eventBundle = getIntent().getExtras();
@@ -52,6 +52,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
 
         //upload photo to event poster cloud storage with matching event id
         //set db with event poster. Only perform this action if an image was passed in the bundle
+        //implemented by
         if (eventBundle.getParcelable("imageUri") != null) {
             Uri imageUri = eventBundle.getParcelable("imageUri");
             //String jpg = imageUri.getLastPathSegment();
