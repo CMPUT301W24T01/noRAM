@@ -151,7 +151,7 @@ public class OrganizerEventListFragment extends Fragment {
             }
         });
 
-        // connect the three lists so that each item display its event
+        // connect the two lists so that each item display its event
         allEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
