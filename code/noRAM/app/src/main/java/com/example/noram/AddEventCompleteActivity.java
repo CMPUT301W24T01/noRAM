@@ -30,7 +30,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_created);
+        setContentView(R.layout.organizer_activity_create_event_completed);
 
         // extract event from bundle, add it to database
         Bundle eventBundle = getIntent().getExtras();

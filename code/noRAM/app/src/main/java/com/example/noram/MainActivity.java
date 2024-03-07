@@ -15,11 +15,14 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {

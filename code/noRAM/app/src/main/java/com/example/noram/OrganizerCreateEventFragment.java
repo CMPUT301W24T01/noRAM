@@ -28,15 +28,23 @@ import java.util.stream.Stream;
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 
     // Attributes
-    int startYear;
+    int startYear = -1;
     int startMonth;
     int startDay;
-    int endYear;
+    int startHour;
+    int startMinute;
+    int endYear = -1;
     int endMonth;
     int endDay;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    int endHour;
+    int endMinute;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    AppCompatButton editStartDateTime;
+    AppCompatButton editEndDateTime;
+    View createdView;
 
+    // Constructors
     /**
      * Default constructor
      */
@@ -53,6 +61,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         return new OrganizerCreateEventFragment();
     }
 
+    // Main behaviour
     /**
      * Instantiate user interface view of fragment
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -68,7 +77,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_create_event, container, false);
+        return inflater.inflate(R.layout.organizer_fragment_create_event_p1, container, false);
     }
 
     /**
@@ -82,24 +91,21 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
 
         // Initialize fragment upon display
         super.onViewCreated(view, savedInstanceState);
-
-        // Set header
-        TextView header = view.findViewById(R.id.event_add_p1_header);
-        header.setText(R.string.event_add_p1_header_text);
+        createdView = view;
 
         // Find views
-        TextView editName = view.findViewById(R.id.event_add_p1_edit_name_text);
-        TextView editLocation = view.findViewById(R.id.event_add_p1_edit_location_text);
-        AppCompatButton editStartTime = view.findViewById(R.id.event_add_p1_edit_startTime_button);
-        AppCompatButton editEndTime = view.findViewById(R.id.event_add_p1_edit_endTime_button);
-        TextView editDetails = view.findViewById(R.id.event_add_p1_edit_details_text);
-        TextView editMilestones  = view.findViewById(R.id.event_add_p1_edit_milestones_text);
-        AppCompatButton uploadPosterButton = view.findViewById(R.id.event_add_p1_upload_poster_button);
-        CheckBox trackLocationCheck = view.findViewById(R.id.event_add_p1_trackLocation_check);
-        Button nextButton = view.findViewById(R.id.event_add_p1_next_button);
+        TextView editName = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_name_text);
+        TextView editLocation = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_location_text);
+        editStartDateTime = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button);
+        editEndDateTime = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button);
+        TextView editDetails = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_details_text);
+        TextView editMilestones  = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_milestones_text);
+        AppCompatButton uploadPosterButton = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_upload_poster_button);
+        CheckBox trackLocationCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_trackLocation_check);
+        Button nextButton = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_next_button);
 
         // Set on-click listeners for buttons
-        editStartTime.setOnClickListener(new View.OnClickListener() {
+        editStartDateTime.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for Start Data/Time button
              * Calls Date and Time picker fragments
@@ -107,11 +113,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
              */
             @Override
             public void onClick(View v) {
-                new DatePickerFragment().show(getChildFragmentManager(), "start");
+                new DatePickerFragment(startYear, startMonth, startDay).show(getChildFragmentManager(), "start");
             }
         });
 
-        editEndTime.setOnClickListener(new View.OnClickListener() {
+        editEndDateTime.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for End Data/Time button
              * Calls DatePickerFragment
@@ -119,7 +125,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
              */
             @Override
             public void onClick(View v) {
-                new DatePickerFragment().show(getChildFragmentManager(), "end");
+                new DatePickerFragment(endYear, endMonth, endDay).show(getChildFragmentManager(), "end");
             }
         });
 
@@ -135,8 +141,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 // Get inputs
                 String name = editName.getText().toString();
                 String location = editLocation.getText().toString();
-                // startTime
-                // endTime
+                // startTime already got
+                // endTime already got
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
@@ -145,8 +151,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 String errorText = null;
                 if (name.isEmpty()) {errorText = "Name";}
                 else if (location.isEmpty()) {errorText = "Location";}
-                else if (startTime == null) {errorText = "Start Time";}
-                else if (endTime == null) {errorText = "End Time";}
+                else if (startDateTime == null) {errorText = "Start Time";}
+                else if (endDateTime == null) {errorText = "End Time";}
                 else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
 
                 // Only continue to next step of event creation if inputs are valid
@@ -171,8 +177,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putString("location", location);
                     bundle.putString("details", details);
                     bundle.putIntegerArrayList("milestones", new ArrayList<>(milestones));
-                    bundle.putSerializable("startTime", startTime);
-                    bundle.putSerializable("endTime", endTime);
+                    bundle.putSerializable("startTime", startDateTime);
+                    bundle.putSerializable("endTime", endDateTime);
                     bundle.putBoolean("trackLocation", trackLocation);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -199,7 +205,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     }
 
     // Listeners
-
     /**
      * Function from interface of DatePickerFragment
      * Receives date information from DatePickerFragment
@@ -212,16 +217,25 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     @Override
     public void pushDate(int year, int month, int day, String tag) {
         if (tag.equals("start")) {
+
+            // Set start date attributes
             startYear = year;
             startMonth = month;
             startDay = day;
+
+            // Call timepicker
+            new TimePickerFragment(startHour, startMinute).show(getChildFragmentManager(), tag);
         }
         else {
+
+            // Set end date attributes
             endYear = year;
             endMonth = month;
             endDay = day;
+
+            // Call timepicker
+            new TimePickerFragment(endHour, endMinute).show(getChildFragmentManager(), tag);
         }
-        new TimePickerFragment().show(getChildFragmentManager(), tag);
     }
 
     /**
@@ -235,10 +249,36 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     @Override
     public void pushTime(int hour, int minute, String tag) {
         if (tag.equals("start")) {
-            startTime = LocalDateTime.of(startYear, startMonth, startDay, hour, minute);
+            // Set start time attributes
+            startHour = hour;
+            startMinute = minute;
+
+            // Set startDateTime
+            startDateTime = LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute);
+
+            // Update button text with set startDateTime
+            editStartDateTime.setText(
+                    String.format(
+                            getContext().getString(R.string.organizer_fragment_create_event_p1_startTime_set),
+                            startMonth, startDay, startYear, startHour, startMinute
+                    )
+            );
         }
         else {
-            endTime = LocalDateTime.of(endYear, endMonth, endDay, hour, minute);
+            // Set end time attributes
+            endHour = hour;
+            endMinute = minute;
+
+            // Set endDateTime
+            endDateTime = LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute);
+
+            // Update button text with set endDateTime
+            editEndDateTime.setText(
+                    String.format(
+                            getContext().getString(R.string.organizer_fragment_create_event_p1_endTime_set),
+                            endMonth, endDay, endYear, endHour, endMinute
+                    )
+            );
         }
     }
 
