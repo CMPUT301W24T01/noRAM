@@ -1,3 +1,9 @@
+/*
+This file is used to display the profile of an organizer.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;

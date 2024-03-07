@@ -1,3 +1,9 @@
+/*
+This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -14,6 +20,8 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.noram.AttendeeEventInfo;
+import com.example.noram.MainActivity;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;

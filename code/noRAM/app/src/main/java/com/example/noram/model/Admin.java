@@ -1,3 +1,9 @@
+/*
+This file is used to create an admin object
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**

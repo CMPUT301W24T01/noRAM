@@ -1,3 +1,9 @@
+/*
+This file is used to help with sharing images. It is used to generate an intent that will share a bitmap.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Context;

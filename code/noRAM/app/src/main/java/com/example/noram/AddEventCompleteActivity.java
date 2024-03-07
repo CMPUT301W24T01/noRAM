@@ -1,3 +1,9 @@
+/*
+This file is used to display the completion screen when creating an event.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;

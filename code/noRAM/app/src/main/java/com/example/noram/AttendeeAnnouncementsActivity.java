@@ -1,3 +1,9 @@
+/*
+This file is used to display the announcements for a specific event.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;

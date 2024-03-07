@@ -1,3 +1,10 @@
+/*
+This file is used to create the main activity of the application. This activity is the first activity that is launched
+when the application is opened. It is responsible for signing in the user and redirecting them to the appropriate activity
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import static android.content.ContentValues.TAG;

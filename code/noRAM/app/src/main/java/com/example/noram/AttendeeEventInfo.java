@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event. Depending on event's data, the layout page will change.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;

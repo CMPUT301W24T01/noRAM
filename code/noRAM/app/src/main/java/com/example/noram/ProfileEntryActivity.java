@@ -1,3 +1,9 @@
+/*
+This file is used to display the list of events that a user has created.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 // TODO: There is alot of redundant code here that we can refactor from other fragments

@@ -1,3 +1,9 @@
+/*
+This file is used to create a photo object. It contains the photo name and the photo path.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**

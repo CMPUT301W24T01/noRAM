@@ -1,3 +1,9 @@
+/*
+This file is used to represent a QR code. It contains the encoded data, the associated event, and the type of the QR code.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 import android.graphics.Bitmap;

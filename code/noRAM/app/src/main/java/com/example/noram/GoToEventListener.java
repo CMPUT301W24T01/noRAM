@@ -1,3 +1,9 @@
+/*
+This file is used to create an interface for a class that listens to GoToEvent requests
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import com.example.noram.model.Event;

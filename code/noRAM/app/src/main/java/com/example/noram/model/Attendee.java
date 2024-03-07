@@ -1,3 +1,9 @@
+/*
+This file is used to create an Attendee object. This object is used to store information about an attendee.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 import android.graphics.Bitmap;

@@ -1,11 +1,21 @@
+/*
+This file is used to create an adapter that connects a ListView of events with an ArrayList of events.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
-import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import android.content.Context;
+import android.view.View;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,8 +23,6 @@ import androidx.annotation.Nullable;
 import com.example.noram.R;
 import com.example.noram.model.Event;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**

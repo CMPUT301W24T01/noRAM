@@ -1,3 +1,9 @@
+/*
+This file is used to display the Attendee's main menu screen, from where other subpages can be accessed.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;

@@ -1,3 +1,9 @@
+/*
+This file is used to display the admin interface. This activity is used to display the admin home page and to navigate to other admin sections.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;
@@ -6,6 +12,8 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.example.noram.AdminHomeFragment;
 
 /**
  * The AdminActivity class is the activity that is used to display the admin

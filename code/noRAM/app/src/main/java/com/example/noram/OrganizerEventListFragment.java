@@ -1,3 +1,9 @@
+/*
+This file is used to display the list of events that a user has created.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -157,10 +163,10 @@ public class OrganizerEventListFragment extends Fragment {
         searchInput.addTextChangedListener(new TextWatcher() {
 
             /**
-             * Called to notify you that, somewhere within s, the text has been changed.
+             * This method is called to notify you that, somewhere within s, the text has been changed.
              * @param s The text that has been changed
              * @param start The starting index of the changed part in the text
-             * @param before The length of the changed part in the s sequence since the start index
+             * @param after The length of the changed part in the s sequence since the start index
              * @param count The length of the new sequence in s
              */
             @Override

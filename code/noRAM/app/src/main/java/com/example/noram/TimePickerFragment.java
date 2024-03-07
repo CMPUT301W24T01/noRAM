@@ -1,3 +1,9 @@
+/*
+This file is used to showcase the time for the user to select a time. It is used to generate a time picker dialog.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.app.Dialog;

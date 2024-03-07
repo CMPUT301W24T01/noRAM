@@ -1,3 +1,9 @@
+/*
+This file is used to create the QR code options when creating an event
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;

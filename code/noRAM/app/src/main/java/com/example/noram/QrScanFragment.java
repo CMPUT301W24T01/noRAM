@@ -1,3 +1,9 @@
+/*
+This file is used to create the QR scanning fragment. It uses the CodeScanner library to scan QR codes.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.app.Activity;

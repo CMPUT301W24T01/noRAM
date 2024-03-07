@@ -1,3 +1,9 @@
+/*
+This file is used to create an organizer object. This object is used to store the identifier of the organizer.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**
