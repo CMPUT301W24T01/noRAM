@@ -3,17 +3,21 @@ package com.example.noram;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.FragmentContainerView;
 
 import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +28,9 @@ import java.util.stream.Stream;
  * Activity for editing a pre-existing event
  */
 public class OrganizerEditEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
-    // TODO finish implementation
 
     // Attributes
-    Event event;
+    Event event = new Event();
     int startYear;
     int startMonth;
     int startDay;
@@ -40,8 +43,16 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     int endMinute;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
+    AppCompatButton applyButton;
+    AppCompatButton cancelButton;
+    TextView editName;
+    TextView editLocation;
     AppCompatButton editStartDateTime;
     AppCompatButton editEndDateTime;
+    TextView editDetails;
+    TextView editMilestones;
+    AppCompatButton uploadPosterButton;
+    CheckBox trackLocationCheck;
 
     // Main behaviour
     /**
@@ -49,6 +60,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @throws RuntimeException if eventID is not provided in intent or is invalid
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,71 +69,87 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         setContentView(R.layout.organizer_activity_edit_event);
 
         // Ensure intent contains event
-        if (getIntent().hasExtra("event")) {
-            event = (Event) getIntent().getSerializableExtra("event");
+        Intent intent = getIntent();
+        if (intent.hasExtra("event")) {
+            String eventID = intent.getExtras().getString("event");
+            assert(eventID != null);
+            Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
+            task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                /**
+                 * On successful acquisition of event attributes from database, create event
+                 * Set dateTime attributes with event attributes
+                 * Update text of views with event attributes
+                 * @param documentSnapshot database object from which object is initialized
+                 */
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                    // Make event
+                    event.updateWithDocument(documentSnapshot);
+
+                    // Set startDateTime self and attributes
+                    startDateTime = event.getStartTime();
+                    startYear = startDateTime.getYear();
+                    startMonth = startDateTime.getMonthValue();
+                    startDay = startDateTime.getDayOfMonth();
+                    startHour = startDateTime.getHour();
+                    startMinute = startDateTime.getMinute();
+
+                    // Set endTimeDate self and attributes
+                    endDateTime = event.getEndTime();
+                    endYear = endDateTime.getYear();
+                    endMonth = endDateTime.getMonthValue();
+                    endDay = endDateTime.getDayOfMonth();
+                    endHour = endDateTime.getHour();
+                    endMinute = endDateTime.getMinute();
+
+                    // Update text displays with existing event attributes
+                    editName.setText(event.getName());
+                    editLocation.setText(event.getLocation());
+                    editStartDateTime.setText(
+                            String.format(
+                                    getBaseContext().getString(R.string.organizer_fragment_create_event_p1_startTime_set),
+                                    startMonth, startDay, startYear, startHour, startMinute
+                            )
+                    );
+                    editEndDateTime.setText(
+                            String.format(
+                                    getBaseContext().getString(R.string.organizer_fragment_create_event_p1_endTime_set),
+                                    endMonth, endDay, endYear, endHour, endMinute
+                            )
+                    );
+                    editDetails.setText(event.getDetails());
+                    editMilestones.setText(event.getMilestones().toString().replaceAll("[\\[\\]]", ""));
+                    trackLocationCheck.setChecked(event.isTrackLocation());
+                }
+            });
+            task.addOnFailureListener(new OnFailureListener() {
+                /**
+                 * Failure as a result of an invalid event ID
+                 * @param e cause of failure
+                 */
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    throw new RuntimeException(e + ": Invalid Event ID passed");
+                }
+            });
         }
         // Otherwise, throw RunTime error
         else {
-            throw new RuntimeException("Must pass Event object as \"event\" using intent.putExtra(\"event\", yourEventObject);");
+            throw new RuntimeException("Must pass Event with key \"event\" using intent.putExtra(\"event\", eventIDAsString);");
         }
 
         // Find views
-        FragmentContainerView container = findViewById(R.id.organizer_activity_edit_event_container_view);
-        AppCompatButton applyButton = findViewById(R.id.organizer_activity_edit_event_apply_button);
-        AppCompatButton cancelButton = findViewById(R.id.organizer_activity_edit_event_cancel_button);
-
-        // Use layout from event creation
-        View addEventView = getLayoutInflater().inflate(R.layout.organizer_fragment_create_event_p1, null);
-        container.addView(addEventView);
-
-        // Find views from event creation layout
-        TextView editName = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_name_text);
-        TextView editLocation = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_location_text);
-        AppCompatButton editStartDateTime = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button);
-        AppCompatButton editEndDateTime = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button);
-        TextView editDetails = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_details_text);
-        TextView editMilestones  = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_milestones_text);
-        AppCompatButton uploadPosterButton = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_upload_poster_button);
-        CheckBox trackLocationCheck = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_trackLocation_check);
-        Button nextButton = addEventView.findViewById(R.id.organizer_fragment_create_event_p1_edit_next_button);
-
-        // Hide next button
-        nextButton.setVisibility(View.GONE);
-
-        // Set startDateTime self and attributes
-        startDateTime = event.getStartTime();
-        startYear = startDateTime.getYear();
-        startMonth = startDateTime.getMonthValue();
-        startDay = startDateTime.getDayOfMonth();
-        startHour = startDateTime.getHour();
-        startMinute = startDateTime.getMinute();
-
-        // Set endTimeDate self and attributes
-        endDateTime = event.getEndTime();
-        endYear = endDateTime.getYear();
-        endMonth = endDateTime.getMonthValue();
-        endDay = endDateTime.getDayOfMonth();
-        endHour = endDateTime.getHour();
-        endMinute = endDateTime.getMinute();
-
-        // Update text displays with existing event attributes
-        editName.setText(event.getName());
-        editLocation.setText(event.getLocation());
-        editStartDateTime.setText(
-                String.format(
-                        getBaseContext().getString(R.string.organizer_fragment_create_event_p1_startTime_set),
-                        startMonth, startDay, startYear, startHour, startMinute
-                )
-        );
-        editEndDateTime.setText(
-                String.format(
-                        getBaseContext().getString(R.string.organizer_fragment_create_event_p1_endTime_set),
-                        endMonth, endDay, endYear, endHour, endMinute
-                )
-        );
-        editDetails.setText(event.getDetails());
-        editMilestones.setText(event.getMilestones().toString());
-        trackLocationCheck.setChecked(event.isTrackLocation());
+        applyButton = findViewById(R.id.organizer_activity_edit_event_apply_button);
+        cancelButton = findViewById(R.id.organizer_activity_edit_event_cancel_button);
+        editName = findViewById(R.id.organizer_activity_edit_event_edit_name_text);
+        editLocation = findViewById(R.id.organizer_activity_edit_event_edit_location_text);
+        editStartDateTime = findViewById(R.id.organizer_activity_edit_event_edit_startDateTime_button);
+        editEndDateTime = findViewById(R.id.organizer_activity_edit_event_edit_endDateTime_button);
+        editDetails = findViewById(R.id.organizer_activity_edit_event_edit_details_text);
+        editMilestones  = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
+        uploadPosterButton = findViewById(R.id.organizer_activity_edit_event_edit_upload_poster_button);
+        trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +241,11 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     // Update event in database
                     event.updateDBEvent();
                     finish();
+                }
+
+                // Otherwise, show error Toast
+                else {
+                    Toast.makeText(getBaseContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
                 }
             }
         });

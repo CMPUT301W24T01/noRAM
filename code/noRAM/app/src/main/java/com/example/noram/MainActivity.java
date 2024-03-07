@@ -70,25 +70,6 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
-
-        findViewById(R.id.temp1234).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Event event = new Event();
-                Task<DocumentSnapshot> t = db.getEventsRef().document("c9423ede-f1dc-43ad-9ace-fbb25b1a4f53").get();
-                t.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        event.updateWithDocument(documentSnapshot);
-                        Intent intent = new Intent(MainActivity.this, OrganizerEditEventActivity.class);
-                        intent.putExtra("event", (Serializable) event);
-                        startActivity(intent);
-                    }
-                });
-
-            }
-        });
     }
 
     /**
