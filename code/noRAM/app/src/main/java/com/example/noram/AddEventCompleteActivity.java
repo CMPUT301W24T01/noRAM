@@ -52,11 +52,8 @@ public class AddEventCompleteActivity extends AppCompatActivity {
 
         //upload photo to event poster cloud storage with matching event id
         //set db with event poster. Only perform this action if an image was passed in the bundle
-        //implemented by
         if (eventBundle.getParcelable("imageUri") != null) {
             Uri imageUri = eventBundle.getParcelable("imageUri");
-            //String jpg = imageUri.getLastPathSegment();
-            //String uriString = "event_banners/" + jpg+ "-upload";
             String uriString = "event_banners/" + myRand+ "-upload";
             // upload file to cloud storage
             MainActivity.db.uploadPhoto(imageUri, uriString);

@@ -66,8 +66,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
 
     private Uri imageUri;
 
-    AppCompatButton editStartTime;
-    private AppCompatButton editEndTime;
     FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
 
