@@ -30,7 +30,6 @@
     <string name="organizer_activity_edit_event_cancel_button">Cancel</string>
     <string name="organizer_activity_edit_event_apply_button">Apply</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attendee_profile">Attendee profile</string>
     <string name="event_list">Event List</string>
@@ -60,4 +59,9 @@
     <string name="event_qr_codes_info_text">Here are your event QR codes:</string>
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
+    <string name="administrator_page_title">Administrator Page</string>
+    <string name="admin_view_events_button">View Events</string>
+    <string name="admin_view_profiles_button">View Profiles</string>
+    <string name="admin_view_images_button">View Images</string>
+    <string name="admin_label">Admin Mode</string>
 </resources>

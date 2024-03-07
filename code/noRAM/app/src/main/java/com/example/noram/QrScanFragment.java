@@ -9,20 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.noram.model.Event;
+import com.example.noram.model.QRType;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.WriteBatch;
-import com.google.zxing.Result;
+import com.google.firebase.firestore.Transaction;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +29,15 @@ import com.google.zxing.Result;
  */
 public class QrScanFragment extends Fragment {
 
+    private CodeScanner mCodeScanner;
+
+    private ProgressBar scanLoadingSpinBar;
+    private GoToEventListener goToEventListener;
+
+
+    /**
+     * Empty constructor for QrScanFragment
+     */
     public QrScanFragment() {
         // Required empty public constructor
     }
@@ -48,22 +55,39 @@ public class QrScanFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create the fragment
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    private CodeScanner mCodeScanner;
-
-    private ProgressBar scanLoadingSpinBar;
-
-
-    // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
+    /**
+     * Creates the view for the QRScan Fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return View for the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
+        if (activity instanceof GoToEventListener) {
+            goToEventListener = (GoToEventListener) activity;
+        } else {
+            throw new IllegalArgumentException("Activity must extend goToEventListener");
+        }
         View root = inflater.inflate(R.layout.fragment_qr_scan, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
@@ -71,77 +95,81 @@ public class QrScanFragment extends Fragment {
         mCodeScanner = new CodeScanner(activity, scannerView);
 
         // Set up QR Code decode callback to check into event
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO in future need to check if promo or checkin code.
-                        String qrDecoded = result.getText();
-                        checkInFromQR(qrDecoded);
-                        scanLoadingSpinBar.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        });
+        mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
+            String qrDecoded = result.getText();
+            processQRCode(qrDecoded);
+            scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        }));
 
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCodeScanner.startPreview();
-            }
-        });
+        scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
 
         return root;
     }
 
     /**
-     * Checks the app user into the event associated with the scanned qr code
+     * Processes the scanned QR code based on the encoded data
      * @param qrCodeString qr code encoded string
      */
-    private void checkInFromQR(String qrCodeString) {
+    private void processQRCode(String qrCodeString) {
         DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
-        Log.d("DEBUG", "trying to checkin");
+
         doc.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                Log.d("DEBUG", "got qr code");
-
-                if (document.exists()) {
-                    Log.d("DEBUG", "code exists");
-                    // TODO: actual event
-                    String eventName = (String) document.get("event");
-
-                    // Create a batched write to update attendee eventAt and event attendees
-                    WriteBatch batch = MainActivity.db.getDb().batch();
-                    DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventName);
-                    batch.update(eventRef, "attendees", FieldValue.arrayUnion("test_attendee"));
-                    DocumentReference attendeeRef = MainActivity.db.getAttendeeRef().document("test_attendee");
-                    batch.update(attendeeRef, "eventsAt", FieldValue.arrayUnion(eventName));
-                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                showCheckInSuccess(eventName);
-                            } else {
-                                showCheckInFailure("batch write failed.");
-                            }
-                        }
-                    });
+                DocumentSnapshot qrDocument = task.getResult();
+                if (!qrDocument.exists()) {
+                    showCheckInFailure("Event not found for the QR code.");
+                    return;
                 }
+
+                Log.d("DEBUG", "code exists");
+                // Get event id and qr type
+                String eventId = (String) qrDocument.get("event");
+                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
+
+                // Create an event object that has the same ID as the event we are looking for.
+                // When comparing events, we just check for the same ID, so we only need this
+                // in order to go to the proper event from the event list.
+                Event event = new Event();
+                event.setId(eventId);
+
+                if (qrType == QRType.SIGN_IN) {
+                    signInToEvent(eventId);
+                    showCheckInSuccess();
+                }
+                // tell the activity to go to the event
+                goToEventListener.goToEvent(event);
+                scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     /**
-     * Shows a toast when check in succeeds
-     * @param event name of the event to include in message
+     * Sign in the current user to the event given by eventID
+     * @param eventId ID string of the event
      */
-    private void showCheckInSuccess(String event) {
+    private void signInToEvent(String eventId) {
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
+        MainActivity.attendee.getEventsCheckedInto().add(eventId);
+        MainActivity.attendee.updateDBAttendee();
+
+        // run a transaction on the event to update attendee list
+        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
+
+            checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
+            return null;
+        });
+    }
+
+    /**
+     * Shows a toast when check in succeeds
+     */
+    private void showCheckInSuccess() {
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getActivity(), "Signed into " + event + "!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Successfully checked in!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -149,7 +177,7 @@ public class QrScanFragment extends Fragment {
      * @param errMsg error message to include
      */
     private void showCheckInFailure(String errMsg) {
-        scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getActivity(), "Couldn't check in: " + errMsg, Toast.LENGTH_SHORT).show();
     }
 

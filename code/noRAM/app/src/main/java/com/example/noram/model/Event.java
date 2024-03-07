@@ -1,18 +1,17 @@
 package com.example.noram.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class to represent an Event
@@ -29,6 +28,8 @@ public class Event {
     private QRCode promoQR;
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private List<String> checkedInAttendees;
 
     // Constructors
     /**
@@ -66,6 +67,7 @@ public class Event {
         this.checkInQR = new QRCode(this.id + "-event", this.id, QRType.SIGN_IN);
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
+        this.checkedInAttendees = new ArrayList<>();
     }
 
     /**
@@ -80,6 +82,7 @@ public class Event {
      * @param checkInQR QR code used to check user in to event
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
+     * @param checkedInAttendees list of checked in attendees
      */
     public Event(
             String id,
@@ -91,7 +94,8 @@ public class Event {
             ArrayList<Integer> milestones,
             QRCode checkInQR,
             QRCode promoQR,
-            boolean trackLocation) {
+            boolean trackLocation,
+            List<String> checkedInAttendees) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -102,6 +106,7 @@ public class Event {
         this.checkInQR = checkInQR;
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
+        this.checkedInAttendees = checkedInAttendees;
     }
 
     // Getters
@@ -267,6 +272,39 @@ public class Event {
         this.trackLocation = trackLocation;
     }
 
+    /**
+     * Get the list of checked in attendees
+      * @return list of attendee identifiers
+     */
+    public List<String> getCheckedInAttendees() {
+        return checkedInAttendees;
+    }
+
+    /**
+     * Set the list of checked in attendees
+     * @param checkedInAttendees new list of checked in attendees
+     */
+    public void setCheckedInAttendees(List<String> checkedInAttendees) {
+        this.checkedInAttendees = checkedInAttendees;
+    }
+
+    /**
+     * Check for equality between an event and another object
+     * @param obj object to check for equality
+     * @return true if equal, false otherwise.
+     */
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Event other = (Event) obj;
+        return Objects.equals(this.getId(), other.getId());
+    }
+
     // Functions
     /**
      * Updates the event in the database
@@ -283,9 +321,28 @@ public class Event {
         data.put("checkInQR", checkInQR.getEncodedData());
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
+        data.put("checkedInAttendees", checkedInAttendees);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();
         checkInQR.updateDBQRCode();
+    }
+
+    /**
+     * Updates the event given a database 'event' document
+     * @param doc The database document containing the fields used to update the event instance
+     */
+    public void updateWithDocument(DocumentSnapshot doc){
+        this.setId(doc.getId());
+        this.setName(doc.getString("name"));
+        this.setDetails(doc.getString("details"));
+        this.setLocation(doc.getString("location"));
+        this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
+        this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
+        this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
+        this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
+        this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
     }
 }

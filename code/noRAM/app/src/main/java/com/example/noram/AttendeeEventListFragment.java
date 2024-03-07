@@ -1,5 +1,7 @@
 package com.example.noram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,17 +15,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,15 +42,7 @@ import java.util.ArrayList;
  */
 public class AttendeeEventListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private static final String eventIDLabel = "eventID";
+    public static final String eventIDLabel = "eventID";
 
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
@@ -50,7 +52,10 @@ public class AttendeeEventListFragment extends Fragment {
     private ArrayList<Event> userEventDataList; // data list of all user's events
     private ArrayList<Event> searchEventDataList; // data list of events' search results
     private EditText searchInput; // searchbar
-    private boolean viewingUserEvents; // indicates if showing all events or just user' events
+
+    EventArrayAdapter allEventAdapter; // adapter for allEvent list
+    EventArrayAdapter userEventAdapter; // adapter for userEvent list
+    EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
 
     /**
      * Required empty public constructor
@@ -64,7 +69,6 @@ public class AttendeeEventListFragment extends Fragment {
      *
      * @return A new instance of fragment AttendeeEventListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AttendeeEventListFragment newInstance() {
         AttendeeEventListFragment fragment = new AttendeeEventListFragment();
         Bundle args = new Bundle();
@@ -72,13 +76,14 @@ public class AttendeeEventListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create the fragment
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     /**
@@ -102,16 +107,54 @@ public class AttendeeEventListFragment extends Fragment {
     /**
      * Makes the list containing the result of a recent search visible, while hiding the other lists
      */
-    public void searchEvents(){
+    public void searchEvents(String search){
         // show search list
         searchEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
 
-        // update search list
+        // remove old search
         searchEventDataList.clear();
-        // TODO: query the database to get matching events and insert them in searchEventDataList
-        // Note: use viewingUserEvents to further narrow the query (if we just want user events)
+        // search through events' details, name and location
+        eventRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for(QueryDocumentSnapshot doc: querySnapshot){
+
+                    String name = doc.getString("name");
+                    String details = doc.getString("details");
+                    String location = doc.getString("location");
+
+                    if((name != null && name.contains(search))||
+                    (details != null && details.contains(search)) ||
+                    (location != null && location.contains(search)) )
+                    {
+                        // add valid events to result
+                        Event event = new Event();
+                        event.updateWithDocument(doc);
+                        searchEventDataList.add(event);
+                        searchEventAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+        /*
+        // Unusable: Firebase doesn't provide substring search
+        Query query = eventRef.whereEqualTo("details", search)
+                .whereEqualTo("name", search)
+                .whereEqualTo("location", search);
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            // update datalist with results
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for(QueryDocumentSnapshot doc: querySnapshot){
+                    Event event = new Event();
+                    event.updateWithDocument(doc);
+                    searchEventDataList.add(event);
+                }
+            }
+        });
+         */
     }
 
     /**
@@ -119,8 +162,11 @@ public class AttendeeEventListFragment extends Fragment {
      * @param event The event whose information need to be displayed
      */
     public void displayEvent(Event event){
-        Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
-        intent.putExtra(eventIDLabel, event.getId());
+        Intent intent = new Intent(getActivity(), AttendeeEventInfo.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(eventIDLabel, event.getId());
+        intent.putExtras(bundle);
+        Log.d("EventList", "ListID is " + event.getId());
         startActivity(intent);
     }
 
@@ -146,9 +192,9 @@ public class AttendeeEventListFragment extends Fragment {
         searchEventDataList = new ArrayList<Event>();
 
         // connect list to their adapters
-        EventArrayAdapter allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
-        EventArrayAdapter userEventAdapter = new EventArrayAdapter(this.getContext(), userEventDataList);
-        EventArrayAdapter searchEventAdapter = new EventArrayAdapter(this.getContext(), searchEventDataList);
+        allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
+        userEventAdapter = new EventArrayAdapter(this.getContext(), userEventDataList);
+        searchEventAdapter = new EventArrayAdapter(this.getContext(), searchEventDataList);
         allEventList.setAdapter(allEventAdapter);
         userEventList.setAdapter(userEventAdapter);
         searchEventList.setAdapter(searchEventAdapter);
@@ -181,7 +227,7 @@ public class AttendeeEventListFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                searchEvents();
+                searchEvents(editable.toString());
             }
         });
 
@@ -222,26 +268,18 @@ public class AttendeeEventListFragment extends Fragment {
                     userEventDataList.clear();
                     for(QueryDocumentSnapshot doc: querySnapshots){
                         // get event's info and create it
-                        Event event = new Event(); // TODO: replace
-                        /*
-                        Event event = new Event(Integer.parseInt(doc.getId()),
-                                doc.getString("Name"),
-                                doc.getString("Location"),
-                                doc.getString("StartTime"),
-                                doc.getString("EndTime"),
-                                doc.getString("Details"),
-                                doc.getString("Milestones"),
-                                Boolean.TRUE.equals(doc.getBoolean("TrackLocation"))
-                        );
-                        */
-                        // TODO: Ensure the database fields that are called are correct
-                        // TODO: Convert non-strings to correct format
-                        // add event to all events list
+                        Event event = new Event();
+                        event.updateWithDocument(doc);
                         allEventDataList.add(event);
+                        allEventAdapter.notifyDataSetChanged();
+
                         // if user correspond, add event to myEvents list
                         // TODO: check in database how to find corresponding user
-                        if(true) {
+                        ArrayList<String> attendees = (ArrayList<String>) doc.get("attendees");
+
+                        if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                             userEventDataList.add(event);
+                            userEventAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -249,5 +287,19 @@ public class AttendeeEventListFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /**
+     * Function to programmatically move to an event's info page
+     * @param event event to move to
+     */
+    public void viewEventPage(Event event) {
+
+        // get the position of the event and programmatically click it.
+        int position = allEventDataList.indexOf(event);
+        allEventList.performItemClick(
+                allEventList.getAdapter().getView(position, null, null),
+                position,
+                allEventList.getAdapter().getItemId(position));
     }
 }

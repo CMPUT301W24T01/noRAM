@@ -41,10 +41,9 @@ public class QRCode {
      * Get the encoded data of the QR code
      * @return string of encoded data
      */
-//    public String getEncodedData() {
-//        return encodedData;
-//    }
-    public String getEncodedData() {return "hi";}
+    public String getEncodedData() {
+        return encodedData;
+    }
 
     /**
      * Update the encoded data of the QR code
@@ -70,6 +69,7 @@ public class QRCode {
      */
     public void setAssociatedEvent(String associatedEvent) {
         this.associatedEvent = associatedEvent;
+        updateDBQRCode();
     }
 
     /**
@@ -110,7 +110,7 @@ public class QRCode {
     /**
      * Updates the Bitmap to contain the encoded string.
      */
-    private void updateBitmap() {
+    public void updateBitmap() {
         QRCodeWriter qrWriter = new QRCodeWriter();
         BitMatrix qrBitMatrix;
         try {

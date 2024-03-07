@@ -44,7 +44,6 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     AppCompatButton editEndDateTime;
 
     // Main behaviour
-
     /**
      * Initialize the activity
      * @param savedInstanceState If the activity is being re-initialized after

@@ -1,8 +1,24 @@
 package com.example.noram.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
+import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StreamDownloadTask;
+
+import java.io.InputStream;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  * A class to represent the database
@@ -16,6 +32,7 @@ public class Database {
     private final CollectionReference qrRef = db.collection("QRCodes");
     private final CollectionReference eventsRef = db.collection("Events");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * A method to get the authentication
@@ -63,6 +80,14 @@ public class Database {
      */
     public CollectionReference getQrRef() {
         return qrRef;
+    }
+
+    /**
+     * Getter method for the Events reference
+     * @return the events reference
+     */
+    public CollectionReference getEventsRef() {
+        return eventsRef;
     }
 
     /**
@@ -122,8 +147,56 @@ public class Database {
         }
     }
 
-    public CollectionReference getEventsRef() {
-        return eventsRef;
+    /**
+     *
+     * Downloads the photo at the given path from Cloud Storage.
+     * This is intended as a utility so that photo download is consistent through the app.
+     * @param photoRef path to the photo in cloud storage
+     * @param completeFunction function to be called once the download is complete. Should be passed using
+     *                         a lambda, e.g. t -> myFunction(t). The function passed should take in
+     *                         only one argument, a Bitmap, which will be the downloaded image.
+     *                         Note that if the function you call is going to update the UI, you will
+     *                         most likely need to wrap it in runOnUiThread(() -> myFunction(t)). This
+     *                         prevents an error from modifying the UI outside of the UI thread.
+     */
+    public void downloadPhoto(String photoRef, Consumer<Bitmap> completeFunction) {
+        StorageReference profileRef = storage.getReference().child(photoRef);
+        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
+                InputStream photoStream = taskSnapshot.getStream();
+
+                // we can't run decodeStream() in the main thread, so we create an executor to
+                // run it instead.
+                Executor executor = Executors.newSingleThreadExecutor();
+
+                Runnable decodeRunnable = () -> {
+                    Bitmap image = BitmapFactory.decodeStream(photoStream);
+
+                    // call the passed function
+                    completeFunction.accept(image);
+                };
+                executor.execute(decodeRunnable);
+            }
+        });
+    }
+
+    /**
+     * Uploads a photo to the database
+     * @param photo URI of the photo to upload
+     * @param storagePath path to store the photo in cloud storage
+     */
+    public void uploadPhoto(Uri photo, String storagePath) {
+        StorageReference uploadRef = storage.getReference().child(storagePath);
+        uploadRef.putFile(photo);
+    }
+
+    /**
+     * A method to get the cloud storage
+     * @return database
+     */
+    public FirebaseStorage getStorage() {
+        return storage;
     }
 }
 

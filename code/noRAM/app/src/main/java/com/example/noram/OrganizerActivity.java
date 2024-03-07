@@ -92,12 +92,10 @@ public class OrganizerActivity extends AppCompatActivity {
                 // update the fragment container to show the selected fragment.
                 fragmentManager.beginTransaction()
                         .hide(activeFragment)
-                        .show(selectedFragment)
-                        .commit();
-                fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                        .replace(R.id.organizer_activity_fragment_container_view, selectedFragment)
-                        .commit();
+                        .show(selectedFragment)
+                        .commitNow();
+                activeFragment = selectedFragment;
 
                 // set header and return
                 header.setText(headerText);

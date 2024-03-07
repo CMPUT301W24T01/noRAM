@@ -26,3 +26,6 @@ jobs:
     - name: Build with Gradle
       working-directory: ./code/noRAM
       run: ./gradlew build
+    - name: Run Unit Tests
+      working-directory: ./code/noRAM
+      run: ./gradlew test
