@@ -45,6 +45,7 @@
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
                 android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_name_hint"
                 android:inputType="textShortMessage"
                 android:textSize="20sp" />
 
@@ -56,6 +57,7 @@
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
                 android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_location_hint"
                 android:inputType="textShortMessage"
                 android:textSize="20sp" />
 
@@ -66,6 +68,7 @@
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
+                android:text="@string/organizer_fragment_create_event_p1_startTime_hint"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -76,6 +79,7 @@
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
+                android:text="@string/organizer_fragment_create_event_p1_endTime_hint"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -88,6 +92,7 @@
                 android:layout_marginEnd="20sp"
                 android:ems="10"
                 android:gravity="start|top"
+                android:hint="@string/organizer_fragment_create_event_p1_details_hint"
                 android:inputType="textMultiLine"
                 android:textSize="20sp" />
 
@@ -99,6 +104,7 @@
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
                 android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
                 android:textSize="20sp" />
 
             <androidx.appcompat.widget.AppCompatButton

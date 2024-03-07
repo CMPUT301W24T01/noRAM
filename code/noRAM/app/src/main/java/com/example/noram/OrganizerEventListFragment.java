@@ -1,5 +1,6 @@
 package com.example.noram;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -170,6 +171,11 @@ public class OrganizerEventListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = allEventDataList.get(position);
                 // TODO: display event information with organizer page
+
+                // Temp: Edit event
+                Intent intent = new Intent(getContext(), OrganizerEditEventActivity.class);
+                intent.putExtra("event", event.getId());
+                startActivity(intent);
             }
         });
         searchEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
