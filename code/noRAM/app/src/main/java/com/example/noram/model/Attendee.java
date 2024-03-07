@@ -250,4 +250,40 @@ public class Attendee {
             MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
     }
+
+
+    /**
+     * A method to generate a default profile picture for the attendee. Should be called
+     * when the attendee is created so that a photo can immediately be displayed.
+     * In addition, this method will return the generated photo to the calling function.
+     */
+    public void generateAndReturnDefaultProfilePhoto(Consumer<Bitmap> callingFunction) {
+        // Cupcake way
+        if (usingDefaultProfilePicture) {
+
+            StringBuilder builder = new StringBuilder();
+            for (char c : firstName.toCharArray()) {
+                builder.append((int)c);
+            }
+            int numIdentifier = new BigInteger(builder.toString()).intValue();
+            int R = (numIdentifier) % 256;
+            int G = (numIdentifier * 10) % 256;
+            int B = (numIdentifier * 100) % 256;
+            int icingColor = R << 16 | G << 8 | B;
+
+            Consumer<Bitmap> downloadConsumer = bitmap -> {
+                Bitmap finalBitmap = changeColor(bitmap, icingColor);
+
+                ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
+                byte[] data = byteOutputStream.toByteArray();
+
+                MainActivity.db.getStorage().getReference()
+                        .child("profile_photos/" + getIdentifier() + "-default")
+                        .putBytes(data);
+                        callingFunction.accept(finalBitmap);
+            };
+            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
+        }
+    }
 }

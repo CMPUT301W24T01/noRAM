@@ -156,7 +156,12 @@ public class AttendeeProfileFragment extends Fragment{
                     attendee.setHomePage(editHomePage);
                     attendee.setEmail(editEmail);
                     attendee.setAllowLocation(editAllowLocation);
-                    attendee.generateDefaultProfilePhoto();
+
+                    if (attendee.getDefaultProfilePhoto()) {
+                        attendee.generateAndReturnDefaultProfilePhoto(t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                    } else {
+                        attendee.generateDefaultProfilePhoto();
+                    }
                 }
             }
         });
@@ -202,6 +207,9 @@ public class AttendeeProfileFragment extends Fragment{
                 .show();
     }
 
+
+    // TODO: make sure the most recent default profile shows up if the user changes their name while
+    //  using a real picture then deletes it. This is a minor issue, but it would be nice to fix.
     /**
      * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
      * it with the default profile photo

@@ -215,7 +215,7 @@ public class ProfileEntryActivity extends AppCompatActivity {
             attendee.setHomePage(editHomePage);
             attendee.setEmail(editEmail);
             attendee.setAllowLocation(editAllowLocation);
-            attendee.generateDefaultProfilePhoto();
+            attendee.generateAndReturnDefaultProfilePhoto(t -> ProfileEntryActivity.this.runOnUiThread(() -> imageView.setImageBitmap(t)));
 
             // hide the rest of the fields
             firstName.setVisibility(View.INVISIBLE);
@@ -228,11 +228,6 @@ public class ProfileEntryActivity extends AppCompatActivity {
             findViewById(R.id.attendee_home_page_label).setVisibility(View.INVISIBLE);
             findViewById(R.id.attendee_email_label).setVisibility(View.INVISIBLE);
             continue_button.setVisibility(View.INVISIBLE);
-
-            // TODO: make this wait for the photo to be uploaded so the image shows
-            // update the profile photo icon
-            MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
-                    t -> ProfileEntryActivity.this.runOnUiThread(() -> imageView.setImageBitmap(t)));
 
             // Show the profile image
             imageView.setVisibility(View.VISIBLE);
