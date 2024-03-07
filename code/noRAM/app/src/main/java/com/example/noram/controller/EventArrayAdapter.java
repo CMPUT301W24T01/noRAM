@@ -31,7 +31,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         this.context = context;
     }
 
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

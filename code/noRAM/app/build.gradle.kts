@@ -42,6 +42,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 
     // Firebase BOM dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
