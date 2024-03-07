@@ -177,7 +177,7 @@ public class QrScanFragment extends Fragment {
      * @param errMsg error message to include
      */
     private void showCheckInFailure(String errMsg) {
-        scanLoadingSpinBar.setVisibility(View.VISIBLE);
+        scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getActivity(), "Couldn't check in: " + errMsg, Toast.LENGTH_SHORT).show();
     }
 
