@@ -27,9 +27,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerEventListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass.
+ * A fragment used to display the list of events that a user has created.
+ * Users can search through their events list and get more info on a specific event through this
+ * fragment.
  */
 public class OrganizerEventListFragment extends Fragment {
 
@@ -111,6 +112,18 @@ public class OrganizerEventListFragment extends Fragment {
         });
     }
 
+    /**
+     * Creates the view for the Organizer's Events List Fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return View for the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
