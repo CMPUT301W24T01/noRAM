@@ -265,7 +265,7 @@ public class Attendee {
 
         // color information
         int pixel;
-        int[] pixelArray;
+//        int[] pixelArray;
 
         // iteration through pixels
         for (int y = 0; y < height; ++y) {
@@ -280,11 +280,11 @@ public class Attendee {
                     pixels[index] = color_1_replacement;
                 }
 
-                if (!Arrays.asList(pixels).contains(pixel)) {
-                    // add the color to the array
-                    pixels = Arrays.copyOf(pixels, pixels.length + 1);
-                    pixels[pixels.length - 1] = pixel;
-                }
+//                if (!Arrays.asList(pixels).contains(pixel)) {
+//                    // add the color to the array
+//                    pixels = Arrays.copyOf(pixels, pixels.length + 1);
+//                    pixels[pixels.length - 1] = pixel;
+//                }
 
             }
         }
@@ -318,13 +318,49 @@ public class Attendee {
             Consumer<Bitmap> downloadConsumer = bitmap -> {
                 Bitmap finalBitmap = changeColor(bitmap, icingColor);
 
-                ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
-                byte[] data = byteOutputStream.toByteArray();
+            // the old way that can be blurry
+//            Consumer<Bitmap> downloadConsumer = bitmap -> {
+//                Bitmap finalBitmap = changeColor(bitmap, icingColor);
+//
+//                ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+//                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
+//                byte[] data = byteOutputStream.toByteArray();
+//
+//                MainActivity.db.getStorage().getReference()
+//                        .child("profile_photos/" + getIdentifier() + "-default")
+//                        .putBytes(data);
+//
+//            };
+//            MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
 
-                MainActivity.db.getStorage().getReference()
-                        .child("profile_photos/" + getIdentifier() + "-default")
+
+
+            // attempt at a masking way to reduce blurring
+
+            // download the icing mask
+            MainActivity.db.downloadPhoto("profile_photos/Cupcake-02.png", icingBitmap -> {
+
+
+                Bitmap finalBitmap = changeColor(icingBitmap, icingColor);
+
+                // download the cupcake to overlay the icing
+                MainActivity.db.downloadPhoto("profile_photos/Cupcake-01.png", cupcakeBitmap -> {
+
+                    // overlay the icing on the cupcake
+                    Canvas canvas = new Canvas(cupcakeBitmap);
+                    canvas.drawBitmap(finalBitmap, 0, 0, null);
+
+                    ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                    cupcakeBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream);
+                    byte[] data = byteOutputStream.toByteArray();
+
+                    Log.d("DEBUG", "uploading default profile photo");
+
+                    MainActivity.db.getStorage().getReference()
+                        .child("profile_photos/" + getIdentifier() + "-defaultNOBLUR")
                         .putBytes(data);
+                });
+            });
 
             };
 
