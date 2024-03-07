@@ -1,5 +1,7 @@
 package com.example.noram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
@@ -39,14 +42,6 @@ import java.util.Set;
  */
 public class AttendeeEventListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     public static final String eventIDLabel = "eventID";
 
     private CollectionReference eventRef; // list of events in database
@@ -74,7 +69,6 @@ public class AttendeeEventListFragment extends Fragment {
      *
      * @return A new instance of fragment AttendeeEventListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AttendeeEventListFragment newInstance() {
         AttendeeEventListFragment fragment = new AttendeeEventListFragment();
         Bundle args = new Bundle();
@@ -82,13 +76,14 @@ public class AttendeeEventListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create the fragment
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     /**
@@ -152,7 +147,7 @@ public class AttendeeEventListFragment extends Fragment {
      * @param event The event whose information need to be displayed
      */
     public void displayEvent(Event event){
-        Intent intent = new Intent(AttendeeEventListFragment.this.getContext(), AttendeeEventInfo.class);
+        Intent intent = new Intent(getActivity(), AttendeeEventInfo.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         intent.putExtras(bundle);
@@ -277,5 +272,19 @@ public class AttendeeEventListFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /**
+     * Function to programmatically move to an event's info page
+     * @param event event to move to
+     */
+    public void viewEventPage(Event event) {
+
+        // get the position of the event and programmatically click it.
+        int position = allEventDataList.indexOf(event);
+        allEventList.performItemClick(
+                allEventList.getAdapter().getView(position, null, null),
+                position,
+                allEventList.getAdapter().getItemId(position));
     }
 }
