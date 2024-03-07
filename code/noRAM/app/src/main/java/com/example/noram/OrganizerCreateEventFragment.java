@@ -3,7 +3,6 @@ package com.example.noram;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,31 +20,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.example.noram.model.Attendee;
-import com.example.noram.model.Organizer;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StreamDownloadTask;
 
-import java.io.InputStream;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
- * Fragment for creating event as organizer
+ * A simple {@link Fragment} subclass.
+ * Use the {@link OrganizerCreateEventFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ * @maintainer Carlin
+ * @author Carlin
+ * @author Sandra
+ * @author Cole
  */
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
-
     // Attributes
     int startYear = -1;
     int startMonth;
@@ -63,12 +56,9 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private AppCompatButton editStartDateTime;
     private AppCompatButton editEndDateTime;
     View createdView;
-
     private Uri imageUri;
-
     FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
-
     TextView editName;
     TextView editLocation;
     TextView editDetails;
@@ -263,7 +253,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
-    };
+    }
 
     /**
      * Starts the imagepicker activity
@@ -311,12 +301,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         new AlertDialog.Builder(getActivity())
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete your photo?")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deletePhoto();
-                    }
-                })
+                .setPositiveButton("Confirm", (dialog, which) -> deletePhoto())
                 .setNegativeButton("Cancel", null)
                 .show();
     }

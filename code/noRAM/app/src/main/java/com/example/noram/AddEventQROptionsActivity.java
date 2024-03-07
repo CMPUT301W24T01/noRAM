@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Activity for the QR code options when creating an event
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Cole
+ * @author Cole
  */
 public class AddEventQROptionsActivity extends AppCompatActivity {
 
@@ -28,7 +31,6 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         Button generateButton = findViewById(R.id.event_add_p2_gen_QR_button);
         Button uploadButton = findViewById(R.id.event_add_p2_upl_QR_button);
 
-
         // TODO: implement for US 01.01.02 - will need to pass info somehow
         uploadButton.setOnClickListener(v -> completeEventCreation(bundle));
         generateButton.setOnClickListener(v -> completeEventCreation(bundle));
@@ -36,7 +38,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
 
     /**
      * Complete the event creation by passing the final event bundle to the AddEventCompleteActivity
-     * @param bundle
+     * @param bundle The bundle containing the event information
      */
     private void completeEventCreation(Bundle bundle) {
         // We can simply pass the received bundle through again - the next activity will construct the event

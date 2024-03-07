@@ -31,12 +31,10 @@ public class Event {
     private QRCode promoQR;
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     private List<String> checkedInAttendees;
 
-    // Constructors
     /**
-     * Default constructor
+     * Default constructor for Event
      */
     public Event() {}
 

@@ -4,13 +4,11 @@ import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StreamDownloadTask;
 
 import java.io.InputStream;
 import java.util.concurrent.Executor;
@@ -162,23 +160,20 @@ public class Database {
      */
     public void downloadPhoto(String photoRef, Consumer<Bitmap> completeFunction) {
         StorageReference profileRef = storage.getReference().child(photoRef);
-        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-                InputStream photoStream = taskSnapshot.getStream();
+        profileRef.getStream().addOnSuccessListener(taskSnapshot -> {
+            InputStream photoStream = taskSnapshot.getStream();
 
-                // we can't run decodeStream() in the main thread, so we create an executor to
-                // run it instead.
-                Executor executor = Executors.newSingleThreadExecutor();
+            // we can't run decodeStream() in the main thread, so we create an executor to
+            // run it instead.
+            Executor executor = Executors.newSingleThreadExecutor();
 
-                Runnable decodeRunnable = () -> {
-                    Bitmap image = BitmapFactory.decodeStream(photoStream);
+            Runnable decodeRunnable = () -> {
+                Bitmap image = BitmapFactory.decodeStream(photoStream);
 
-                    // call the passed function
-                    completeFunction.accept(image);
-                };
-                executor.execute(decodeRunnable);
-            }
+                // call the passed function
+                completeFunction.accept(image);
+            };
+            executor.execute(decodeRunnable);
         });
     }
 

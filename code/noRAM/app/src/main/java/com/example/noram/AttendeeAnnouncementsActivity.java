@@ -4,11 +4,21 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.noram.model.Event;
-
+/**
+ * This class represents the activity for the attendee announcements page.
+ * It displays the announcements for a specific event.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Gabriel
+ * @author Gabriel
+ */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
 
+    /**
+     * This method is called when the activity is created.
+     * It sets up the activity and retrieves the corresponding event from the database.
+     * @param savedInstanceState the saved state of the activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);

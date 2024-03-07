@@ -2,6 +2,8 @@ package com.example.noram.model;
 
 /**
  * A class to represent a photo
+ * @maintainer Carlin
+ * @author Christiaan
  */
 public class Photo {
     private String photoName;

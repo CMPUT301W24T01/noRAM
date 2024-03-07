@@ -4,6 +4,8 @@ import com.example.noram.model.Event;
 
 /**
  * Interface for a class that listens to GoToEvent requests
+ * @maintainer Cole
+ * @author Cole
  */
 public interface GoToEventListener {
     /**

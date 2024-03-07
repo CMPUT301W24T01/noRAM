@@ -2,7 +2,9 @@ package com.example.noram.model;
 
 /**
  * A class representing an organizer
+ * @maintainer Christiaan
  * @author Christiaan
+ * @author Ethan
  */
 public class Organizer {
     private String identifier;
@@ -14,6 +16,5 @@ public class Organizer {
     public Organizer(String identifier) {
         this.identifier = identifier;
     }
-
 
 }

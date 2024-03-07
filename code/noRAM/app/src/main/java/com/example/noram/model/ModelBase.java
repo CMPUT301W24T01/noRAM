@@ -19,7 +19,7 @@ public class ModelBase<V extends TView<ModelBase<?>>> {
      * Create a ModelBase instance.
      */
     public ModelBase() {
-        views = new ArrayList<V>();
+        views = new ArrayList<>();
     }
 
     /**

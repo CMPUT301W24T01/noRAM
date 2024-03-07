@@ -16,9 +16,12 @@ import com.google.android.material.navigation.NavigationBarView;
 
 /**
  * Class the represents organizer functions with bottom navigation bar
+ * A {@link AppCompatActivity} subclass that represents the organizer's activity
+ * @maintainer Cole
+ * @author Cole
+ * @author Carlin
  */
 public class OrganizerActivity extends AppCompatActivity {
-
     // Attributes
     public static final int NAV_NEW_EVENT = R.id.navbar_new_event;
     public static final int NAV_MY_EVENTS = R.id.navbar_my_events;
@@ -104,8 +107,6 @@ public class OrganizerActivity extends AppCompatActivity {
             }
         });
 
-        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> {
-            finish();
-        });
+        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> finish());
     }
 }

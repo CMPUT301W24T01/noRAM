@@ -13,7 +13,13 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Calendar;
 
 /**
- * Fragment for selecting time
+ * Fragment for time picker
+ * Allows user to select time
+ * Passes selected time to parent activity/fragment
+ * A {@link DialogFragment} subclass.
+ * @see TimePickerDialog
+ * @maintainer Carlin
+ * @author Carlin
  */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -94,7 +100,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
      * Instantiates and returns a Dialog class for fragment
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
-     * @return
+     * @return the dialog to be displayed
      */
     @NonNull
     @Override

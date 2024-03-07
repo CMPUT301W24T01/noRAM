@@ -1,7 +1,9 @@
 package com.example.noram.model;
 
 /**
- * Enumerator for differnet QR code types
+ * Enumerator for different QR code types
+ * @maintainer Cole
+ * @author Cole
  */
 public enum QRType {
     /**

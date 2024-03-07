@@ -1,7 +1,5 @@
 package com.example.noram;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,40 +8,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AttendeeEventListFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * @maintainer Gabriel
+ * @author Gabriel
+ * @author Cole
  */
 public class AttendeeEventListFragment extends Fragment {
-
     public static final String eventIDLabel = "eventID";
-
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
     private ListView userEventList; // list of all user's events in UI
@@ -118,25 +105,22 @@ public class AttendeeEventListFragment extends Fragment {
         // remove old search
         searchEventDataList.clear();
         // search through events' details, name and location
-        eventRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                for(QueryDocumentSnapshot doc: querySnapshot){
+        eventRef.get().addOnSuccessListener(querySnapshot -> {
+            for(QueryDocumentSnapshot doc: querySnapshot){
 
-                    String name = doc.getString("name");
-                    String details = doc.getString("details");
-                    String location = doc.getString("location");
+                String name = doc.getString("name");
+                String details = doc.getString("details");
+                String location = doc.getString("location");
 
-                    if((name != null && name.contains(search))||
-                    (details != null && details.contains(search)) ||
-                    (location != null && location.contains(search)) )
-                    {
-                        // add valid events to result
-                        Event event = new Event();
-                        event.updateWithDocument(doc);
-                        searchEventDataList.add(event);
-                        searchEventAdapter.notifyDataSetChanged();
-                    }
+                if((name != null && name.contains(search))||
+                (details != null && details.contains(search)) ||
+                (location != null && location.contains(search)) )
+                {
+                    // add valid events to result
+                    Event event = new Event();
+                    event.updateWithDocument(doc);
+                    searchEventDataList.add(event);
+                    searchEventAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -155,6 +139,14 @@ public class AttendeeEventListFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Create the view of the fragment
+     * @param inflater The layout inflater associated with the fragment
+     * @param container The parent view that the fragment's UI should be attached to
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     * @return The view of the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -170,11 +162,11 @@ public class AttendeeEventListFragment extends Fragment {
         Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
         searchInput = rootView.findViewById(R.id.searchInput);
         allEventList = rootView.findViewById(R.id.allEventsList);
-        allEventDataList = new ArrayList<Event>();
+        allEventDataList = new ArrayList<>();
         userEventList = rootView.findViewById(R.id.userEventsList);
-        userEventDataList = new ArrayList<Event>();
+        userEventDataList = new ArrayList<>();
         searchEventList = rootView.findViewById(R.id.searchEventsList);
-        searchEventDataList = new ArrayList<Event>();
+        searchEventDataList = new ArrayList<>();
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
@@ -185,18 +177,8 @@ public class AttendeeEventListFragment extends Fragment {
         searchEventList.setAdapter(searchEventAdapter);
 
         // connect each button to corresponding function
-        myEventsButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                displayMyEvents();
-            }
-        });
-        allEventsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                displayAllEvents();
-            }
-        });
+        myEventsButton.setOnClickListener(view -> displayMyEvents());
+        allEventsButton.setOnClickListener(view -> displayAllEvents());
 
         // connect searchbar to listen for user input
         searchInput.addTextChangedListener(new TextWatcher() {
@@ -217,55 +199,42 @@ public class AttendeeEventListFragment extends Fragment {
         });
 
         // connect the three lists so that each item display its event
-        allEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = allEventDataList.get(position);
-                displayEvent(event);
-            }
+        allEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = allEventDataList.get(position);
+            displayEvent(event);
         });
-        userEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = userEventDataList.get(position);
-                displayEvent(event);
-            }
+        userEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = userEventDataList.get(position);
+            displayEvent(event);
         });
-        searchEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = searchEventDataList.get(position);
-                displayEvent(event);
-            }
+        searchEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = searchEventDataList.get(position);
+            displayEvent(event);
         });
-
 
         // TODO: connect database to all-events and user-events data lists (need ref implemented)
-        eventRef.addSnapshotListener(new EventListener<QuerySnapshot>(){
-            @Override
-            public void onEvent(QuerySnapshot querySnapshots, FirebaseFirestoreException error){
-                if(error != null){
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if(querySnapshots != null){
-                    allEventDataList.clear();
-                    userEventDataList.clear();
-                    for(QueryDocumentSnapshot doc: querySnapshots){
-                        // get event's info and create it
-                        Event event = new Event();
-                        event.updateWithDocument(doc);
-                        allEventDataList.add(event);
-                        allEventAdapter.notifyDataSetChanged();
+        eventRef.addSnapshotListener((querySnapshots, error) -> {
+            if(error != null){
+                Log.e("Firestore", error.toString());
+                return;
+            }
+            if(querySnapshots != null){
+                allEventDataList.clear();
+                userEventDataList.clear();
+                for(QueryDocumentSnapshot doc: querySnapshots){
+                    // get event's info and create it
+                    Event event = new Event();
+                    event.updateWithDocument(doc);
+                    allEventDataList.add(event);
+                    allEventAdapter.notifyDataSetChanged();
 
-                        // if user correspond, add event to myEvents list
-                        // TODO: check in database how to find corresponding user
-                        ArrayList<String> attendees = (ArrayList<String>) doc.get("attendees");
+                    // if user correspond, add event to myEvents list
+                    // TODO: check in database how to find corresponding user
+                    ArrayList<String> attendees = (ArrayList<String>) doc.get("attendees");
 
-                        if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
-                            userEventDataList.add(event);
-                            userEventAdapter.notifyDataSetChanged();
-                        }
+                    if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
+                        userEventDataList.add(event);
+                        userEventAdapter.notifyDataSetChanged();
                     }
                 }
             }

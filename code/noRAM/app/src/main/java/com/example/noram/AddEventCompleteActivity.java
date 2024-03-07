@@ -12,12 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * Activity that appears as the completion screen when creating an event.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Cole
+ * @author Cole
+ * @author Sandra
  */
 public class AddEventCompleteActivity extends AppCompatActivity {
 

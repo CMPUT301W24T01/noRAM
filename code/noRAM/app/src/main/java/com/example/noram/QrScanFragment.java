@@ -26,14 +26,15 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Use the {@link QrScanFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * @maintainer Cole
+ * @author Cole
  */
 public class QrScanFragment extends Fragment {
 
+    // Attributes
     private CodeScanner mCodeScanner;
-
     private ProgressBar scanLoadingSpinBar;
     private GoToEventListener goToEventListener;
-
 
     /**
      * Empty constructor for QrScanFragment

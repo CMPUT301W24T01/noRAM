@@ -7,6 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+/**
+ * The AdminActivity class is the activity that is used to display the admin
+ * interface. This activity is used to display the admin home page and to
+ * navigate to other admin sections.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Gabriel
+ * @author Gabriel
+ * @author Cole
+ */
 public class AdminActivity extends AppCompatActivity {
 
     // TODO: create fragments for all admin sections
@@ -25,9 +34,7 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> {
-            finish();
-        });
+        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> finish());
 
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "home")

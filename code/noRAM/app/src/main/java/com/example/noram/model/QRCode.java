@@ -9,14 +9,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Class to represent a QR code
+ * @maintainer Cole
+ * @author Cole
  */
 public class QRCode {
     private String encodedData;
@@ -29,6 +28,7 @@ public class QRCode {
      * Default Constructor for a QR code. Generates a unique id.
      * @param data event id string associated with the QR code
      * @param type type of the QR code.
+     * @param eventId event id string associated with the QR code
      */
     public QRCode(String data, String eventId, QRType type) {
         qrCodeType = type;

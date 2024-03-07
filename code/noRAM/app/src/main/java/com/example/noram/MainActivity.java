@@ -21,6 +21,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.Objects;
 import java.util.List;
 
+/**
+ * The main activity of the application. This activity is the first activity that is launched
+ * when the application is opened. It is responsible for signing in the user and redirecting
+ * them to the appropriate activity based on their role.
+ * A {@link AppCompatActivity} subclass.
+ * @author noRAM
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final Database db = new Database();
@@ -38,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         // NOTE: temporary buttons to move to each activity
@@ -74,14 +80,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Start the main activity. This signs in the userusing firebase authentication
+     * Start the main activity. This signs in the user using firebase authentication
      */
     @Override
     public void onStart() {
         super.onStart();
-        db.getmAuth().addAuthStateListener(auth -> {
-            signInFirebase();
-        });
+        db.getmAuth().addAuthStateListener(auth -> signInFirebase());
     }
 
     /**
