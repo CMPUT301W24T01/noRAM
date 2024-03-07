@@ -1,6 +1,10 @@
 package com.example.noram;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,19 +12,35 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.example.noram.model.Attendee;
+import com.example.noram.model.Organizer;
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StreamDownloadTask;
+
+import java.io.InputStream;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Fragment for creating event as organizer
@@ -36,6 +56,22 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     int endDay;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
+    private Uri imageUri;
+
+    private AppCompatButton editStartTime;
+    private AppCompatButton editEndTime;
+    private FloatingActionButton addPhoto;
+    private FloatingActionButton deletePhoto;
+
+    private TextView editName;
+    private TextView editLocation;
+    private TextView editDetails;
+    private TextView editMilestones;
+    private CheckBox trackLocationCheck;
+    private ImageView imageView;
+    private Button nextButton;
+
 
     /**
      * Default constructor
@@ -54,6 +90,16 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     }
 
     /**
+     * This method is called when the fragment is created.
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    /**
      * Instantiate user interface view of fragment
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,
@@ -64,39 +110,40 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
      * from a previous saved state as given here.
      * @return The root View of the inflated hierarchy
      */
+
+    /**
+     * Initialize fragment upon complete creation of view hierarchy
+     * view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+
+     @Override
+     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_create_event, container, false);
-    }
-
-    /**
-     * Initialize fragment upon complete creation of view hierarchy
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_con_layout_organizer_create_event, container, false);
 
         // Initialize fragment upon display
         super.onViewCreated(view, savedInstanceState);
 
-        // Set header
-        TextView header = view.findViewById(R.id.event_add_p1_header);
-        header.setText(R.string.event_add_p1_header_text);
-
         // Find views
-        TextView editName = view.findViewById(R.id.event_add_p1_edit_name_text);
-        TextView editLocation = view.findViewById(R.id.event_add_p1_edit_location_text);
-        AppCompatButton editStartTime = view.findViewById(R.id.event_add_p1_edit_startTime_button);
-        AppCompatButton editEndTime = view.findViewById(R.id.event_add_p1_edit_endTime_button);
-        TextView editDetails = view.findViewById(R.id.event_add_p1_edit_details_text);
-        TextView editMilestones  = view.findViewById(R.id.event_add_p1_edit_milestones_text);
-        AppCompatButton uploadPosterButton = view.findViewById(R.id.event_add_p1_upload_poster_button);
-        CheckBox trackLocationCheck = view.findViewById(R.id.event_add_p1_trackLocation_check);
-        Button nextButton = view.findViewById(R.id.event_add_p1_next_button);
+        editStartTime = view.findViewById(R.id.event_startTime_button);
+        editEndTime = view.findViewById(R.id.event_endTime_button);
+        addPhoto = view.findViewById(R.id.add_photo);
+        deletePhoto = view.findViewById(R.id.delete_photo);
+        //make delete photo button invisible in the beginning
+        deletePhoto.setVisibility(View.INVISIBLE);
+
+        editName = view.findViewById(R.id.event_name);
+        editLocation = view.findViewById(R.id.event_location);
+        editDetails = view.findViewById(R.id.event_details);
+        editMilestones  = view.findViewById(R.id.event_milestones_text);
+        trackLocationCheck = view.findViewById(R.id.event_trackLocation_check);
+        imageView = view.findViewById(R.id.image_view);
+        nextButton = view.findViewById(R.id.event_next_button);
 
         // Set on-click listeners for buttons
         editStartTime.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +157,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 new DatePickerFragment().show(getChildFragmentManager(), "start");
             }
         });
-
         editEndTime.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for End Data/Time button
@@ -122,7 +168,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 new DatePickerFragment().show(getChildFragmentManager(), "end");
             }
         });
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for next button
@@ -151,6 +196,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
 
                 // Only continue to next step of event creation if inputs are valid
                 if (errorText == null) {
+
                     Intent intent = new Intent(getActivity(), AddEventQROptionsActivity.class);
                     Bundle bundle = new Bundle();
                     List<Integer> milestones;
@@ -174,32 +220,104 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putSerializable("startTime", startTime);
                     bundle.putSerializable("endTime", endTime);
                     bundle.putBoolean("trackLocation", trackLocation);
+                    bundle.putParcelable("imageUri", imageUri);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-
                 // Otherwise, show error Toast
                 else {
                     Toast.makeText(getContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        // TODO: implement poster upload
-        uploadPosterButton.setOnClickListener(new View.OnClickListener() {
+        //set on click listener to add photo when pressed
+        addPhoto.setOnClickListener(new View.OnClickListener() {
             /**
-             * On-click listener for poster upload button
+             * On-click listener for addPhoto button
+             * Calls startImagePicker
              * @param v The view that was clicked.
              */
             @Override
             public void onClick(View v) {
-
+                startImagePicker();
             }
         });
+        deletePhoto.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for deletePhoto button
+             * Calls showDeletePhotoConfirmation()
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                showDeletePhotoConfirmation();
+            }
+        });
+        return view;
+    };
+    /**
+     * Starts the imagepicker activity
+     */
+    private void startImagePicker() {
+        //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
+        //https://www.youtube.com/watch?v=v6YvUxpgSYQ
+        ImagePicker.with(OrganizerCreateEventFragment.this)
+                .crop(1,1)                                 // Crop image(Optional), Check Customization for more option
+                .compress(1024)                 // Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+    }
+    /**
+     * ActivityComplete result listener that is called when the photo add activity closes.
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // get image uri and file name from it
+        imageUri =  data.getData();
+        // if there's no uri, we didn't get a new photo, so return.
+        if (imageUri == null) {
+            return;
+        }
+        // set imageview and update organizer image preview
+        imageView.setImageURI(imageUri);
+        deletePhoto.setVisibility(View.VISIBLE);
     }
 
-    // Listeners
-
+    /**
+     * Shows a confirmation when a user clicks the delete photo button.
+     */
+    private void showDeletePhotoConfirmation() {
+        // show a confirmation dialog
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete your photo?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePhoto();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    /**
+     * Button listener to delete a photo. Removes the photo from the imageView, sets uri to null,
+     * and sets the default photo to grey.
+     */
+    private void deletePhoto(){
+        imageUri = null;
+        imageView.setImageURI(imageUri);
+        deletePhoto.setVisibility(View.INVISIBLE);
+    }
     /**
      * Function from interface of DatePickerFragment
      * Receives date information from DatePickerFragment
@@ -223,7 +341,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         }
         new TimePickerFragment().show(getChildFragmentManager(), tag);
     }
-
     /**
      * Function from interface of TimePickerFragment
      * Receives date information from TimePickerFragment
@@ -241,7 +358,6 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
             endTime = LocalDateTime.of(endYear, endMonth, endDay, hour, minute);
         }
     }
-
     // Helper functions
     /**
      * Checks whether or not inputted string is valid comma-separated numbers

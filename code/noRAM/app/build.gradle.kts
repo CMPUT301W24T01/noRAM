@@ -48,8 +48,13 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     // Firebase Auth dependency
     implementation("com.google.firebase:firebase-auth")
+    // Add the dependency for the Cloud Storage library
+    implementation("com.google.firebase:firebase-storage")
 
     // QR Scanner
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.0")
+
+    //Photos from device
+    implementation("com.github.dhaval2404:imagepicker:2.1")
 
 }

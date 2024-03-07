@@ -1,5 +1,10 @@
 package com.example.noram;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Event;
@@ -26,7 +31,6 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         this.event = event;
     }
 
-    // Listeners
     /**
      * Function from interface of DatePickerFragment
      * Receives date information from DatePickerFragment

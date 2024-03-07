@@ -1,6 +1,7 @@
 package com.example.noram;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -34,8 +36,10 @@ public class AddEventCompleteActivity extends AppCompatActivity {
 
         // extract event from bundle, add it to database
         Bundle eventBundle = getIntent().getExtras();
+        //set unique id for this event
+        UUID myRand = UUID.randomUUID();
         Event event = new Event(
-                UUID.randomUUID().toString(),
+                myRand.toString(),
                 eventBundle.getString("name"),
                 eventBundle.getString("location"),
                 (LocalDateTime) eventBundle.getSerializable("startTime"),
@@ -45,6 +49,17 @@ public class AddEventCompleteActivity extends AppCompatActivity {
                 eventBundle.getBoolean("trackLocation")
         );
         event.updateDBEvent();
+
+        //upload photo to event poster cloud storage with matching event id
+        //set db with event poster. Only perform this action if an image was passed in the bundle
+        if (eventBundle.getParcelable("imageUri") != null) {
+            Uri imageUri = eventBundle.getParcelable("imageUri");
+            //String jpg = imageUri.getLastPathSegment();
+            //String uriString = "event_banners/" + jpg+ "-upload";
+            String uriString = "event_banners/" + myRand+ "-upload";
+            // upload file to cloud storage
+            MainActivity.db.uploadPhoto(imageUri, uriString);
+        }
 
         // show QR codes
         ImageView promoQR = findViewById(R.id.qr_promo);

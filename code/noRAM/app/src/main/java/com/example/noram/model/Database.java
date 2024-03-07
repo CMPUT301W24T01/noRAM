@@ -1,8 +1,12 @@
 package com.example.noram.model;
 
+import android.net.Uri;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * A class to represent the database
@@ -16,6 +20,8 @@ public class Database {
     private final CollectionReference qrRef = db.collection("QRCodes");
     private final CollectionReference eventsRef = db.collection("Events");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * A method to get the authentication
@@ -124,6 +130,17 @@ public class Database {
 
     public CollectionReference getEventsRef() {
         return eventsRef;
+    }
+
+    /**
+     * //sandra repeated this method for testing purposes, the branch was behind.
+     * Uploads a photo to the database
+     * @param photo URI of the photo to upload
+     * @param storagePath path to store the photo in cloud storage
+     */
+    public void uploadPhoto(Uri photo, String storagePath) {
+        StorageReference uploadRef = storage.getReference().child(storagePath);
+        uploadRef.putFile(photo);
     }
 }
 
