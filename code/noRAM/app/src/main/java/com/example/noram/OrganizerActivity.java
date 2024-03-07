@@ -1,14 +1,15 @@
 package com.example.noram;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
-
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -45,7 +46,7 @@ public class OrganizerActivity extends AppCompatActivity {
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
         navBar.setSelectedItemId(NAV_MY_EVENTS);
         activeFragment = myEventsFragment;
-        header = findViewById(R.id.organizer_activity_edit_event_header);
+        header = findViewById(R.id.organizer_activity_header_text);
         header.setText(R.string.organizer_fragment_event_list_header);
 
         // create fragments into the fragmentManager
@@ -101,6 +102,10 @@ public class OrganizerActivity extends AppCompatActivity {
                 header.setText(headerText);
                 return true;
             }
+        });
+
+        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> {
+            finish();
         });
     }
 }
