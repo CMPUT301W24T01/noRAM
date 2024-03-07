@@ -46,6 +46,9 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         }
     }
 
+    /**
+     * Sets the default displayed values to current time
+     */
     private void setDefaults() {
         // Set default time
         final Calendar c = Calendar.getInstance();
@@ -53,6 +56,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         minute = c.get(Calendar.MINUTE);
     }
 
+    // Listener functionality
     /**
      * Interface to be implemented by parent activity/fragment
      */
@@ -67,6 +71,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
     private TimePickerFragment.TimePickerDialogListener listener;
 
+    // Main behaviour
     /**
      * Set listener upon attachment to context
      * @param context parent activity of fragment

@@ -48,6 +48,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         }
     }
 
+    /**
+     * Set the default displayed values to current date
+     */
     private void setDefaults() {
         Calendar c = Calendar.getInstance();
         this.year = c.get(Calendar.YEAR);
@@ -55,6 +58,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         this.day = c.get(Calendar.DAY_OF_MONTH);
     }
 
+    // Listener functionality
     /**
      * Interface to be implemented by parent activity/fragment
      */
@@ -70,6 +74,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
     private DatePickerDialogListener listener;
 
+    // Main behaviour
     /**
      * Set listener upon attachment to context
      * @param context parent activity of fragment

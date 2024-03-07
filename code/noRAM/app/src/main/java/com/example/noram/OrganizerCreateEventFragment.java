@@ -44,6 +44,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     AppCompatButton editEndDateTime;
     View createdView;
 
+    // Constructors
     /**
      * Default constructor
      */
@@ -60,6 +61,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         return new OrganizerCreateEventFragment();
     }
 
+    // Main behaviour
     /**
      * Instantiate user interface view of fragment
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -258,7 +260,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
             editStartDateTime.setText(
                     String.format(
                             getContext().getString(R.string.organizer_fragment_create_event_p1_startTime_set),
-                            startMonth, startDay, startYear, hour, minute
+                            startMonth, startDay, startYear, startHour, startMinute
                     )
             );
         }

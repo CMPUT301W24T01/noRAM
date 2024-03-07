@@ -29,6 +29,7 @@ public class OrganizerActivity extends AppCompatActivity {
     private Fragment activeFragment;
     private TextView header;
 
+    // Main behaviour
     /**
      * Initialized the activity
      * @param savedInstanceState If the activity is being re-initialized after
