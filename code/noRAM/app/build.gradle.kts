@@ -35,6 +35,10 @@ android {
 
 dependencies {
 
+    // WARNING this is a local machine hack to fix the issue with the android.jar file not being found
+    // If your project is not building, please remove this line and try to build again
+    implementation(files("/Users/christiaan/Library/Android/sdk/platforms/android-34/android.jar"))
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -57,6 +61,5 @@ dependencies {
 
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
-
 
 }

@@ -15,6 +15,9 @@ import java.util.Objects;
 
 /**
  * Class to represent an Event
+ * @maintainer Carlin
+ * @author Carlin
+ * @author Cole
  */
 public class Event {
     private String id;

@@ -2,6 +2,7 @@ package com.example.noram.model;
 
 /**
  * A class representing an organizer
+ * @author Christiaan
  */
 public class Organizer {
     private String identifier;

@@ -12,6 +12,10 @@ import java.util.function.Consumer;
 
 /**
  * A class representing an attendee
+ * @maintainer Christiaan
+ * @maintainer Christiaan
+ * @author Ethan
+ * @author Cole
  */
 public class Attendee {
     private String identifier;

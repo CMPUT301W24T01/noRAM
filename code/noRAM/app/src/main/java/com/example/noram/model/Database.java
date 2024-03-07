@@ -22,6 +22,10 @@ import java.util.function.Consumer;
 
 /**
  * A class to represent the database
+ * @maintainer Christiaan
+ * @author Christiaan
+ * @author Ethan
+ * @author Cole
  */
 public class Database {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
