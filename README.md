@@ -3,7 +3,7 @@
 
 | Dependency                                     | URL                                                                             | Use Case
 | ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------
-com.google.firebase:firebase-auth                | https://firebase.google.com/docs/auth                                           | For providing authentation services for users 
+com.google.firebase:firebase-auth                | https://firebase.google.com/docs/auth                                           | For providing authentication services for users 
 androidx.appcompat:appcompat:1.6.1               | https://developer.android.com/jetpack/androidx/releases/appcompat               | Standard activity library 
 com.google.android.material:material:1.11.0      | https://github.com/material-components/material-components-android              | Standard material UI elements 
 androidx.constraintlayout:constraintlayout:2.1.4 | https://developer.android.com/jetpack/androidx/releases/constraintlayout        | Standard constraint layout for xml
