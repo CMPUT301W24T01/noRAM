@@ -3,19 +3,32 @@
     <string name="organizerButton">Organize an Event</string>
     <string name="attendeeButton">Check in or Browse Events</string>
     <string name="adminButton">Admin</string>
-    <string name="event_add_p1_header_text">Create Event - Part 1</string>
-    <string name="event_add_p1_upload_poster_button">Upload Event Poster</string>
-    <string name="event_add_p1_name_hint">Event Name</string>
-    <string name="event_add_p1_location_hint">Event Location</string>
-    <string name="event_add_p1_startTime_hint">Start Date/Time</string>
-    <string name="event_add_p1_endTime_hint">End Date/Time</string>
-    <string name="event_add_p1_details_hint">Details</string>
-    <string name="event_add_p1_milestones_hint">Event Milestones (comma separated)</string>
-    <string name="event_add_p1_location_check_text">Track check-in locations for this event?</string>
 
-    <string name="event_add_p2_header_text">Create Event - Part 2</string>
-    <string name="event_add_p2_gen_QR_button_text">Generate a QR code for this event</string>
-    <string name="event_add_p2_upl_QR_button_text">Upload a QR code for this event</string>
+    <string name="organizer_fragment_event_list_header">Event List</string>
+
+    <string name="organizer_fragment_create_event_p1_header">Create Event - Part 1</string>
+    <string name="organizer_fragment_create_event_p1_upl_poster_button">Upload Event Poster</string>
+    <string name="organizer_fragment_create_event_p1_name_hint">Event Name</string>
+    <string name="organizer_fragment_create_event_p1_location_hint">Event Location</string>
+    <string name="organizer_fragment_create_event_p1_startTime_hint">Start Date/Time</string>
+    <string name="organizer_fragment_create_event_p1_startTime_set">Start: %d/%d/%d @ %02d:%02d</string>
+    <string name="organizer_fragment_create_event_p1_endTime_hint">End Date/Time</string>
+    <string name="organizer_fragment_create_event_p1_endTime_set">End: %d/%d/%d @ %02d:%02d</string>
+    <string name="organizer_fragment_create_event_p1_details_hint">Details</string>
+    <string name="organizer_fragment_create_event_p1_milestones_hint">Event Milestones (comma separated)</string>
+    <string name="organizer_fragment_create_event_p1_location_check_text">Track check-in locations for this event?</string>
+    <string name="organizer_fragment_create_event_next_button">Next</string>
+
+    <string name="organizer_fragment_create_event_p2_header">Create Event - Part 2</string>
+    <string name="organizer_fragment_create_event_p2_gen_QR_button">Generate a QR code for this event</string>
+    <string name="organizer_fragment_create_event_p2_upl_QR_button">Upload a QR code for this event</string>
+
+    <string name="organizer_fragment_profile_header">Profile</string>
+
+    <string name="organizer_activity_edit_event_header">Edit Event</string>
+    <string name="organizer_activity_edit_event_done_button">Done</string>
+    <string name="organizer_activity_edit_event_cancel_button">Cancel</string>
+    <string name="organizer_activity_edit_event_apply_button">Apply</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attendee_profile">Attendee profile</string>
@@ -44,9 +57,10 @@
     <string name="events">Events</string>
     <string name="event_created_header_text">Event Created!</string>
     <string name="event_qr_codes_info_text">Here are your event QR codes:</string>
-    <string name="create_event_next_button">Next</string>
     <string name="check_in_qr_code_info_str">Check-In QR Code:</string>
     <string name="promotional_qr_code_info_str">Promotional QR Code:</string>
+    <string name="finish">Finish</string>
+    <string name="continue_text">Continue</string>
     <string name="administrator_page_title">Administrator Page</string>
     <string name="admin_view_events_button">View Events</string>
     <string name="admin_view_profiles_button">View Profiles</string>

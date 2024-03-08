@@ -6,18 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerActivity">
 
+    <View
+        android:id="@+id/organizer_activity_header"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:background="@color/main_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/organizer_activity_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:foregroundTint="#FFFFFF"
+        android:text="example"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_activity_header"
+        app:layout_constraintStart_toEndOf="@+id/home_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:background="?android:selectableItemBackground"
+        android:foregroundTint="#FFFFFF"
+        android:padding="8sp"
+        android:src="@drawable/home_32px"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_activity_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/organizer_activity_header" />
+
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/organizer_fragment_container_view"
+        android:id="@+id/organizer_activity_fragment_container_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/organizer_activity_bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_activity_header" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/organizer_bottom_nav"
+        android:id="@+id/organizer_activity_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/organizer_navigation_items"/>
+        app:menu="@menu/organizer_navigation_items" />
 </androidx.constraintlayout.widget.ConstraintLayout>

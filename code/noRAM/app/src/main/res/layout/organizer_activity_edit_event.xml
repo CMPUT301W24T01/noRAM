@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/organizer_activity_edit_event_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color"
+        android:paddingStart="40sp"
+        android:paddingTop="10sp"
+        android:paddingEnd="40sp"
+        android:paddingBottom="10sp"
+        android:text="@string/organizer_activity_edit_event_header"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_activity_edit_event_header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/organizer_activity_edit_event_edit_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_name_hint"
+                android:inputType="textShortMessage"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/organizer_activity_edit_event_edit_location_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_location_hint"
+                android:inputType="textShortMessage"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/organizer_activity_edit_event_edit_startDateTime_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:text="@string/organizer_fragment_create_event_p1_startTime_hint"
+                android:textAllCaps="false"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/organizer_activity_edit_event_edit_endDateTime_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:text="@string/organizer_fragment_create_event_p1_endTime_hint"
+                android:textAllCaps="false"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/organizer_activity_edit_event_edit_details_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/organizer_fragment_create_event_p1_details_hint"
+                android:inputType="textMultiLine"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/organizer_activity_edit_event_edit_milestones_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:ems="10"
+                android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/organizer_activity_edit_event_edit_upload_poster_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:background="@color/main_color"
+                android:drawableRight="@android:drawable/ic_menu_gallery"
+                android:text="@string/organizer_fragment_create_event_p1_upl_poster_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/organizer_activity_edit_event_edit_trackLocation_check"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20sp"
+                android:text="@string/organizer_fragment_create_event_p1_location_check_text"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_activity_edit_event_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:layout_weight="1"
+            android:text="@string/organizer_activity_edit_event_cancel_button"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_activity_edit_event_apply_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:layout_weight="1"
+            android:text="@string/organizer_activity_edit_event_apply_button"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

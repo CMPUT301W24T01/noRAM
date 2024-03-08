@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment displaying the Admin's main menu screen, from where other subpages can be accessed
+ */
 public class AdminHomeFragment extends Fragment {
     public static AdminHomeFragment newInstance() {
         return new AdminHomeFragment();

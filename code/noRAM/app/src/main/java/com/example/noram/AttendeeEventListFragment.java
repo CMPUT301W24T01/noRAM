@@ -105,7 +105,9 @@ public class AttendeeEventListFragment extends Fragment {
     }
 
     /**
-     * Makes the list containing the result of a recent search visible, while hiding the other lists
+     * Query the database and makes the list containing the result of a recent search visible,
+     * while hiding the other lists
+     * @param search The input of the user in the search, used in the database's query
      */
     public void searchEvents(String search){
         // show search list
@@ -138,23 +140,6 @@ public class AttendeeEventListFragment extends Fragment {
                 }
             }
         });
-        /*
-        // Unusable: Firebase doesn't provide substring search
-        Query query = eventRef.whereEqualTo("details", search)
-                .whereEqualTo("name", search)
-                .whereEqualTo("location", search);
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            // update datalist with results
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                for(QueryDocumentSnapshot doc: querySnapshot){
-                    Event event = new Event();
-                    event.updateWithDocument(doc);
-                    searchEventDataList.add(event);
-                }
-            }
-        });
-         */
     }
 
     /**
