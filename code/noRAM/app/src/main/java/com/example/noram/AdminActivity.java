@@ -25,7 +25,7 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> {
+        ((ImageButton) findViewById(R.id.admin_home_button)).setOnClickListener(v -> {
             finish();
         });
 

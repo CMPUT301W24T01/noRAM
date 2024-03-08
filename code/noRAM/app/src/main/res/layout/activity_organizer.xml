@@ -26,11 +26,11 @@
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/organizer_activity_header"
-        app:layout_constraintStart_toEndOf="@+id/home_button"
+        app:layout_constraintStart_toEndOf="@+id/organizer_home_button"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/home_button"
+        android:id="@+id/organizer_home_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
