@@ -104,7 +104,7 @@ public class OrganizerActivity extends AppCompatActivity {
             }
         });
 
-        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> {
+        ((ImageButton) findViewById(R.id.organizer_home_button)).setOnClickListener(v -> {
             finish();
         });
     }

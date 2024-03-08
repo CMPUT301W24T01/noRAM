@@ -27,6 +27,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * Espresso tests for the main activity
+ */
 public class MainActivityTest {
     public ActivityScenario<MainActivity> scenario;
     @Rule
