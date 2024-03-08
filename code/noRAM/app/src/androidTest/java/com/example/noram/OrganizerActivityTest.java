@@ -7,13 +7,24 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Answers.RETURNS_DEEP_STUBS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import android.Manifest;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
@@ -23,11 +34,15 @@ import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.example.noram.model.Database;
+
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Espresso Tests for the Organizer Activity
@@ -122,6 +137,99 @@ public class OrganizerActivityTest {
                 .perform(scrollTo()).perform(click());
 
         onView(withId(R.id.event_add_p2_gen_QR_button)).check(doesNotExist());
+    }
+
+    /**
+     * Tests that qr codes are properly generated when an event is created
+     */
+    @Test
+    public void qrCodesGeneratedTest() {
+        // Mock away the database so the event doesn't add an event to the db
+        MainActivity.db = Mockito.mock(Database.class, RETURNS_DEEP_STUBS);
+        when(MainActivity.db.getEventsRef().document().set(any(Object.class))).thenReturn(null);
+        when(MainActivity.db.getQrRef().document().set(any(Object.class))).thenReturn(null);
+        doNothing().when(MainActivity.db).uploadPhoto(any(Uri.class), any(String.class));
+
+        // zoom through event setup
+        onView(withId(R.id.navbar_new_event)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_name_text))
+                .perform(scrollTo()).perform(typeText("event"));
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_location_text))
+                .perform(scrollTo()).perform(typeText("location"));
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_next_button))
+                .perform(scrollTo()).perform(click());
+
+        // generate qr code and check that they appear
+        onView(withId(R.id.event_add_p2_gen_QR_button)).perform(click());
+        onView(withId(R.id.qr_checkin)).check(matches(isDisplayed()));
+        onView(withId(R.id.qr_promo)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Tests that the share button opens a share intent
+     */
+    @Test
+    public void shareTest() {
+        // Mock away the database so the event doesn't add an event to the db
+        MainActivity.db = Mockito.mock(Database.class, RETURNS_DEEP_STUBS);
+        when(MainActivity.db.getEventsRef().document().set(any(Object.class))).thenReturn(null);
+        when(MainActivity.db.getQrRef().document().set(any(Object.class))).thenReturn(null);
+        doNothing().when(MainActivity.db).uploadPhoto(any(Uri.class), any(String.class));
+
+        // zoom through event setup
+        onView(withId(R.id.navbar_new_event)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_name_text))
+                .perform(scrollTo()).perform(typeText("event"));
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_location_text))
+                .perform(scrollTo()).perform(typeText("location"));
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_next_button))
+                .perform(scrollTo()).perform(click());
+        onView(withId(R.id.event_add_p2_gen_QR_button)).perform(click());
+
+        onView(withId(R.id.share_checkin)).perform(scrollTo()).perform(click());
+
+        // check if a share/chooser
+        Matcher<Intent> matcher = allOf(
+                hasAction(Intent.ACTION_CHOOSER)
+        );
+        intending(anyIntent()).respondWith(new Instrumentation.ActivityResult(0, null));
+        intended(matcher);
     }
 
     /**

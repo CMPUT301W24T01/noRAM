@@ -46,6 +46,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1") {
         exclude(module = "protobuf-lite")
     }
+    androidTestImplementation("org.mockito:mockito-android:5.11.0")
 
     // Firebase BOM dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))

@@ -47,7 +47,6 @@ public class AttendeeActivityTest {
         scenario = ActivityScenario.launch(AttendeeActivity.class);
     }
 
-
     /**
      * Test the events navigation properly navigates to the bottom bar.
      */
