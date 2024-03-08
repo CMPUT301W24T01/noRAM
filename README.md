@@ -12,7 +12,7 @@ org.mockito:mockito-core:5.11.0                  | https://javadoc.io/doc/org.mo
 com.google.firebase:firebase-bom:32.7.2          | https://firebase.google.com/support/release-notes/android                       | Firebase database connection that contains all the data including the photos and all users 
 com.google.firebase:firebase-firestore           | https://firebase.google.com/docs/firestore/quickstart                           | Firebase firestore connection 
 com.google.firebase:firebase-storage             | https://firebase.google.com/docs/storage                                        | Firebase storage connection that allows us to access all the stored information 
-com.github.yuriy-budiyev:code-scanner            | https://github.com/yuriy-budiyev/code-scanner                                   | QR Code scanner 
+com.github.yuriy-budiyev:code-scanner            | https://github.com/yuriy-budiyev/code-scanner                                   | QR Code scanner that the user will use to join an event
 com.github.dhaval2404:imagepicker                | https://github.com/Dhaval2404/ImagePicker                                       | To upload photos from device to be used as a profile picture for the user 
 androidx.test.ext:junit:1.1.5                    | https://mvnrepository.com/artifact/org.junit                                    | Standard junit library 
 androidx.test.espresso:espresso-core:3.5.1       | https://developer.android.com/jetpack/androidx/releases/test                    | Standard espresso testing library 
