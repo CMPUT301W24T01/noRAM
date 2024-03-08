@@ -1,7 +1,7 @@
 /*
 This file is used to represent a QR code. It contains the encoded data, the associated event, and the type of the QR code.
 Outstanding Issues:
-- None
+- May need to decouple database from setters
  */
 
 package com.example.noram.model;

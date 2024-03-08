@@ -1,7 +1,7 @@
 /*
 This file is used to display the list of events that a user has created.
 Outstanding Issues:
-- None
+- Need to move logic for attendee validaiton out of the class
  */
 
 package com.example.noram;

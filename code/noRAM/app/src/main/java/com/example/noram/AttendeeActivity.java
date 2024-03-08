@@ -1,7 +1,7 @@
 /*
 This file is used to display the Attendee's main menu screen, from where other subpages can be accessed.
 Outstanding Issues:
-- None
+- Sometimes lags a lot when loading - see why
  */
 
 package com.example.noram;

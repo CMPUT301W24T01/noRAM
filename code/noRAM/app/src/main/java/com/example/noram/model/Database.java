@@ -96,63 +96,6 @@ public class Database {
     }
 
     /**
-     * A method to add an attendee
-     * @param identifier the identifier of the attendee
-     * @return true if the attendee is added, false otherwise
-     */
-    public boolean addAttendee(String identifier) {
-        try {
-            attendeeRef.add(new Attendee(identifier)); // TODO: add the attendee properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add an organizer
-     * @param identifier the identifier of the organizer
-     * @return true if the organizer is added, false otherwise
-     */
-    public boolean addOrganizer(String identifier) {
-        try {
-            organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add an admin
-     * @param identifier the identifier of the admin
-     * @return true if the admin is added, false otherwise
-     */
-    public boolean addAdmin(String identifier) {
-        try {
-            adminRef.add(new Admin(identifier)); // TODO: add the admin properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add a photo
-     * @param identifier // TODO: PLACE HOLDER FOR PHOTO's
-     * @return true if the photo is added, false otherwise
-     */
-    public boolean addPhoto(int identifier) {
-        try {
-            photoRef.add(new Photo()); // TODO: add the photo properly
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
      *
      * Downloads the photo at the given path from Cloud Storage.
      * This is intended as a utility so that photo download is consistent through the app.

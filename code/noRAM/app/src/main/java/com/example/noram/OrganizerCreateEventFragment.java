@@ -1,7 +1,7 @@
 /*
 This file is used to create the first fragment of the organizer event creation process.
 Outstanding Issues:
-- None
+- Should collapse the eventphoto box until one is uploaded, move event validation out
  */
 
 package com.example.noram;

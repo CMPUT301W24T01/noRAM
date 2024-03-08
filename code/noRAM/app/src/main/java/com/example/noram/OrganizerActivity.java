@@ -1,7 +1,7 @@
 /*
 This file is used to represent the organizer's activity. It contains the bottom navigation bar and the fragments that are used to navigate between the organizer's events, creating a new event, and the organizer's profile.
 Outstanding Issues:
-- None
+- Sometimes lags a lot when loading - see why
  */
 
 package com.example.noram;

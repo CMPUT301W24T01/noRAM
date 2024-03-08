@@ -1,7 +1,7 @@
 /*
 This file is used to create the QR scanning fragment. It uses the CodeScanner library to scan QR codes.
 Outstanding Issues:
-- None
+- Sometimes the camera loads very slowly - see if this can be fixed
  */
 
 package com.example.noram;

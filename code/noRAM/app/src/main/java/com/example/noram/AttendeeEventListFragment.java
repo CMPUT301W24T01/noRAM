@@ -1,7 +1,7 @@
 /*
 This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
 Outstanding Issues:
-- None
+- UI needs to be cleaned up
  */
 
 package com.example.noram;

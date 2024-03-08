@@ -1,7 +1,7 @@
 /*
 This file is used to create the QR code options when creating an event
 Outstanding Issues:
-- None
+- Need to implement re-use of QR codes
  */
 
 package com.example.noram;

@@ -1,7 +1,7 @@
 /*
 This file is used to display the announcements for a specific event.
 Outstanding Issues:
-- None
+- Has no functionality yet
  */
 
 package com.example.noram;

@@ -2,7 +2,7 @@
 This file is used to create the main activity of the application. This activity is the first activity that is launched
 when the application is opened. It is responsible for signing in the user and redirecting them to the appropriate activity
 Outstanding Issues:
-- None
+- Need to move the logic for getting the attendee from the database out of this class
  */
 
 package com.example.noram;

@@ -1,7 +1,7 @@
 /*
 This file is used to display the list of events that a user has created.
 Outstanding Issues:
-- None
+- Instead of the user's events being displayed, all events are listed
  */
 
 package com.example.noram;

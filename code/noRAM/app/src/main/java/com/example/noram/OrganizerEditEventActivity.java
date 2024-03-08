@@ -1,7 +1,7 @@
 /*
 This file is used to edit the event details for the organizer and update the event in the database.
 Outstanding Issues:
-- None
+- Download photo from cloud storage to preview event poster
  */
 
 package com.example.noram;
