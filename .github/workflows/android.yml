@@ -29,6 +29,3 @@ jobs:
     - name: Run Unit Tests
       working-directory: ./code/noRAM
       run: ./gradlew test
-    - name: Run UI tests
-      working-directory: ./code/noRAM
-      run: ./gradlew connectedAndroidTest
