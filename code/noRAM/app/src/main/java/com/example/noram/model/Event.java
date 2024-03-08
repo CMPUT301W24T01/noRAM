@@ -1,5 +1,5 @@
 /*
-This file is used to create an event object.
+This file is used to create an event object. It contains all the attributes of an event and the methods to get and set them.
 Outstanding Issues:
 - None
  */

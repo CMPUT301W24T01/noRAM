@@ -1,5 +1,5 @@
 /*
-This file is used to create a date picker fragment
+This file is used to create a date picker fragment. It is used to select a date and pass it to the parent activity/fragment.
 Outstanding Issues:
 - None
  */

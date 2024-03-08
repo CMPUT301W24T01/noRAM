@@ -1,5 +1,5 @@
 /*
-This file is used to display the completion screen when creating an event.
+This file is used to display the completion screen when creating an event. It also generates and displays the QR codes for the event.
 Outstanding Issues:
 - None
  */

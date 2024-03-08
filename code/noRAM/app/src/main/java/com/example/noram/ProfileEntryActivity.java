@@ -1,5 +1,5 @@
 /*
-This file is used to display the list of events that a user has created.
+This file is used to get the users info on first time use of the app. It allows the user to enter their information and upload a profile picture.
 Outstanding Issues:
 - Need to move logic for attendee validaiton out of the class
  */

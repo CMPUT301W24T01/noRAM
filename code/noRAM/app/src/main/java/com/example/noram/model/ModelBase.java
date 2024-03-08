@@ -1,5 +1,5 @@
 /*
-This file is used to create an admin object.
+This file is used to represent the model in the MVC design pattern.
 Outstanding Issues:
 - None
  */

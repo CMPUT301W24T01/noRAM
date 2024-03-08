@@ -1,5 +1,5 @@
 /*
-This file is used to create an admin object.
+This file is used to represent the database and provide methods to interact with it.
 Outstanding Issues:
 - None
  */

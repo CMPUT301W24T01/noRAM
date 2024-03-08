@@ -1,5 +1,5 @@
 /*
-This file is used to create the QR code options when creating an event
+This file is used to create the QR code options when creating an event. It allows the user to choose between generating a QR code or uploading one.
 Outstanding Issues:
 - Need to implement re-use of QR codes
  */

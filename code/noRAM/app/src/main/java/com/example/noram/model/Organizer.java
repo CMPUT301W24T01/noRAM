@@ -1,5 +1,5 @@
 /*
-This file is used to create an organizer object. This object is used to store the identifier of the organizer.
+This file is used to create an organizer object. This object is used to store the identifier of the organizer. This identifier is used to identify the organizer in the database.
 Outstanding Issues:
 - None
  */
