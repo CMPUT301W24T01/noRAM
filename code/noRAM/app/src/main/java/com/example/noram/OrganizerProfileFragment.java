@@ -1,3 +1,9 @@
+/*
+This file is used to display the profile of an organizer.
+Outstanding Issues:
+- Needs to be implemented
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;
@@ -7,15 +13,19 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link OrganizerProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * @maintainer Cole
+ * @author Cole
  */
 public class OrganizerProfileFragment extends Fragment {
 
+    /**
+     * Default constructor
+     */
     public OrganizerProfileFragment() {
         // Required empty public constructor
     }
@@ -34,16 +44,26 @@ public class OrganizerProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is created.
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * This method is called when the fragment is created.
+     * @param inflater the layout inflater
+     * @param container the view group
+     * @param savedInstanceState the saved instance state
+     * @return the inflated layout
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Set header and Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_organizer_profile, container, false);
     }
 }

@@ -1,3 +1,9 @@
+/*
+This file is used to create an Attendee object. This object is used to store information about an attendee.
+Outstanding Issues:
+- Generate proflie picture duplicated for some functionality, may want to decouple database from setters
+ */
+
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
@@ -12,6 +18,10 @@ import java.util.function.Consumer;
 
 /**
  * A class representing an attendee
+ * @maintainer Christiaan
+ * @author Christiaan
+ * @author Ethan
+ * @author Cole
  */
 public class Attendee {
     private String identifier;
@@ -21,7 +31,6 @@ public class Attendee {
     private String email = "";
     private Boolean allowLocation = false;
     private List<String> eventsCheckedInto = new ArrayList<>();
-
     private Boolean usingDefaultProfilePhoto = true;
 
     /**
@@ -40,6 +49,8 @@ public class Attendee {
      * @param homePage the home page of the attendee
      * @param email the email of the attendee
      * @param allowLocation the location allowance of the attendee
+     * @param defaultPhoto whether or not the attendee is using the default profile photo
+     * @param eventsCheckedInto the events the attendee is checked into
      */
     public Attendee(String identifier, String firstName, String lastName, String homePage, String email, Boolean allowLocation, Boolean defaultPhoto, List<String> eventsCheckedInto) {
         this.identifier = identifier;
@@ -217,11 +228,14 @@ public class Attendee {
         int width = src.getWidth();
         int height = src.getHeight();
         int[] pixels = new int[width * height];
+
         // get pixel array from source
         src.getPixels(pixels, 0, width, 0, 0, width, height);
 
+        // create result bitmap output
         Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
 
+        // color information
         int pixel;
 
         // iteration through pixels
@@ -230,11 +244,15 @@ public class Attendee {
                 // get current index in 2D-matrix
                 int index = y * width + x;
                 pixel = pixels[index];
+                // set new pixel color to output bitmap if it is white
                 if(pixel == -1) {
+                    // change color
                     pixels[index] = color_1_replacement;
                 }
             }
         }
+
+        // set pixel array to result
         bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
         return bmOut;
     }
@@ -244,9 +262,11 @@ public class Attendee {
      * when the attendee is created so that a photo can immediately be displayed.
      */
     public void generateDefaultProfilePhoto() {
-        // Cupcake way
+
+        // Ensure we are using the default photo
         if (usingDefaultProfilePhoto) {
 
+            // Generate a color based on the attendee's name
             StringBuilder builder = new StringBuilder();
             for (char c : firstName.toCharArray()) {
                 builder.append((int)c);
@@ -256,7 +276,8 @@ public class Attendee {
             int G = (numIdentifier * 10) % 256;
             int B = (numIdentifier * 100) % 256;
             int icingColor = R << 16 | G << 8 | B;
-            
+
+            // Download the default photo and change its color
             Consumer<Bitmap> downloadConsumer = bitmap -> {
                 Bitmap finalBitmap = changeColor(bitmap, icingColor);
 
@@ -269,6 +290,8 @@ public class Attendee {
                         .putBytes(data);
 
             };
+
+            // Download the default photo
             MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
     }
@@ -277,9 +300,13 @@ public class Attendee {
      * A method to generate a default profile picture for the attendee. Should be called
      * when the attendee is created so that a photo can immediately be displayed.
      * In addition, this method will return the generated photo to the calling function.
+     * @param callingFunction the function to return the photo to (e.g. a lambda that sets the photo in the UI)
      */
     public void generateAndReturnDefaultProfilePhoto(Consumer<Bitmap> callingFunction) {
-        // Cupcake way
+
+        // Currently pretty TEMP function to get around the async nature of the download
+
+        // Ensure we are using the default photo
         if (usingDefaultProfilePhoto) {
 
             StringBuilder builder = new StringBuilder();

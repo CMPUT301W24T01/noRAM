@@ -1,3 +1,9 @@
+/*
+This file is used to display the list of events that a user has created.
+Outstanding Issues:
+- Instead of the user's events being displayed, all events are listed
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -32,6 +38,8 @@ import java.util.ArrayList;
  * A fragment used to display the list of events that a user has created.
  * Users can search through their events list and get more info on a specific event through this
  * fragment.
+ * @maintainer Gabriel
+ * @author Gabriel
  */
 public class OrganizerEventListFragment extends Fragment {
 
@@ -45,10 +53,10 @@ public class OrganizerEventListFragment extends Fragment {
     EventArrayAdapter allEventAdapter; // adapter for allEvent list
     EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
 
-
-    public OrganizerEventListFragment() {
-        // Required empty public constructor
-    }
+    /**
+     * Default constructor
+     */
+    public OrganizerEventListFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -64,6 +72,11 @@ public class OrganizerEventListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Called when the fragment is created. Initializes the fragment's variables and views.
+     * @param savedInstanceState If the fragment is being re-constructed from a previous saved state,
+     *                           this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,24 +103,23 @@ public class OrganizerEventListFragment extends Fragment {
         // remove old search
         searchEventDataList.clear();
         // search through events' details, name and location
-        eventRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                for (QueryDocumentSnapshot doc : querySnapshot) {
+        eventRef.get().addOnSuccessListener(querySnapshot -> {
+            for (QueryDocumentSnapshot doc : querySnapshot) {
 
-                    String name = doc.getString("name");
-                    String details = doc.getString("details");
-                    String location = doc.getString("location");
+                // get event's info
+                String name = doc.getString("name");
+                String details = doc.getString("details");
+                String location = doc.getString("location");
 
-                    if ((name != null && name.contains(search)) ||
-                            (details != null && details.contains(search)) ||
-                            (location != null && location.contains(search))) {
-                        // add valid events to result
-                        Event event = new Event();
-                        event.updateWithDocument(doc);
-                        searchEventDataList.add(event);
-                        searchEventAdapter.notifyDataSetChanged();
-                    }
+                // if event contains search, add it to the search list
+                if ((name != null && name.contains(search)) ||
+                        (details != null && details.contains(search)) ||
+                        (location != null && location.contains(search))) {
+                    // add valid events to result
+                    Event event = new Event();
+                    event.updateWithDocument(doc);
+                    searchEventDataList.add(event);
+                    searchEventAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -137,9 +149,9 @@ public class OrganizerEventListFragment extends Fragment {
         // get all views and initialize variables
         searchInput = rootView.findViewById(R.id.searchInput);
         allEventList = rootView.findViewById(R.id.allEventsList);
-        allEventDataList = new ArrayList<Event>();
+        allEventDataList = new ArrayList<>();
         searchEventList = rootView.findViewById(R.id.searchEventsList);
-        searchEventDataList = new ArrayList<Event>();
+        searchEventDataList = new ArrayList<>();
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
@@ -149,16 +161,35 @@ public class OrganizerEventListFragment extends Fragment {
 
         // connect searchbar to listen for user input
         searchInput.addTextChangedListener(new TextWatcher() {
+
+            /**
+             * This method is called to notify you that, somewhere within s, the text has been changed.
+             * @param s The text that has been changed
+             * @param start The starting index of the changed part in the text
+             * @param after The length of the changed part in the s sequence since the start index
+             * @param count The length of the new sequence in s
+             */
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // do nothing
             }
 
+            /**
+             * This method is called to notify you that, somewhere within s, the text has been changed.
+             * @param s The text that has been changed
+             * @param start The starting index of the changed part in the text
+             * @param before The length of the changed part in the s sequence since the start index
+             * @param count The length of the new sequence in s
+             */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // do nothing
             }
 
+            /**
+             * This method is called to notify you that, somewhere within s, the text has been changed.
+             * @param editable The text that has been changed
+             */
             @Override
             public void afterTextChanged(Editable editable) {
                 searchEvents(editable.toString());
@@ -166,45 +197,40 @@ public class OrganizerEventListFragment extends Fragment {
         });
 
         // connect the two lists so that each item display its event
-        allEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = allEventDataList.get(position);
-                // TODO: display event information with organizer page
+        allEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = allEventDataList.get(position);
+            // TODO: display event information with organizer page
 
-                // Temp: Edit event
-                Intent intent = new Intent(getContext(), OrganizerEditEventActivity.class);
-                intent.putExtra("event", event.getId());
-                startActivity(intent);
-            }
+            // Temp: Edit event
+            Intent intent = new Intent(getContext(), OrganizerEditEventActivity.class);
+            intent.putExtra("event", event.getId());
+            startActivity(intent);
         });
-        searchEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = searchEventDataList.get(position);
-                // TODO: display event information with organizer page
-            }
+        searchEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = searchEventDataList.get(position);
+            // TODO: display event information with organizer page
         });
 
 
         // TODO: Only show events of the user (instead of all events)
         //eventRef.where("organizer", "==", MainActivity.attendee).addSnapshotListener...
-        eventRef.addSnapshotListener(new EventListener<QuerySnapshot>(){
-            @Override
-            public void onEvent(QuerySnapshot querySnapshots, FirebaseFirestoreException error){
-                if(error != null){
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if(querySnapshots != null){
-                    allEventDataList.clear();
-                    for(QueryDocumentSnapshot doc: querySnapshots){
-                        // get event's info and create it
-                        Event event = new Event();
-                        event.updateWithDocument(doc);
-                        allEventDataList.add(event);
-                        allEventAdapter.notifyDataSetChanged();
-                    }
+        eventRef.addSnapshotListener((querySnapshots, error) -> {
+
+            // if error, log it and return
+            if(error != null){
+                Log.e("Firestore", error.toString());
+                return;
+            }
+
+            // if querySnapshots is not null, update the list of events
+            if(querySnapshots != null){
+                allEventDataList.clear();
+                for(QueryDocumentSnapshot doc: querySnapshots){
+                    // get event's info and create it
+                    Event event = new Event();
+                    event.updateWithDocument(doc);
+                    allEventDataList.add(event);
+                    allEventAdapter.notifyDataSetChanged();
                 }
             }
         });

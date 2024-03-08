@@ -1,7 +1,14 @@
+/*
+This file is used to get the users info on first time use of the app. It allows the user to enter their information and upload a profile picture.
+Outstanding Issues:
+- Need to move logic for attendee validaiton out of the class
+ */
+
 package com.example.noram;
 
+// TODO: There is alot of redundant code here that we can refactor from other fragments
+
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +30,13 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * This class is the activity for the profile entry page. It allows the user to enter their
+ * information and upload a profile picture.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Ethan
+ * @author Ethan
+ */
 public class ProfileEntryActivity extends AppCompatActivity {
 
     private ImageView imageView;
@@ -37,6 +51,10 @@ public class ProfileEntryActivity extends AppCompatActivity {
     private Button finish_button;
     private Button continue_button;
 
+    /**
+     * OnCreate method for the profile entry activity. Sets up the fields and buttons for the view
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +72,10 @@ public class ProfileEntryActivity extends AppCompatActivity {
         finish_button = findViewById(R.id.profile_entry_finish_button);
         continue_button = findViewById(R.id.profile_entry_continue_button);
 
+        // Get the attendee from the main activity
         attendee = MainActivity.attendee;
 
+        // Set the fields to the attendee's information
         setFields(attendee);
 
         // Hide the profile picture and buttons initially
@@ -65,40 +85,20 @@ public class ProfileEntryActivity extends AppCompatActivity {
         finish_button.setVisibility(View.INVISIBLE);
 
         //set on click listener to add photo when pressed
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startImagePicker();
-            }
-        });
+        addPhoto.setOnClickListener(v -> startImagePicker());
 
-        deletePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeletePhotoConfirmation();
-            }
-        });
+        deletePhoto.setOnClickListener(v -> showDeletePhotoConfirmation());
 
         // Save the entered information and switch screens when the continue button is clicked
-        continue_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                continueForm();
-            }
-        });
+        continue_button.setOnClickListener(v -> continueForm());
 
         // Redirect to the main activity after pressing the finish button
-        finish_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileEntryActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        finish_button.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileEntryActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
-
-
 
     /**
      * Starts the imagepicker activity
@@ -121,12 +121,7 @@ public class ProfileEntryActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete your photo?")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deletePhoto();
-                    }
-                })
+                .setPositiveButton("Confirm", (dialog, which) -> deletePhoto())
                 .setNegativeButton("Cancel", null)
                 .show();
     }

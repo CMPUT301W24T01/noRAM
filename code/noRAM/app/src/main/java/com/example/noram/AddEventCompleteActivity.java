@@ -1,3 +1,9 @@
+/*
+This file is used to display the completion screen when creating an event. It also generates and displays the QR codes for the event.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -12,12 +18,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * Activity that appears as the completion screen when creating an event.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Cole
+ * @author Cole
+ * @author Sandra
  */
 public class AddEventCompleteActivity extends AppCompatActivity {
 

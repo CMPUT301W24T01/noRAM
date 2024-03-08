@@ -1,7 +1,15 @@
+/*
+This file is used to define the different types of QR codes that can be used in the app.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**
- * Enumerator for differnet QR code types
+ * Enumerator for different QR code types
+ * @maintainer Cole
+ * @author Cole
  */
 public enum QRType {
     /**

@@ -1,3 +1,9 @@
+/*
+This file is for all views to inherit from so that they can be updated by a model.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.view;
 
 /**

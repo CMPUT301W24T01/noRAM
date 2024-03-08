@@ -1,3 +1,9 @@
+/*
+This file is used to edit the event details for the organizer and update the event in the database.
+Outstanding Issues:
+- Download photo from cloud storage to preview event poster
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;
@@ -26,7 +32,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Activity for editing a pre-existing event
+ * Activity for organizer to edit event
+ * Allows organizer to edit event attributes
+ * Allows organizer to upload event poster
+ * A {@link AppCompatActivity} subclass.
+ * @see DatePickerFragment
+ * @see TimePickerFragment
+ * @maintainer Carlin
+ * @author Carlin
+ * @maintainer Carlin
  */
 public class OrganizerEditEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 
