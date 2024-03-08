@@ -7,6 +7,9 @@ import com.example.noram.model.Event;
 
 import org.junit.Test;
 
+/**
+ * Unit tests for the Event class
+ */
 public class EventUnitTest {
     /**
      * Tests the equals method of the event.

@@ -55,7 +55,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
-        ImageButton homeButton = findViewById(R.id.home_button);
+        ImageButton homeButton = findViewById(R.id.attendee_home_button);
         headerText = findViewById(R.id.attendee_header_text);
         navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);

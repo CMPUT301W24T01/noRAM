@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static final Database db = new Database();
+    public static Database db = new Database();
     public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
     public static Organizer organizer = null;
