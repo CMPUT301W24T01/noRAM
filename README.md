@@ -1,5 +1,22 @@
-# Dependencies
+# noRAM
+A course project for CMPUT 301 in the Winter 2024 semester at the University of Alberta.
 
+See our [wiki](https://github.com/CMPUT301W24T01/noRAM/wiki) for details on submission for different project parts,
+our [javadocs](https://github.com/CMPUT301W24T01/noRAM/tree/master/doc/javadocs) for our generated documentation, our [source code](https://github.com/CMPUT301W24T01/noRAM/tree/master/code/noRAM), or our [releases](https://github.com/CMPUT301W24T01/noRAM/releases).
+
+## Team Members
+
+| CCID          | Github        | Name          |
+| ------------- | ------------- | ------------- | 
+| clventer      | WhoShotCupidd | Christiaan    | 
+| dewis         | ColeDewis     | Cole          | 
+| elchung       | ethanchung936 | Ethan         | 
+| cboyles       | Semicarlin    | Carlin        | 
+| staskovi      | ServingCoder  | Sandra        | 
+| gdumouli      | gdumouli      | Gabriel       | 
+
+# Dependencies
+Below is a list of the android gradle dependencies used for this project.
 
 | Dependency                                     | URL                                                                             | Use Case
 | ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------
