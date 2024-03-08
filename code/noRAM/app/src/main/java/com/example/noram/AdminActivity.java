@@ -42,7 +42,7 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        ((ImageButton) findViewById(R.id.home_button)).setOnClickListener(v -> finish());
+        ((ImageButton) findViewById(R.id.admin_home_button)).setOnClickListener(v -> finish());
 
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "home")
