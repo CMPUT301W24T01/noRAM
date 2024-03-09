@@ -14,16 +14,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,18 +42,26 @@ import java.util.Objects;
  */
 public class AttendeeEventInfo extends AppCompatActivity {
     private Event event; // current event being inquired
-    private TextView eventTitle;
-    private TextView organizerText;
-    private ImageView organizerImage;
-    private TextView eventLocation;
-    private ImageView eventImage;
-    private TextView eventDescription;
+    private TextView eventTitle; // event's title
+    private TextView organizerText; // text indicating event's organizer
+    private ImageView organizerImage; // profile picture of event's organizer
+    private TextView eventLocation; // event's location
+    private ImageView eventImage; // event's image
+    private TextView eventDescription; // event's description
+    private final CollectionReference eventsRef = MainActivity.db.getEventsRef(); // events in the database
     /**
      * Signup the user to current event in the database and display a message through a new activity
      */
     private void signup(){
         // TODO: update database
         // TODO: send to message page
+        // sign-in the event and display sign-in message
+        EventManager.signInToEvent(event.getId());
+        Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
+        // load new page (signed-in event)
+        EventManager.displayCheckedInEvent(this, event);
+        // remove old page
+        finish();
     }
 
     /**
@@ -68,7 +83,7 @@ public class AttendeeEventInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AttendeeEventInfo.this, AttendeeAnnouncementsActivity.class);
-                intent.putExtra(AttendeeEventListFragment.eventIDLabel, event.getId());
+                intent.putExtra(EventManager.eventIDLabel, event.getId());
                 startActivity(intent);
             }
         });
@@ -88,34 +103,50 @@ public class AttendeeEventInfo extends AppCompatActivity {
 
     /**
      * Update page's event ("event") with database's info
-     * @param eventId the id of the event to be updated
-     *                (the event must be in the database)
      */
-    private void baseSetup(String eventId){
-        // Get event from database
-        event = new Event();
-        Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventId).get();
-        task.addOnSuccessListener(documentSnapshot -> {
-            // update event
-            event.updateWithDocument(documentSnapshot);
-            // update page's info
-            eventTitle.setText(event.getName());
-            eventDescription.setText(event.getDetails());
-            LocalDateTime startTime = event.getStartTime();
-            eventLocation.setText(String.format("%s from %s - %s @ %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                    event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
-                    event.getLocation()
-            ));
-            //Log.d("EventInfo", event.getName());
-            //Log.d("EventInfo", event.getDetails());
-            //Log.d("EventInfo", event.getLocation());
-            //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
-            // TODO: update organizer image
-            //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
-            // TODO: update event image
-        });
+    private void baseSetup(){
+        // check that check-in wasn't specified
+        boolean specifiedCheckedIn = getIntent().getExtras().getBoolean(EventManager.checkedInLabel);
+        if(specifiedCheckedIn){
+            checkedInDisplay();
+        }
+        else{
+            // verify if user is already checked-in event: hide/show content in consequence
+            List<String> attendees = event.getCheckedInAttendees();
+            if(attendees != null && attendees.contains(MainActivity.attendee.getIdentifier())){
+                checkedInDisplay();
+            }
+            else{
+                notCheckedInDisplay();
+            }
+        }
+
+        // get all variables from page
+        ImageButton backButton = findViewById(R.id.backButton);
+        eventTitle = findViewById(R.id.eventTitle);
+        organizerText = findViewById(R.id.organizerText);
+        organizerImage = findViewById(R.id.organizerImage);
+        eventLocation = findViewById(R.id.eventLocation);
+        eventImage = findViewById(R.id.eventImage);
+        eventDescription = findViewById(R.id.eventDescription);
+
+        // update page's info
+        eventTitle.setText(event.getName());
+        eventDescription.setText(event.getDetails());
+        LocalDateTime startTime = event.getStartTime();
+        eventLocation.setText(String.format("%s from %s - %s @ %s",
+                startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
+                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
+                event.getLocation()
+        ));
+        //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
+        // TODO: update organizer image
+        //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
+        // TODO: update event image
+
+        // connect back button
+        backButton.setOnClickListener(v -> {finish();});
     }
 
     /**
@@ -128,30 +159,36 @@ public class AttendeeEventInfo extends AppCompatActivity {
 
         // retrieve corresponding event in database
         //int eventID = getIntent().getIntExtra(AttendeeEventListFragment.eventIDLabel,0);
-        String eventID = getIntent().getExtras().getString(AttendeeEventListFragment.eventIDLabel);
-        baseSetup(eventID);
+        String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
 
-        // verify if user is already checked-in event: hide/show content in consequence
-        // TODO: check if event is checked-in
-        if(false){
-            checkedInDisplay();
-        }
-        else{
-            notCheckedInDisplay();
-        }
-
-        // get all variables from page
-        ImageButton backButton = findViewById(R.id.backButton);
-        eventTitle = findViewById(R.id.eventTitle);
-        organizerText = findViewById(R.id.organizerText);
-        organizerImage = findViewById(R.id.organizerImage);
-        eventLocation = findViewById(R.id.eventLocation);
-        eventImage = findViewById(R.id.eventImage);
-        eventDescription = findViewById(R.id.eventDescription);
-
-        // connect back button
-        backButton.setOnClickListener(v -> {finish();});
-
+        // retrieve event then load page
+        assert eventID != null;
+        eventsRef.document(eventID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    // update event
+                    event = new Event();
+                    event.updateWithDocument(documentSnapshot);
+                    // update page's info
+                    baseSetup();
+                }
+                else{
+                    // doesn't exist
+                    Log.e("AttendeeEventInfo", "Couldn't find the event in the database");
+                }
+            }
+        });
+        /*
+        Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
+        task.addOnSuccessListener(documentSnapshot -> {
+            // update event
+            event = new Event();
+            event.updateWithDocument(documentSnapshot);
+            // update page's info
+            baseSetup();
+        });
+        */
     }
 
 

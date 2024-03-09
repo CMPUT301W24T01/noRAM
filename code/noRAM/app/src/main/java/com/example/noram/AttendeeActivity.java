@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -142,6 +143,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         // Navigate the navbar to the events page, then call the events page to programmatically
         // click the right event.
         navBar.setSelectedItemId(NAV_EVENTS);
-        ((AttendeeEventListFragment) eventsFragment).viewEventPage(event);
+        //((AttendeeEventListFragment) eventsFragment).viewEventPage(event);
+        EventManager.displayEvent(this, event);
     }
 }

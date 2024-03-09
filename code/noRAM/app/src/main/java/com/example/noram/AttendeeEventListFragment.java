@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.noram.AttendeeEventInfo;
 import com.example.noram.MainActivity;
 import com.example.noram.controller.EventArrayAdapter;
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
  * @author Cole
  */
 public class AttendeeEventListFragment extends Fragment {
-    public static final String eventIDLabel = "eventID";
     private CollectionReference eventRef; // list of events in database
     private ListView allEventList; // list of all events in UI
     private ListView userEventList; // list of all user's events in UI
@@ -120,9 +120,9 @@ public class AttendeeEventListFragment extends Fragment {
                 String details = doc.getString("details");
                 String location = doc.getString("location");
 
-                if((name != null && name.contains(search))||
-                (details != null && details.contains(search)) ||
-                (location != null && location.contains(search)) )
+                if((name != null && name.toLowerCase().contains(search.toLowerCase()))||
+                (details != null && details.toLowerCase().contains(search.toLowerCase())) ||
+                (location != null && location.toLowerCase().contains(search.toLowerCase())) )
                 {
                     // add valid events to result
                     Event event = new Event();
@@ -132,19 +132,6 @@ public class AttendeeEventListFragment extends Fragment {
                 }
             }
         });
-    }
-
-    /**
-     * When an event is clicked on, its information is displayed by calling a new activity
-     * @param event The event whose information need to be displayed
-     */
-    public void displayEvent(Event event){
-        Intent intent = new Intent(getActivity(), AttendeeEventInfo.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(eventIDLabel, event.getId());
-        intent.putExtras(bundle);
-        Log.d("EventList", "ListID is " + event.getId());
-        startActivity(intent);
     }
 
     /**
@@ -209,15 +196,15 @@ public class AttendeeEventListFragment extends Fragment {
         // connect the three lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            displayEvent(event);
+            EventManager.displayEvent(getActivity(),event);
         });
         userEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = userEventDataList.get(position);
-            displayEvent(event);
+            EventManager.displayEvent(getActivity(),event);
         });
         searchEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = searchEventDataList.get(position);
-            displayEvent(event);
+            EventManager.displayEvent(getActivity(),event);
         });
 
         // TODO: connect database to all-events and user-events data lists (need ref implemented)
@@ -234,17 +221,17 @@ public class AttendeeEventListFragment extends Fragment {
                     Event event = new Event();
                     event.updateWithDocument(doc);
                     allEventDataList.add(event);
-                    allEventAdapter.notifyDataSetChanged();
 
                     // if user correspond, add event to myEvents list
                     // TODO: check in database how to find corresponding user
-                    ArrayList<String> attendees = (ArrayList<String>) doc.get("attendees");
-
+                    ArrayList<String> attendees = (ArrayList<String>) doc.get("checkedInAttendees");
                     if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                         userEventDataList.add(event);
-                        userEventAdapter.notifyDataSetChanged();
                     }
                 }
+                // update after both lists are changed
+                allEventAdapter.notifyDataSetChanged();
+                userEventAdapter.notifyDataSetChanged();
             }
         });
 
