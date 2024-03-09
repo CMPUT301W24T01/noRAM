@@ -207,7 +207,6 @@ public class AttendeeEventListFragment extends Fragment {
             EventManager.displayEvent(getActivity(),event);
         });
 
-        // TODO: connect database to all-events and user-events data lists (need ref implemented)
         eventRef.addSnapshotListener((querySnapshots, error) -> {
             if(error != null){
                 Log.e("Firestore", error.toString());
@@ -223,7 +222,6 @@ public class AttendeeEventListFragment extends Fragment {
                     allEventDataList.add(event);
 
                     // if user correspond, add event to myEvents list
-                    // TODO: check in database how to find corresponding user
                     ArrayList<String> attendees = (ArrayList<String>) doc.get("checkedInAttendees");
                     if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                         userEventDataList.add(event);
