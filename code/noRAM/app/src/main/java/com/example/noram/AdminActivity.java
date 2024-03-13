@@ -27,7 +27,7 @@ import com.example.noram.AdminHomeFragment;
  * @author Cole
  */
 public class AdminActivity extends AppCompatActivity {
-    
+
     public final Fragment homeFragment = AdminHomeFragment.newInstance();
     public final Fragment eventsFragment = AdminEventsFragment.newInstance();
     public final Fragment imagesFragment = AdminImagesFragment.newInstance();
