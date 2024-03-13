@@ -11,8 +11,17 @@ import android.graphics.Color;
 
 import com.example.noram.MainActivity;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.HashMap;
@@ -131,5 +140,31 @@ public class QRCode {
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Validate that a bitmap has a QR Code in it.
+     * @param bmp bitmap to validate
+     * @return a null result if a QR code couldn't be found, else, the result, containing the encoded data
+     */
+    public static Result checkImageForQRCode(Bitmap bmp) {
+        // TODO: might want to move this to a QRValidator type class. Also, unit test this
+        // convert bitmap to a BinaryBitmap so
+        int[] pixels = new int[bmp.getWidth() * bmp.getHeight()];
+        bmp.getPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        LuminanceSource luminanceSource = new RGBLuminanceSource(bmp.getWidth(), bmp.getHeight(), pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
+
+        // read the bitmap with a qr code reader
+        Result result;
+        QRCodeReader reader = new QRCodeReader();
+        try {
+            result = reader.decode(binaryBitmap);
+        } catch (NotFoundException | ChecksumException | FormatException e) {
+            // QR Code not found/decoded - assume it's not a valid image
+            result = null;
+        }
+
+        return result;
     }
 }
