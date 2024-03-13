@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -43,6 +45,7 @@ public class AdminActivity extends AppCompatActivity {
     private Fragment activeFragment;  // fragment being displayed
     ImageButton backButton; // button to go back to admin's main menu
     ImageButton homeButton; // button to go back to app's main menu
+    TextView headerText; // text indicating which fragment is being currently displayed
 
     /**
      * Change the page displayed on the Admin section
@@ -51,14 +54,20 @@ public class AdminActivity extends AppCompatActivity {
     public void displayFragment(int pageNum){
         // get corresponding fragment
         Fragment newFragment;
+        int pageTitleID;
+
         if(pageNum == 0){
             newFragment = homeFragment;
+            pageTitleID = R.string.administrator_page_title;
         } else if(pageNum == 1){
             newFragment = eventsFragment;
+            pageTitleID = R.string.admin_events_page_title;
         } else if(pageNum == 2){
             newFragment = imagesFragment;
+            pageTitleID = R.string.admin_images_page_title;
         } else if(pageNum == 3){
             newFragment = profilesFragment;
+            pageTitleID = R.string.admin_users_page_title;
         }else{
             throw new IllegalArgumentException("pageNum must be between 0 and 3");
         }
@@ -80,6 +89,9 @@ public class AdminActivity extends AppCompatActivity {
             backButton.setVisibility(View.VISIBLE);
             homeButton.setVisibility(View.INVISIBLE);
         }
+
+        // update header text
+        headerText.setText(pageTitleID);
     }
 
     /**
@@ -93,29 +105,31 @@ public class AdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+
         backButton = findViewById(R.id.admin_back_button);
         homeButton = findViewById(R.id.admin_home_button);
+        headerText = findViewById(R.id.admin_header_text);
 
-        // 1st visible fragment is admin menu
-        // hide back button for now, while keeping home button displayed
+        // Begin in admin menu. Back button is hidden
         activeFragment = homeFragment;
         backButton.setVisibility(View.INVISIBLE);
         homeButton.setVisibility(View.VISIBLE);
+        headerText.setText(R.string.administrator_page_title);
 
         // create all fragments
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "home")
                 .commit();
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, eventsFragment, "events")
+                .add(R.id.fragment_container, eventsFragment, "events")
                 .hide(eventsFragment)
                 .commit();
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, profilesFragment, "profiles")
+                .add(R.id.fragment_container, profilesFragment, "profiles")
                 .hide(profilesFragment)
                 .commit();
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, imagesFragment, "images")
+                .add(R.id.fragment_container, imagesFragment, "images")
                 .hide(imagesFragment)
                 .commit();
 
