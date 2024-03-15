@@ -53,19 +53,20 @@ public class AdminActivity extends AppCompatActivity {
      */
     public void displayFragment(int pageNum){
         // get corresponding fragment
-        Fragment newFragment;
         int pageTitleID;
-
-        if(pageNum == 0){
+        Fragment newFragment;
+        if(pageNum == homePage){
             newFragment = homeFragment;
             pageTitleID = R.string.administrator_page_title;
-        } else if(pageNum == 1){
+        } else if(pageNum == eventsPage){
+            Log.d("AdminAct", "InsideEvents. pageNum: " + pageNum + " eventsPage: " + eventsPage);
             newFragment = eventsFragment;
             pageTitleID = R.string.admin_events_page_title;
-        } else if(pageNum == 2){
+        } else if(pageNum == imagesPage){
             newFragment = imagesFragment;
             pageTitleID = R.string.admin_images_page_title;
-        } else if(pageNum == 3){
+        } else if(pageNum == profilesPage){
+            Log.d("AdminAct", "InsideProfiles. pageNum: " + pageNum + " eventsPage: " + eventsPage);
             newFragment = profilesFragment;
             pageTitleID = R.string.admin_users_page_title;
         }else{
