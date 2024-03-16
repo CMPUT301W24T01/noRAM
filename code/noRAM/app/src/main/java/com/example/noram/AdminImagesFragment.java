@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.PhotoArrayAdapter;
@@ -34,17 +35,34 @@ public class AdminImagesFragment extends Fragment {
         return new AdminImagesFragment();
     }
 
-    public GridView imagesGrid;
-    ArrayList<Photo> imagesDataList;
+    public GridView imagesGrid; // images being displayed
+    ArrayList<Photo> imagesDataList; // data containing images
+    PhotoArrayAdapter imagesAdapter; // connect images being displayed with images' data
+
+    /**
+     * Removes a photo from the gridView and from the database
+     * @param photoPos Index in imagesDataList of the photo being deleted
+     */
+    public void deletePhoto(int photoPos){
+        // remove photo from database
+        Photo photo = imagesDataList.get(photoPos);
+        photo.deletePhoto();
+
+        // remove from local data
+        imagesDataList.remove(photoPos);
+        imagesAdapter.notifyDataSetChanged();
+    }
 
     /**
      * Adds an item (image) from firebase's storage to the page's gridview
      * @param item Storage's item to be added
+     * @param isProfile Indicates if the photo is an attendee's profile photo
      */
-    public void addPhotoToGrid(StorageReference item){
+    public void addPhotoToGrid(StorageReference item, boolean isProfile){
         // Create new photo and update with item's values
         Photo photo = new Photo();
         photo.setPhotoPath(item.getPath());
+        photo.setPhotoProfile(isProfile);
         photo.setBitmapFromDB(getContext());
         // store it
         imagesDataList.add(photo);
@@ -64,7 +82,7 @@ public class AdminImagesFragment extends Fragment {
         // get basic elements
         imagesGrid = rootView.findViewById(R.id.imagesGrid);
         imagesDataList = new ArrayList<Photo>();
-        PhotoArrayAdapter imagesAdapter = new PhotoArrayAdapter(this.getContext(), imagesDataList);
+        imagesAdapter = new PhotoArrayAdapter(this.getContext(), imagesDataList);
         imagesGrid.setAdapter(imagesAdapter);
 
         // get all images from firebase's storage and store it(NOT updated in real-time!)
@@ -74,7 +92,7 @@ public class AdminImagesFragment extends Fragment {
                     @Override
                     public void onSuccess(ListResult listResult) {
                         for(StorageReference item : listResult.getItems()){
-                            addPhotoToGrid(item);
+                            addPhotoToGrid(item, true);
                         }
                     }
                 });
@@ -84,26 +102,27 @@ public class AdminImagesFragment extends Fragment {
                     @Override
                     public void onSuccess(ListResult listResult) {
                         for(StorageReference item : listResult.getItems()){
-                            addPhotoToGrid(item);
+                            addPhotoToGrid(item, false);
                         }
                     }
                 });
 
-        // update gridview
+        // update gridview after adding everything
         imagesAdapter.notifyDataSetChanged();
 
-                /*
+
         // connection each list element to show the 'delete' popup TODO: implement the delete function
         imagesGrid.setOnItemClickListener((parent, view, position, id) -> {
-            // get document
-            Photo photo = imagesDataList.get(position);
-
             // initialize popup
-            ConfirmDeleteFragment deleteFragment = new ConfirmDeleteFragment();
-            deleteFragment.setDeleteDoc(doc);
-            deleteFragment.show(getParentFragmentManager(), "Delete Document");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Confirm delete?")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Confirm", (dialog, which) -> {
+                        deletePhoto(position);
+                    })
+                    .create().show();
         });
-            */
+
 
         return rootView;
     }

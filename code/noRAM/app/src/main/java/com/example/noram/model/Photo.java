@@ -13,9 +13,12 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A class to represent a photo
@@ -26,6 +29,7 @@ public class Photo {
     private String photoName;
     private String photoPath;
     private Bitmap photoBitmap;
+    private boolean photoProfile; // indicates if photo is associated with a profile or not
     // views that need to be updated with bitmap later
     private final ArrayList<ImageView> viewsToUpdate = new ArrayList<ImageView>();
 
@@ -78,12 +82,23 @@ public class Photo {
     }
 
     /**
+     * A method to set the photoProfile boolean, indicating if it's the photo of an attendee's
+     * profile
+     * @param isProfile If the photo is an attendee's profile photo (true if it is)
+     */
+    public void setPhotoProfile(boolean isProfile){
+        this.photoProfile = isProfile;
+    }
+
+    public boolean getPhotoProfile(){
+        return photoProfile;
+    }
+
+    /**
      * Removes the photo from the cloud storage. If it was an attendee photo, also reset the default
      * parameter of the attendee
-     * @param userPhoto Indicates if the photo is a attendee's profile and we need to reset the
-     *                  attendee's default photo.
      */
-    public void deletePhoto(boolean userPhoto) {
+    public void deletePhoto() {
         // remove from database
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(photoPath);
         storageReference.delete().addOnSuccessListener(
@@ -93,14 +108,20 @@ public class Photo {
         );
 
         // if attendee's profile photo, reset default
-        if(userPhoto){
-            // get ID by finding first "-" and taking what's before
-            int IDIndex = photoPath.indexOf("-");
-            if (IDIndex != -1) {
-                String id = photoPath.substring(0, IDIndex);
-                // TODO: update database with new value
+        if(photoProfile){
+            // get ID by finding substring of path
+            int dashIndex = photoPath.indexOf("-");
+            String folderName = "profile_photos/";
+            int folderIndex = photoPath.indexOf(folderName);
+            if (dashIndex != -1 && folderIndex != -1) {
+                String id = photoPath.substring(folderIndex + folderName.length(), dashIndex);
+
+                // update fields of attendee
+                MainActivity.db.getAttendeeRef().document(id)
+                        .update("defaultProfilePhoto", true);
             } else {
-                throw new RuntimeException("Photo's path does not contain '-': cannot find ID.");
+                Log.e("deletePhoto",
+                        "Photo's path does not contain valid format to find ID.");
             }
         }
 
