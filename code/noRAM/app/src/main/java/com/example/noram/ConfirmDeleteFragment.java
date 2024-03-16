@@ -61,7 +61,7 @@ public class ConfirmDeleteFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-                .setTitle("Are you sure you want to delete?")
+                .setTitle("Confirm delete?")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Confirm", (dialog, which) -> {
                     deleteDoc();

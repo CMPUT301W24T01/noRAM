@@ -56,7 +56,7 @@ public class AdminEventsFragment extends Fragment {
         eventsList.setAdapter(eventsAdapter);
         eventRef = MainActivity.db.getEventsRef();
 
-        // connection each list element to show the 'delete' popup
+        // connect each list element to show the 'delete' popup
         eventsList.setOnItemClickListener((parent, view, position, id) -> {
             // get document
             Event event = eventsDataList.get(position);

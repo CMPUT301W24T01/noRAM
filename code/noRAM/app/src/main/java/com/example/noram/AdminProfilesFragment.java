@@ -58,7 +58,7 @@ public class AdminProfilesFragment extends Fragment {
         profilesList.setAdapter(profilesAdapter);
         attendeeRef = MainActivity.db.getAttendeeRef();
 
-        // connection each list element to show the 'delete' popup
+        // connect each list element to show the 'delete' popup
         profilesList.setOnItemClickListener((parent, view, position, id) -> {
             // get document
             Attendee attendee = profilesDataList.get(position);
