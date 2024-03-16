@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Message;
 import com.example.noram.model.Organizer;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public static Attendee attendee = null;
     public static Organizer organizer = null;
     private Button adminButton;
+
+    private Message message = new Message(); // TEMP DONT LET ME PUSH THIS PLEASE
 
     /**
      * Create and setup the main activity.

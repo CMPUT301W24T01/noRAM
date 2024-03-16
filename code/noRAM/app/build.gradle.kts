@@ -68,4 +68,9 @@ dependencies {
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
 
+    // Add the dependencies for the Firebase Cloud Messaging and Analytics libraries
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
+
+
 }
