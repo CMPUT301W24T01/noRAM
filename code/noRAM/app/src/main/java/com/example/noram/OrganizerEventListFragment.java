@@ -8,28 +8,21 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -202,7 +195,7 @@ public class OrganizerEventListFragment extends Fragment {
             // TODO: display event information with organizer page
 
             // Temp: Edit event
-            Intent intent = new Intent(getContext(), OrganizerEditEventActivity.class);
+            Intent intent = new Intent(getContext(), OrganizerEventInfo.class);
             intent.putExtra("event", event.getId());
             startActivity(intent);
         });
