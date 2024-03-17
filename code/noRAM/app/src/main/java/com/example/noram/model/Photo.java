@@ -1,7 +1,15 @@
+/*
+This file is used to create a photo object. It contains the photo name and the photo path.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**
  * A class to represent a photo
+ * @maintainer Carlin
+ * @author Christiaan
  */
 public class Photo {
     private String photoName;

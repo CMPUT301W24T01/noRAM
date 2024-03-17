@@ -1,3 +1,9 @@
+/*
+This file is used to create the QR scanning fragment. It uses the CodeScanner library to scan QR codes.
+Outstanding Issues:
+- Sometimes the camera loads very slowly - see if this can be fixed
+ */
+
 package com.example.noram;
 
 import android.app.Activity;
@@ -26,14 +32,15 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Use the {@link QrScanFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * @maintainer Cole
+ * @author Cole
  */
 public class QrScanFragment extends Fragment {
 
+    // Attributes
     private CodeScanner mCodeScanner;
-
     private ProgressBar scanLoadingSpinBar;
     private GoToEventListener goToEventListener;
-
 
     /**
      * Empty constructor for QrScanFragment

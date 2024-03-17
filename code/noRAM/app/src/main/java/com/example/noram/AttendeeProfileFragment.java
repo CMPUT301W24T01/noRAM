@@ -3,12 +3,12 @@ This file is used to display the attendee's profile information and allow for ed
 Outstanding Issues:
 - The attendee's information is not saved to the database.
 - The attendee's profile picture is not the correct type.
+- Need to move attendee validation logic out of this class
  */
 
 package com.example.noram;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,14 +37,15 @@ import com.google.firebase.storage.StorageReference;
  * AttendeeProfileFragment is a fragment that displays the attendee's profile information
  * It allows the user to edit their information and save it to the database.
  * It also displays information about their profile stored in the database.
+ * @maintainer Ethan
+ * @author Ethan
+ * @author Cole
+ * @author Sandra
  */
 public class AttendeeProfileFragment extends Fragment{
-
     private ImageView imageView;
     private FloatingActionButton addPhoto;
-
     private FloatingActionButton deletePhoto;
-
     private ImageButton profileImage;
     private Attendee attendee;
     private EditText firstName;
@@ -62,7 +63,6 @@ public class AttendeeProfileFragment extends Fragment{
     /**
      * Use this factory method to create a new instance of
      * this fragment.
-     *
      * @return A new instance of fragment AttendeeProfileFragment.
      */
     public static AttendeeProfileFragment newInstance() {
@@ -111,8 +111,10 @@ public class AttendeeProfileFragment extends Fragment{
         email = view.findViewById(R.id.edit_attendee_email);
         allowLocation = view.findViewById(R.id.edit_attendee_location_box);
 
+        // Get the attendee from the main activity
         attendee = MainActivity.attendee;
 
+        // Set the fields to the attendee's information
         setFields(attendee);
 
         // hide delete button if we are using a default profile photo
@@ -125,48 +127,37 @@ public class AttendeeProfileFragment extends Fragment{
                 t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
 
         //set on click listener to add photo when pressed
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startImagePicker();
-            }
-        });
+        addPhoto.setOnClickListener(v -> startImagePicker());
 
-        deletePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeletePhotoConfirmation();
-            }
-        });
+        //set on click listener to delete photo when pressed
+        deletePhoto.setOnClickListener(v -> showDeletePhotoConfirmation());
 
         // Save the entered information when the save button is clicked
-        view.findViewById(R.id.attendee_info_save_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String editFirstName = firstName.getText().toString();
-                String editLastName = lastName.getText().toString();
-                String editHomePage = homePage.getText().toString();
-                String editEmail = email.getText().toString();
-                Boolean editAllowLocation = allowLocation.isChecked();
+        view.findViewById(R.id.attendee_info_save_button).setOnClickListener(v -> {
+            String editFirstName = firstName.getText().toString();
+            String editLastName = lastName.getText().toString();
+            String editHomePage = homePage.getText().toString();
+            String editEmail = email.getText().toString();
+            Boolean editAllowLocation = allowLocation.isChecked();
 
-                // Validate name and email fields
-                if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
-                    attendee.setFirstName(editFirstName);
-                    attendee.setLastName(editLastName);
-                    attendee.setHomePage(editHomePage);
-                    attendee.setEmail(editEmail);
-                    attendee.setAllowLocation(editAllowLocation);
+            // Validate name and email fields
+            if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
+                attendee.setFirstName(editFirstName);
+                attendee.setLastName(editLastName);
+                attendee.setHomePage(editHomePage);
+                attendee.setEmail(editEmail);
+                attendee.setAllowLocation(editAllowLocation);
+
+                if (attendee.getDefaultProfilePhoto()) {
+                    attendee.generateAndReturnDefaultProfilePhoto(t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                } else {
+                    attendee.generateDefaultProfilePhoto();
                 }
             }
         });
 
         // Revert the changes when the cancel button is clicked
-        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFields(attendee);
-            }
-        });
+        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(v -> setFields(attendee));
         return view;
     }
 
@@ -191,16 +182,13 @@ public class AttendeeProfileFragment extends Fragment{
         new AlertDialog.Builder(getActivity())
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete your photo?")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deletePhoto();
-                    }
-                })
+                .setPositiveButton("Confirm", (dialog, which) -> deletePhoto())
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
+    // TODO: make sure the most recent default profile shows up if the user changes their name while
+    //  using a real picture then deletes it. This is a minor issue, but it would be nice to fix.
     /**
      * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
      * it with the default profile photo

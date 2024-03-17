@@ -1,3 +1,10 @@
+/*
+This file is used to create the main activity of the application. This activity is the first activity that is launched
+when the application is opened. It is responsible for signing in the user and redirecting them to the appropriate activity
+Outstanding Issues:
+- Need to move the logic for getting the attendee from the database out of this class
+ */
+
 package com.example.noram;
 
 import static android.content.ContentValues.TAG;
@@ -18,12 +25,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.io.Serializable;
+import java.util.Objects;
 import java.util.List;
 
+/**
+ * The main activity of the application. This activity is the first activity that is launched
+ * when the application is opened. It is responsible for signing in the user and redirecting
+ * them to the appropriate activity based on their role.
+ * A {@link AppCompatActivity} subclass.
+ * @author noRAM
+ */
 public class MainActivity extends AppCompatActivity {
 
-    public static final Database db = new Database();
+    public static Database db = new Database();
     public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
     public static Organizer organizer = null;
@@ -38,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         // NOTE: temporary buttons to move to each activity
@@ -62,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AttendeeActivity.class))
         );
 
+        // hide buttons until the user is fully signed in
+        organizerButton.setVisibility(View.INVISIBLE);
+        attendeeButton.setVisibility(View.INVISIBLE);
+
         // ask for camera permission
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -70,14 +87,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Start the main activity. This signs in the userusing firebase authentication
+     * Start the main activity. This signs in the user using firebase authentication
      */
     @Override
     public void onStart() {
         super.onStart();
-        db.getmAuth().addAuthStateListener(auth -> {
-            signInFirebase();
-        });
+        db.getmAuth().addAuthStateListener(auth -> signInFirebase());
     }
 
     /**
@@ -96,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "signInAnonymously:success");
                         Log.d(TAG, "UID: " + currentUser.getUid());
                         FirebaseUser user = db.getmAuth().getCurrentUser();
-                        updateAdminAccess(user.getUid());
 
                         // Get the user's data from the database
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
@@ -115,14 +129,19 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
-
-                                    // TODO: move this logic to the "attendee details" screen that
-                                    // appears when they create a profile the first time.
-                                    Log.d("DEBUG", "generating profile picture");
-                                    attendee.setFirstName("TestName");
-                                    attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
                                 }
+                                // If the user's information is not complete, show the info activity
+                                if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {
+                                    initializeAttendeeProfile();
+                                } else {
+                                    // Show the buttons after the user is signed in and remove progress bar
+                                    findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                    updateAdminAccess(user.getUid());
+                                }
+                                findViewById(R.id.progressBar).setVisibility(View.GONE);
+
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -133,6 +152,15 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Initialize the attendee profile by opening the profile activity.
+     * This is called when the user's information is not complete.
+     */
+    private void initializeAttendeeProfile() {
+        startActivity(new Intent(MainActivity.this, ProfileEntryActivity.class));
+        finish();
     }
 
     /**

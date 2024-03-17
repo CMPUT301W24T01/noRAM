@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event. Depending on event's data, the layout page will change.
+Outstanding Issues:
+- Not all fields on xml page are filled, needs to get organizer content and event posters
+ */
+
 package com.example.noram;
 
 import static android.app.PendingIntent.getActivity;
@@ -25,6 +31,9 @@ import java.util.Objects;
 /**
  * An activity displaying the information about an event. Depending on event's data, the layout page
  * will change.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Gabriel
+ * @author Gabriel
  */
 public class AttendeeEventInfo extends AppCompatActivity {
     private Event event; // current event being inquired
@@ -52,6 +61,12 @@ public class AttendeeEventInfo extends AppCompatActivity {
         // connect announcements button
         TextView announcements = findViewById(R.id.announcementText);
         announcements.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * When the user clicks on the announcements button, it will send them to the announcements
+             * page of the event
+             * @param v the view of the page
+             */
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AttendeeEventInfo.this, AttendeeAnnouncementsActivity.class);
@@ -70,16 +85,13 @@ public class AttendeeEventInfo extends AppCompatActivity {
 
         // connect signup button
         Button signupButton = findViewById(R.id.signupButton);
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signup();
-            }
-        });
+        signupButton.setOnClickListener(v -> signup());
     }
 
     /**
      * Update page's event ("event") with database's info
+     * @param eventId the id of the event to be updated
+     *                (the event must be in the database)
      */
     private void baseSetup(String eventId){
         // Get event from database
@@ -124,6 +136,10 @@ public class AttendeeEventInfo extends AppCompatActivity {
         });
     }
 
+    /**
+     * Create the activity
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -152,12 +168,7 @@ public class AttendeeEventInfo extends AppCompatActivity {
         eventDescription = findViewById(R.id.eventDescription);
 
         // connect back button
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();;
-            }
-        });
+        backButton.setOnClickListener(v -> {finish();});
 
     }
 

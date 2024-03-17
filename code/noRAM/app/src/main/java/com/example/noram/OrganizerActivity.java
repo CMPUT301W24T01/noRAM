@@ -1,4 +1,15 @@
+/*
+This file is used to represent the organizer's activity. It contains the bottom navigation bar and the fragments that are used to navigate between the organizer's events, creating a new event, and the organizer's profile.
+Outstanding Issues:
+- Sometimes lags a lot when loading - see why
+ */
+
 package com.example.noram;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,18 +17,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
-
+import com.example.noram.OrganizerCreateEventFragment;
+import com.example.noram.OrganizerEventListFragment;
+import com.example.noram.OrganizerProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
  * Class the represents organizer functions with bottom navigation bar
+ * A {@link AppCompatActivity} subclass that represents the organizer's activity
+ * @maintainer Cole
+ * @author Cole
+ * @author Carlin
  */
 public class OrganizerActivity extends AppCompatActivity {
-
     // Attributes
     public static final int NAV_NEW_EVENT = R.id.navbar_new_event;
     public static final int NAV_MY_EVENTS = R.id.navbar_my_events;
@@ -45,7 +58,7 @@ public class OrganizerActivity extends AppCompatActivity {
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
         navBar.setSelectedItemId(NAV_MY_EVENTS);
         activeFragment = myEventsFragment;
-        header = findViewById(R.id.organizer_activity_edit_event_header);
+        header = findViewById(R.id.organizer_activity_header_text);
         header.setText(R.string.organizer_fragment_event_list_header);
 
         // create fragments into the fragmentManager
@@ -102,5 +115,7 @@ public class OrganizerActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        ((ImageButton) findViewById(R.id.organizer_home_button)).setOnClickListener(v -> finish());
     }
 }

@@ -1,3 +1,9 @@
+/*
+This file is used to represent the model in the MVC design pattern.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 import com.example.noram.view.TView;
@@ -19,7 +25,7 @@ public class ModelBase<V extends TView<ModelBase<?>>> {
      * Create a ModelBase instance.
      */
     public ModelBase() {
-        views = new ArrayList<V>();
+        views = new ArrayList<>();
     }
 
     /**

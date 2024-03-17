@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="#00FFFFFF"
-    tools:context=".AttendeeEventListFragment">
+    tools:context=".AttendeeEventListFragment"
+    android:id="@+id/fragment_attendee_event_list">
 
        <Button
         android:id="@+id/allEventsButton"

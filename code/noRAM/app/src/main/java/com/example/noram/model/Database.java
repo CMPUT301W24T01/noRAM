@@ -1,16 +1,20 @@
+/*
+This file is used to represent the database and provide methods to interact with it.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StreamDownloadTask;
 
 import java.io.InputStream;
 import java.util.concurrent.Executor;
@@ -19,6 +23,10 @@ import java.util.function.Consumer;
 
 /**
  * A class to represent the database
+ * @maintainer Christiaan
+ * @author Christiaan
+ * @author Ethan
+ * @author Cole
  */
 public class Database {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -88,63 +96,6 @@ public class Database {
     }
 
     /**
-     * A method to add an attendee
-     * @param identifier the identifier of the attendee
-     * @return true if the attendee is added, false otherwise
-     */
-    public boolean addAttendee(String identifier) {
-        try {
-            attendeeRef.add(new Attendee(identifier)); // TODO: add the attendee properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add an organizer
-     * @param identifier the identifier of the organizer
-     * @return true if the organizer is added, false otherwise
-     */
-    public boolean addOrganizer(String identifier) {
-        try {
-            organizerRef.add(new Organizer(identifier)); // TODO: add the organizer properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add an admin
-     * @param identifier the identifier of the admin
-     * @return true if the admin is added, false otherwise
-     */
-    public boolean addAdmin(String identifier) {
-        try {
-            adminRef.add(new Admin(identifier)); // TODO: add the admin properly
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * A method to add a photo
-     * @param identifier // TODO: PLACE HOLDER FOR PHOTO's
-     * @return true if the photo is added, false otherwise
-     */
-    public boolean addPhoto(int identifier) {
-        try {
-            photoRef.add(new Photo()); // TODO: add the photo properly
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
      *
      * Downloads the photo at the given path from Cloud Storage.
      * This is intended as a utility so that photo download is consistent through the app.
@@ -158,23 +109,20 @@ public class Database {
      */
     public void downloadPhoto(String photoRef, Consumer<Bitmap> completeFunction) {
         StorageReference profileRef = storage.getReference().child(photoRef);
-        profileRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-                InputStream photoStream = taskSnapshot.getStream();
+        profileRef.getStream().addOnSuccessListener(taskSnapshot -> {
+            InputStream photoStream = taskSnapshot.getStream();
 
-                // we can't run decodeStream() in the main thread, so we create an executor to
-                // run it instead.
-                Executor executor = Executors.newSingleThreadExecutor();
+            // we can't run decodeStream() in the main thread, so we create an executor to
+            // run it instead.
+            Executor executor = Executors.newSingleThreadExecutor();
 
-                Runnable decodeRunnable = () -> {
-                    Bitmap image = BitmapFactory.decodeStream(photoStream);
+            Runnable decodeRunnable = () -> {
+                Bitmap image = BitmapFactory.decodeStream(photoStream);
 
-                    // call the passed function
-                    completeFunction.accept(image);
-                };
-                executor.execute(decodeRunnable);
-            }
+                // call the passed function
+                completeFunction.accept(image);
+            };
+            executor.execute(decodeRunnable);
         });
     }
 

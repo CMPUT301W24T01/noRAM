@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrganizerProfileFragment">
+    tools:context=".OrganizerProfileFragment"
+    android:id="@+id/fragment_organizer_profile">
 
     <!-- TODO: Update blank fragment layout -->
     <!-- TODO: do we want to re-use the attendee one? -->

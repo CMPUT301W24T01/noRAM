@@ -1,3 +1,9 @@
+/*
+This file is used to help with sharing images. It is used to generate an intent that will share a bitmap.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Context;
@@ -16,7 +22,9 @@ import java.io.IOException;
  * Typical usage would be as follows:
  * ShareHelper shareHelper = new ShareHelper();
  * Intent shareIntent = shareHelper.generateShareIntent(myBitmap, "filename", getApplicationContext());
- * startActivity(Intent.createChooser(shareIntent, null)) 
+ * startActivity(Intent.createChooser(shareIntent, null))
+ * @maintainer Cole
+ * @author Cole
  */
 public class ShareHelper extends FileProvider {
     /**
@@ -38,8 +46,8 @@ public class ShareHelper extends FileProvider {
         // get images folder from cache, create file
         File imagesFolder = new File(context.getCacheDir(), "images");
         File file = new File(imagesFolder, tempFilename + ".png");
-
         Uri cacheUri;
+
         try {
             imagesFolder.mkdirs();
             // compress the bitmap into a file and save, then get the Uri from cache

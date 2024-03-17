@@ -1,7 +1,16 @@
+/*
+This file is used to create an organizer object. This object is used to store the identifier of the organizer. This identifier is used to identify the organizer in the database.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 /**
  * A class representing an organizer
+ * @maintainer Christiaan
+ * @author Christiaan
+ * @author Ethan
  */
 public class Organizer {
     private String identifier;
@@ -13,6 +22,5 @@ public class Organizer {
     public Organizer(String identifier) {
         this.identifier = identifier;
     }
-
 
 }

@@ -1,3 +1,9 @@
+/*
+This file is used to create a date picker fragment. It is used to select a date and pass it to the parent activity/fragment.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.app.DatePickerDialog;
@@ -13,10 +19,11 @@ import java.util.Calendar;
 
 /**
  * Fragment for selecting date
+ * A {@link DialogFragment} subclass.
+ * @maintainer Carlin
+ * @author Carlin
  */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-    // Attributes
     int year;
     int month;
     int day;
@@ -97,7 +104,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
      * Instantiates and returns a Dialog class for fragment
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
-     * @return
+     * @return the dialog
      */
     @NonNull
     @Override

@@ -1,3 +1,9 @@
+/*
+This file is used to display the Attendee's main menu screen, from where other subpages can be accessed.
+Outstanding Issues:
+- Sometimes lags a lot when loading - see why
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;
@@ -19,8 +25,14 @@ import com.google.android.material.navigation.NavigationBarView;
  * The AttendeeActivity class is the main activity for the Attendee user type.
  * It contains the navigation bar, header, and fragment container to display
  * all of the information available to the attendee and allow for navigation.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Cole
+ * @author Cole
+ * @author Ethan
  */
 public class AttendeeActivity extends AppCompatActivity implements GoToEventListener {
+
+    // Attributes
     public static final int NAV_SCAN = R.id.navbar_scan;
     public static final int NAV_EVENTS = R.id.navbar_events;
     public static final int NAV_PROFILE = R.id.navbar_profile;
@@ -43,7 +55,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
-        ImageButton homeButton = findViewById(R.id.home_button);
+        ImageButton homeButton = findViewById(R.id.attendee_home_button);
         headerText = findViewById(R.id.attendee_header_text);
         navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
@@ -67,12 +79,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         headerText.setText(R.string.scan_qr_code_title);
 
         // create button listener so home button goes back to main page.
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        homeButton.setOnClickListener(v -> finish());
 
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             /**

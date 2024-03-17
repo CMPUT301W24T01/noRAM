@@ -1,3 +1,9 @@
+/*
+This file is used to create an event object. It contains all the attributes of an event and the methods to get and set them.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.model;
 
 import androidx.annotation.Nullable;
@@ -15,6 +21,9 @@ import java.util.Objects;
 
 /**
  * Class to represent an Event
+ * @maintainer Carlin
+ * @author Carlin
+ * @author Cole
  */
 public class Event {
     private String id;
@@ -28,12 +37,10 @@ public class Event {
     private QRCode promoQR;
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     private List<String> checkedInAttendees;
 
-    // Constructors
     /**
-     * Default constructor
+     * Default constructor for Event
      */
     public Event() {}
 

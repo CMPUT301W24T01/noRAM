@@ -99,4 +99,37 @@ public class AttendeeUnitTest {
         // Assert
         verify(attendee, times(8)).updateDBAttendee();
     }
+
+    /**
+     * Tests that the getProfilePhotoString method returns the correct string when using default photo
+     */
+    @Test
+    public void getDefaultProfilePhotoStringTest() {
+        // Arrange
+        Attendee attendee = new Attendee("id");
+        // Act
+        String photo = attendee.getProfilePhotoString();
+        // Assert
+        assertEquals("profile_photos/id-default", photo);
+    }
+
+    /**
+     * Tests that the getProfilePhotoString method returns the correct string when using uploaded photo
+     */
+    @Test
+    public void getProfilePhotoStringTest() {
+        // Arrange
+        Attendee attendee = mock(Attendee.class);
+        doCallRealMethod().when(attendee).getProfilePhotoString();
+        doCallRealMethod().when(attendee).setDefaultProfilePhoto(any(Boolean.class));
+        doCallRealMethod().when(attendee).setIdentifier(any(String.class));
+        doCallRealMethod().when(attendee).getIdentifier();
+        doNothing().when(attendee).updateDBAttendee();
+        // Act
+        attendee.setIdentifier("id");
+        attendee.setDefaultProfilePhoto(false);
+        String photo = attendee.getProfilePhotoString();
+        // Assert
+        assertEquals("profile_photos/id-upload", photo);
+    }
 }

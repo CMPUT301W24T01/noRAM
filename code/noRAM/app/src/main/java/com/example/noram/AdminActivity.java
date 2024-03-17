@@ -1,16 +1,29 @@
-package com.example.noram;
+/*
+This file is used to display the admin interface. This activity is used to display the admin home page and to navigate to other admin sections.
+Outstanding Issues:
+- None
+ */
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
+package com.example.noram;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.example.noram.AdminHomeFragment;
+
+/**
+ * The AdminActivity class is the activity that is used to display the admin
+ * interface. This activity is used to display the admin home page and to
+ * navigate to other admin sections.
+ * A {@link AppCompatActivity} subclass.
+ * @maintainer Gabriel
+ * @author Gabriel
+ * @author Cole
+ */
 public class AdminActivity extends AppCompatActivity {
 
     // TODO: create fragments for all admin sections
@@ -28,6 +41,8 @@ public class AdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+
+        ((ImageButton) findViewById(R.id.admin_home_button)).setOnClickListener(v -> finish());
 
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "home")
