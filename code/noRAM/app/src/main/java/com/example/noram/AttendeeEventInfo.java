@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -115,14 +117,17 @@ public class AttendeeEventInfo extends AppCompatActivity {
 
                 //download the event image from db and populate the screen
                 eventImage = findViewById(R.id.eventImage);
-                String findImage = event.getId();
+                String findImage = "event_banners/"+event.getId()+"-upload";
                 // set imageview and update organizer image preview
-                MainActivity.db.downloadPhoto("event_banners/"+findImage+"-upload",
-                        t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                if (FirebaseStorage.getInstance().getReference().child(findImage) != null) {
+                    MainActivity.db.downloadPhoto(findImage,
+                            t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                }
+                //Note for when we download organizer photo:
                 //remove purple background, and android icon in xml
                 //if you want image to format nicely.
                 //use android:scaleType="fitCenter"
-                // TODO: allow non square photos to be uploaded from camera
+                //look at xml fpr eventImage
 
                 //Log.d("Uploaded photo", findImage);
                 //Log.d("EventInfo", event.getName());
