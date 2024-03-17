@@ -195,7 +195,7 @@ public class OrganizerEventListFragment extends Fragment {
             // TODO: display event information with organizer page
 
             // Temp: Edit event
-            Intent intent = new Intent(getContext(), OrganizerEventInfo.class);
+            Intent intent = new Intent(getContext(), OrganizerEventInfoActivity.class);
             intent.putExtra("event", event.getId());
             startActivity(intent);
         });

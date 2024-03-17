@@ -31,7 +31,7 @@
             android:name=".OrganizerEventMapActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerEventInfo"
+            android:name=".OrganizerEventInfoActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileEntryActivity"
@@ -64,7 +64,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AttendeeEventInfo"
+            android:name=".AttendeeEventInfoActivity"
             android:exported="false" />
 
         <provider

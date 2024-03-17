@@ -17,7 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class OrganizerEventInfo extends AppCompatActivity {
+public class OrganizerEventInfoActivity extends AppCompatActivity {
 
     private Event event;
     private TextView eventTitle;
