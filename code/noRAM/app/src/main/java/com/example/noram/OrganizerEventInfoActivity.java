@@ -17,6 +17,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The OrganizerEventInfoActivity class displays the information about an event for the organizer.
+ * It contains a menu to navigate to different pages for the event.
+ * A {@link AppCompatActivity} subclass.
+ */
 public class OrganizerEventInfoActivity extends AppCompatActivity {
 
     private Event event;
@@ -122,6 +127,9 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         menuButton.setOnClickListener(v -> {showMenu();});
     }
 
+    /**
+     * Called when the activity is resumed. Updates the activity's event with the latest info from the database.
+     */
     @Override
     protected void onResume() {
         super.onResume();

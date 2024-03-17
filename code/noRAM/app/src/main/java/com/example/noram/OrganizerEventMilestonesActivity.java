@@ -2,23 +2,22 @@ package com.example.noram;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * The OrganizerEventMilestonesActivity class displays the milestones for an event for the organizer.
+ * A {@link AppCompatActivity} subclass.
+ */
 public class OrganizerEventMilestonesActivity extends AppCompatActivity {
 
+    /**
+     * Setup the activity when it is created.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *    previously being shut down then this Bundle contains the data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_organizer_event_milestones);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }
