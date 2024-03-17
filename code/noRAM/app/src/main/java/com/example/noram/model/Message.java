@@ -50,61 +50,6 @@ public class Message extends FirebaseMessagingService {
         }
     }
 
-//    public void sendNotification(String topic) {
-//
-//        // See documentation on defining a message payload.
-//        Message message = Message.builder()
-//                .putData("score", "850")
-//                .putData("time", "2:45")
-//                .setTopic(topic)
-//                .build();
-//
-//        // Send a message to the devices subscribed to the provided topic.
-//        String response = firebaseMessaging.send(message);
-//        // Response is a message ID string.
-//        System.out.println("Successfully sent message: " + response);
-//    }
-
-
-//    public void conditionalSendMessage(String topic, String message) {
-//        // [START send_to_condition]
-//        // Create a condition that will send to devices with Google Play services installed
-//        Condition condition = Condition.builder()
-//                .addCondition(ConditionKey.TOPIC, topic)
-//                .build();
-//
-//        // See documentation on defining a message payload.
-//        Message message = Message.builder()
-//                .setCondition(condition)
-//                .putData("score", "850")
-//                .putData("time", "2:45")
-//                .build();
-//
-//        // Send a message to devices subscribed to the combination of topics
-//        // specified by the provided condition.
-//        String response = firebaseMessaging.send(message);
-//        // Response is a message ID string.
-//        System.out.println("Successfully sent message: " + response);
-//        // [END send_to_condition]
-//    }
-
-
-//    public void getToken() {
-//        FirebaseMessaging.getInstance().getToken()
-//                .addOnCompleteListener(task -> {
-//                    if (!task.isSuccessful()) {
-//                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-//                        return;
-//                    }
-//
-//                    // Get new FCM registration token
-//                    String token = task.getResult();
-//
-//                    // Log and toast
-//                    Log.d(TAG, msg);
-//                });
-//    }
-
 }
 
 

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static Organizer organizer = null;
     private Button adminButton;
 
-    private Message message = new Message(); // TEMP DONT LET ME PUSH THIS PLEASE
+    public static Message message = new Message(); // TEMP DONT LET ME PUSH THIS PLEASE
 
     /**
      * Create and setup the main activity.
