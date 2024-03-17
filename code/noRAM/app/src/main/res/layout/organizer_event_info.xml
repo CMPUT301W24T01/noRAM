@@ -16,18 +16,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/organizer_event_back_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="#00FF0808"
-                android:backgroundTint="#00473434"
-                android:contentDescription="Arrow pointing to the left"
-                android:outlineProvider="none"
-                android:src="@drawable/outline_arrow_back_ios_new_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="#FFFFFF" />
+    <ImageButton
+        android:id="@+id/organizer_event_back_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#00FF0808"
+        android:backgroundTint="#00473434"
+        android:contentDescription="Arrow pointing to the left"
+        android:outlineProvider="none"
+        android:src="@drawable/outline_arrow_back_ios_new_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
 
     <ScrollView
         android:layout_width="0dp"
@@ -41,18 +41,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
+
             <TextView
                 android:id="@+id/organizer_event_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="Hotdog Eating Contest"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/organizer_event_top_bar" />
+                app:layout_constraintTop_toBottomOf="@+id/organizer_event_menu_button" />
 
             <TextView
                 android:id="@+id/organizer_event_organizer_text"
@@ -139,6 +140,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
                 app:srcCompat="@drawable/qr_code_150px" />
+
+            <ImageButton
+                android:id="@+id/organizer_event_menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/menu_24px" />
+
+            <TextView
+                android:id="@+id/organizer_event_menu_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Menu"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/organizer_event_title"
+                app:layout_constraintStart_toEndOf="@+id/organizer_event_menu_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.62" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

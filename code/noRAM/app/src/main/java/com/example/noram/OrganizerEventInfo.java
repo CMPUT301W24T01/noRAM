@@ -1,8 +1,11 @@
 package com.example.noram;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +33,7 @@ public class OrganizerEventInfo extends AppCompatActivity {
      *                (the event must be in the database)
      */
     private void baseSetup(String eventId) {
+        // TODO: This will likely need to be changed
         // Get event from database
         event = new Event();
         Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventId).get();
@@ -48,18 +52,62 @@ public class OrganizerEventInfo extends AppCompatActivity {
             ));
         });
     }
+
+    /**
+     * Show the popup menu for the event
+     */
+    private void showMenu() {
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.organizer_event_menu_button));
+        popup.setOnMenuItemClickListener(item -> {
+            switchMenu(item);
+            return true;
+        });
+        popup.getMenuInflater().inflate(R.menu.organizer_event_info_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * Switch to the correct activity based on the menu item clicked
+     * @param item the menu item that was clicked
+     */
+    private void switchMenu(MenuItem item) {
+        Class<?> newActivity = null;
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.organizer_event_edit_details) {
+            newActivity = OrganizerEditEventActivity.class;
+        } else if (itemId == R.id.organizer_event_attendees) {
+            newActivity = OrganizerEventAttendeeActivity.class;
+        } else if (itemId == R.id.organizer_event_map) {
+            newActivity = OrganizerEventMapActivity.class;
+        } else if (itemId == R.id.organizer_event_milestones) {
+            newActivity = OrganizerEventMilestonesActivity.class;
+        } else if (itemId == R.id.organizer_event_notifications) {
+            newActivity = OrganizerEventNotificationsActivity.class;
+        }
+
+        Intent intent = new Intent(this, newActivity);
+        intent.putExtra("event", event.getId());
+        startActivity(intent);
+    }
+
+    /**
+     * Called when the activity is first created. Initializes the activity's variables and views.
+     * @param savedInstanceState If the activity is being re-constructed from a previous saved state,
+     *                           this is the state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_event_info);
 
         // retrieve corresponding event in database
-        //int eventID = getIntent().getIntExtra(AttendeeEventListFragment.eventIDLabel,0);
         String eventID = getIntent().getExtras().getString("event");
         baseSetup(eventID);
 
         // get all variables from page
         ImageButton backButton = findViewById(R.id.organizer_event_back_button);
+        ImageButton menuButton = findViewById(R.id.organizer_event_menu_button);
         eventTitle = findViewById(R.id.organizer_event_title);
         organizerText = findViewById(R.id.organizer_event_organizer_text);
         organizerImage = findViewById(R.id.organizer_event_organizer_image);
@@ -70,5 +118,14 @@ public class OrganizerEventInfo extends AppCompatActivity {
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
 
+        // set up menu button
+        menuButton.setOnClickListener(v -> {showMenu();});
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String eventID = getIntent().getExtras().getString("event");
+        baseSetup(eventID);
     }
 }
