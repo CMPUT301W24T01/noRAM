@@ -6,8 +6,11 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,11 +19,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * An activity displaying the information about an event. Depending on event's data, the layout page
@@ -91,26 +99,45 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         // Get event from database
         event = new Event();
         Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventId).get();
-        task.addOnSuccessListener(documentSnapshot -> {
-            // update event
-            event.updateWithDocument(documentSnapshot);
-            // update page's info
-            eventTitle.setText(event.getName());
-            eventDescription.setText(event.getDetails());
-            LocalDateTime startTime = event.getStartTime();
-            eventLocation.setText(String.format("%s from %s - %s @ %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                    event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
-                    event.getLocation()
-            ));
-            //Log.d("EventInfo", event.getName());
-            //Log.d("EventInfo", event.getDetails());
-            //Log.d("EventInfo", event.getLocation());
-            //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
-            // TODO: update organizer image
-            //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
-            // TODO: update event image
+        task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                // update event
+                event.updateWithDocument(documentSnapshot);
+                // update page's info
+                eventTitle.setText(event.getName());
+                eventDescription.setText(event.getDetails());
+                LocalDateTime startTime = event.getStartTime();
+                eventLocation.setText(String.format("%s from %s - %s @ %s",
+                        startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
+                        startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+                        event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
+                        event.getLocation()
+                ));
+
+                //download the event image from db and populate the screen
+                eventImage = findViewById(R.id.eventImage);
+                String findImage = "event_banners/"+event.getId()+"-upload";
+                // set imageview and update organizer image preview
+                if (FirebaseStorage.getInstance().getReference().child(findImage) != null) {
+                    MainActivity.db.downloadPhoto(findImage,
+                            t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                }
+                //Note for when we download organizer photo:
+                //remove purple background, and android icon in xml
+                //if you want image to format nicely.
+                //use android:scaleType="fitCenter"
+                //look at xml fpr eventImage
+
+                //Log.d("Uploaded photo", findImage);
+                //Log.d("EventInfo", event.getName());
+                //Log.d("EventInfo", event.getDetails());
+                //Log.d("EventInfo", event.getLocation());
+                //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
+                // TODO: update organizer image
+                //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
+                // TODO: update event image
+            }
         });
     }
 

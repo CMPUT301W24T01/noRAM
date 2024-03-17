@@ -68,6 +68,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/eventTitle" />
 
             <ImageView
+                android:id="@+id/eventImage"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/eventLocation"
+                android:scaleType="fitCenter"
+                />
+
+            <ImageView
                 android:id="@+id/organizerImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -91,19 +104,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/organizerText" />
-
-            <ImageView
-                android:id="@+id/eventImage"
-                android:layout_width="0dp"
-                android:layout_height="300dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="#B790FF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/eventLocation"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
 
             <TextView
                 android:id="@+id/eventDescription"
