@@ -1,5 +1,7 @@
 package com.example.noram;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -98,6 +100,19 @@ public class AttendeeEventInfo extends AppCompatActivity {
                         event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
                         event.getLocation()
                 ));
+
+                //download the event image from db and populate the screen
+                eventImage = findViewById(R.id.eventImage);
+                String findImage = event.getId();
+                // set imageview and update organizer image preview
+                MainActivity.db.downloadPhoto("event_banners/"+findImage+"-upload",
+                        t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                //remove purple background, and android icon in xml
+                //if you want image to format nicely.
+                //use android:scaleType="fitCenter"
+                // TODO: allow non square photos to be uploaded from camera
+
+                //Log.d("Uploaded photo", findImage);
                 //Log.d("EventInfo", event.getName());
                 //Log.d("EventInfo", event.getDetails());
                 //Log.d("EventInfo", event.getLocation());
