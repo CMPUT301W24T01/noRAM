@@ -6,9 +6,12 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -268,7 +271,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
         //https://www.youtube.com/watch?v=v6YvUxpgSYQ
         ImagePicker.with(OrganizerCreateEventFragment.this)
-                .crop(1,1)                                 // Crop image(Optional), Check Customization for more option
+                .crop()                                 // Crop image(Optional), Check Customization for more option
                 .compress(1024)                 // Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
                 .start();
@@ -295,6 +298,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
             return;
         }
         // set imageview and update organizer image preview
+        //remove the background image
+        imageView.setBackground(null);
         imageView.setImageURI(imageUri);
         deletePhoto.setVisibility(View.VISIBLE);
     }
@@ -319,6 +324,10 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private void deletePhoto(){
         imageUri = null;
         imageView.setImageURI(imageUri);
+        //put the background imgage back
+        Drawable myIcon = getDrawable(getActivity().getApplicationContext(),
+               R.drawable.baseline_add_photo_alternate_24);
+        imageView.setBackground(myIcon);
         deletePhoto.setVisibility(View.INVISIBLE);
     }
 
