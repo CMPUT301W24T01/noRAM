@@ -12,7 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +28,8 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.zxing.Result;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,8 +44,15 @@ import java.time.format.DateTimeFormatter;
 public class AddEventQROptionsActivity extends AppCompatActivity {
 
     private Bundle bundle;
-
     private QRType lastQRTypeSelected;
+    private TextView checkinUriText;
+    private Button checkinUploadButton;
+    private ImageView checkinPreview;
+    private TextView promoUriText;
+    private Button promoUploadButton;
+    private ImageView promoPreview;
+    private String promoQRCodeData;
+    private String checkinQRCodeData;
 
     /**
      * Create the event and set up button listeners
@@ -55,12 +68,56 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         setContentView(R.layout.organizer_activity_create_event_p2);
         bundle = getIntent().getExtras();
 
-        Button generateButton = findViewById(R.id.event_add_p2_gen_QR_button);
-        Button uploadButton = findViewById(R.id.event_add_p2_upl_QR_button);
+        Button finishButton = findViewById(R.id.organizer_create_event_complete_button);
+        finishButton.setOnClickListener(v -> completeEventCreation(bundle));
 
-        // TODO: implement for US 01.01.02 - will need to pass info somehow
-        uploadButton.setOnClickListener(v -> showQRReuseDialog());
-        generateButton.setOnClickListener(v -> completeEventCreation(bundle));
+        // setup listeners + view for checkin section
+
+        checkinUriText = findViewById(R.id.checkin_uri_placeholder_text);
+        checkinUriText.setVisibility(View.INVISIBLE);
+        checkinUriText.setText("");
+        checkinUploadButton = findViewById(R.id.upload_checkin_qr_button);
+        checkinUploadButton.setVisibility(View.INVISIBLE);
+        checkinPreview = findViewById(R.id.checkin_preview);
+        checkinPreview.setVisibility(View.INVISIBLE);
+        checkinUploadButton.setOnClickListener(v -> {
+            lastQRTypeSelected = QRType.SIGN_IN;
+            showImagePicker();
+        });
+        RadioGroup checkinGroup = findViewById(R.id.checkin_radio_group);
+        checkinGroup.check(R.id.autogenerate_button_checkin);
+        checkinGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int visibility = checkedId == R.id.autogenerate_button_checkin
+                    ? View.INVISIBLE
+                    : View.VISIBLE;
+            checkinUriText.setVisibility(visibility);
+            checkinUploadButton.setVisibility(visibility);
+            checkinPreview.setVisibility(visibility);
+        });
+
+
+        // setup listeners + view for promo section
+        promoUriText = findViewById(R.id.promo_uri_placeholder_text);
+        promoUriText.setText("");
+        promoUriText.setVisibility(View.INVISIBLE);
+        promoUploadButton = findViewById(R.id.upload_promo_qr_button);
+        promoUploadButton.setVisibility(View.INVISIBLE);
+        promoPreview = findViewById(R.id.promo_preview);
+        promoPreview.setVisibility(View.INVISIBLE);
+        promoUploadButton.setOnClickListener(v -> {
+            lastQRTypeSelected = QRType.PROMOTIONAL;
+            showImagePicker();
+        });
+        RadioGroup promoGroup = findViewById(R.id.promo_radio_group);
+        promoGroup.check(R.id.autogenerate_button_promo);
+        promoGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int visibility = checkedId == R.id.autogenerate_button_promo
+                    ? View.INVISIBLE
+                    : View.VISIBLE;
+            promoUploadButton.setVisibility(visibility);
+            promoUriText.setVisibility(visibility);
+            promoPreview.setVisibility(visibility);
+        });
     }
 
     /**
@@ -145,17 +202,17 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         if (checkResult != null) {
             // use the bitmap, move on to next activity
             String qrData = checkResult.getText();
-            checkDatabaseQRCollision(qrData);
+            checkDatabaseQRCollision(uri, qrData);
         } else {
             // show error message...
-            reuseFailure();
+            reuseFailure("Couldn't find QR Code in Image");
         }
     }
 
     /**
      * Checks if a qr code collides with an event already in the database
      */
-    private void checkDatabaseQRCollision(String qrData) {
+    private void checkDatabaseQRCollision(Uri uri, String qrData) {
 
         OnSuccessListener<DocumentSnapshot> eventLookupListener = documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -166,13 +223,13 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
                 // TODO: is there a good way to decouple any of this logic from the database, for
                 // unit testing? would be nice to do so.
                 if (currentTime.isAfter(eventEndTime)) {
-                    reuseSuccess();
+                    reuseSuccess(uri, qrData);
                 } else {
                     // BAD: the added QR code is already in use
-                    reuseFailure();
+                    reuseFailure("QR Already in Use");
                 }
             } else {
-                reuseSuccess();
+                reuseSuccess(uri, qrData);
             }
         };
 
@@ -183,7 +240,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
                 // lookup event
                 MainActivity.db.getEventsRef().document(eventId).get().addOnSuccessListener(eventLookupListener);
             } else {
-                reuseSuccess();
+                reuseSuccess(uri, qrData);
             }
         };
 
@@ -193,8 +250,24 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
     /**
      * Called when we confirm that a QR code is OK for reuse
      */
-    private void reuseSuccess() {
-        // TODO: how to best update UI?
+    private void reuseSuccess(Uri uri, String qrData) {
+        // make sure we aren't already using this QR code
+        boolean alreadyUsedForCheckin = lastQRTypeSelected == QRType.PROMOTIONAL && qrData.equals(checkinQRCodeData);
+        boolean alreadyUsedForPromo = lastQRTypeSelected == QRType.SIGN_IN && qrData.equals(promoQRCodeData);
+        if (alreadyUsedForPromo || alreadyUsedForCheckin) {
+            reuseFailure("You are already using this QR Code");
+            return;
+        }
+
+        if (lastQRTypeSelected == QRType.PROMOTIONAL) {
+            promoUriText.setText("Uploaded: " + uri.getLastPathSegment());
+            promoPreview.setImageURI(uri);
+            promoQRCodeData = qrData;
+        } else if (lastQRTypeSelected == QRType.SIGN_IN) {
+            checkinUriText.setText("Uploaded: " + uri.getLastPathSegment());
+            checkinPreview.setImageURI(uri);
+            checkinQRCodeData = qrData;
+        }
     }
 
     /**
@@ -205,5 +278,14 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         builder.setTitle("Couldn't re-use QR code");
         builder.setMessage(String.format("Could not reuse the qr code: %s", errMsg));
         builder.setPositiveButton("OK", null);
+        builder.create().show();
+
+        if (lastQRTypeSelected == QRType.PROMOTIONAL) {
+            promoUriText.setText("Upload failed, please try again.");
+            promoPreview.setImageURI(null);
+        } else {
+            checkinUriText.setText("Upload failed, please try again.");
+            checkinPreview.setImageURI(null);
+        }
     }
  }

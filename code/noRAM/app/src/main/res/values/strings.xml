@@ -66,4 +66,5 @@
     <string name="admin_view_profiles_button">View Profiles</string>
     <string name="admin_view_images_button">View Images</string>
     <string name="admin_label">Admin Mode</string>
+    <string name="organizer_create_event_finish">Finish</string>
 </resources>
