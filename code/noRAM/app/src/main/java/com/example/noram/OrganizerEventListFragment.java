@@ -192,9 +192,6 @@ public class OrganizerEventListFragment extends Fragment {
         // connect the two lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            // TODO: display event information with organizer page
-
-            // Temp: Edit event
             Intent intent = new Intent(getContext(), OrganizerEventInfoActivity.class);
             intent.putExtra("event", event.getId());
             startActivity(intent);

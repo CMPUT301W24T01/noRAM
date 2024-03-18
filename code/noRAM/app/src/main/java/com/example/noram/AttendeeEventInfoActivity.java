@@ -6,11 +6,8 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,17 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.noram.model.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 /**
  * An activity displaying the information about an event. Depending on event's data, the layout page
@@ -100,6 +95,10 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         event = new Event();
         Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventId).get();
         task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            /**
+             * Update the page's event with the document's info
+             * @param documentSnapshot the document snapshot of the event
+             */
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 // update event
