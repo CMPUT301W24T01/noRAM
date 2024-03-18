@@ -19,6 +19,21 @@
         android:theme="@style/Theme.NoRAM"
         tools:targetApi="31">
         <activity
+            android:name=".OrganizerEventNotificationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrganizerEventMilestonesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrganizerEventAttendeeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrganizerEventMapActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrganizerEventInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileEntryActivity"
             android:exported="false" />
         <activity
@@ -38,7 +53,7 @@
             android:exported="false" />
         <activity
             android:name=".OrganizerEditEventActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -48,16 +63,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AttendeeEventInfo"
-            android:exported="false"/>
+        <activity
+            android:name=".AttendeeEventInfoActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.noram.ShareHelper"
             android:exported="false"
             android:grantUriPermissions="true">
-                <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/file_paths" />
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

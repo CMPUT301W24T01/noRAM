@@ -20,8 +20,6 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.noram.AttendeeEventInfo;
-import com.example.noram.MainActivity;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -139,7 +137,7 @@ public class AttendeeEventListFragment extends Fragment {
      * @param event The event whose information need to be displayed
      */
     public void displayEvent(Event event){
-        Intent intent = new Intent(getActivity(), AttendeeEventInfo.class);
+        Intent intent = new Intent(getActivity(), AttendeeEventInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         intent.putExtras(bundle);
