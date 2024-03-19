@@ -184,6 +184,58 @@ public class OrganizerActivityTest {
     }
 
     /**
+     * Tests that the re-use QR code page will not navigate to the next page if you have selected to
+     * upload a QR code but have not uploaded one.
+     * Tests with both the promo and checkin codes.
+     */
+    @Test
+    public void reuseQRCodesNotUploadedTest() {
+        onView(withId(R.id.navbar_new_event)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_name_text))
+                .perform(scrollTo()).perform(typeText("event"));
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_location_text))
+                .perform(scrollTo()).perform(typeText("location"));
+
+        // date/time pickers need a lot of really funky stuff to validate :)
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_startDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_endDateTime_button))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 6, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
+                .perform(PickerActions.setTime(10, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.organizer_fragment_create_event_p1_edit_next_button))
+                .perform(scrollTo()).perform(click());
+
+        // verify we navigated - now we are on the QR options page
+        intended(hasComponent(AddEventQROptionsActivity.class.getName()));
+
+        onView(withId(R.id.upload_button_promo)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.organizer_create_event_complete_button)).perform(scrollTo()).perform(click());
+        // verify we DON'T navigate
+        onView(withId(R.id.qr_promo)).check(doesNotExist());
+
+        // do the same for checkin
+        onView(withId(R.id.autogenerate_button_promo)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.upload_button_checkin)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.organizer_create_event_complete_button)).perform(scrollTo()).perform(click());
+        // verify we DON'T navigate
+        onView(withId(R.id.qr_checkin)).check(doesNotExist());
+    }
+
+    /**
      * Tests that the share button opens a share intent
      */
     @Test

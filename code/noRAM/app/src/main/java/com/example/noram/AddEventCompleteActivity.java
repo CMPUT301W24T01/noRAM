@@ -51,9 +51,6 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         String promoQRData = eventBundle.getString("promoQRData");
         String checkinQRData = eventBundle.getString("checkinQRData");
 
-        Log.d("DEBUG", "Promo: " + promoQRData);
-        Log.d("DEBUG", "Checkin: " + checkinQRData);
-
         //set unique id for this event
         UUID myRand = UUID.randomUUID();
         QRCode promoQRCode = promoQRData == null
