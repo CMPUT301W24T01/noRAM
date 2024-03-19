@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/organizer_event_edit_details"
+        android:title="Edit Details" />
+    <item
+        android:id="@+id/organizer_event_attendees"
+        android:title="View Attendees" />
+    <item
+        android:id="@+id/organizer_event_map"
+        android:title="View Attendance Map" />
+    <item
+        android:id="@+id/organizer_event_milestones"
+        android:title="View Attendance Milestones" />
+    <item
+        android:id="@+id/organizer_event_notifications"
+        android:title="Send Notification" />
+</menu>
