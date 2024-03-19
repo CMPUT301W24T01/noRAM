@@ -90,6 +90,11 @@ public class Photo {
         this.photoProfile = isProfile;
     }
 
+    /**
+     * A method to return the photoProfile boolean, that indicates if the photo is an attendee's
+     * profile photo
+     * @return A boolean indicating if the photo is an attendee's profile photo or not
+     */
     public boolean getPhotoProfile(){
         return photoProfile;
     }

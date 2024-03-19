@@ -32,13 +32,13 @@ public class ConfirmDeleteFragment extends DialogFragment {
      */
     private void deleteDoc(){
         docToDelete.delete()
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("AdminDeleteDoc", "Could not delete the document from admin " +
-                                "page");
-                    }
-                });
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("AdminDeleteDoc", "Could not delete the document from admin " +
+                        "page");
+                }
+            });
     }
 
     /**
@@ -61,12 +61,12 @@ public class ConfirmDeleteFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-                .setTitle("Confirm delete?")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    deleteDoc();
-                })
-                .create();
+            .setTitle("Confirm delete?")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Confirm", (dialog, which) -> {
+                deleteDoc();
+            })
+            .create();
     }
 
 }

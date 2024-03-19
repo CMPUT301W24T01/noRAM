@@ -1,3 +1,9 @@
+/*
+This file is used to display the Admin's profile section fragment, where all profiles are listed.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;

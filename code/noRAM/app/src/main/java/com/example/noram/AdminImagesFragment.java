@@ -1,3 +1,11 @@
+/*
+This file is used to create the Admin's Images section fragment, where all the app's images are
+listed
+Outstanding Issues:
+- A default template image is used while waiting for database's images to load. This image could be
+replaced with something more fitting
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;

@@ -1,3 +1,10 @@
+/*
+This file is used to create the Admin's events section fragment, where all the app's existing events
+are displayed.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.os.Bundle;
