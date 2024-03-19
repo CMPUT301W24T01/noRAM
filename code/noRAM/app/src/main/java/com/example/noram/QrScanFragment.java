@@ -24,6 +24,7 @@ import com.example.noram.model.Event;
 import com.example.noram.model.QRType;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.noram.controller.EventManager;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.List;
@@ -141,33 +142,13 @@ public class QrScanFragment extends Fragment {
                 event.setId(eventId);
 
                 if (qrType == QRType.SIGN_IN) {
-                    signInToEvent(eventId);
+                    EventManager.checkInToEvent(eventId);
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event
                 goToEventListener.goToEvent(event);
                 scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
-        });
-    }
-
-    /**
-     * Sign in the current user to the event given by eventID
-     * @param eventId ID string of the event
-     */
-    private void signInToEvent(String eventId) {
-        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
-        MainActivity.attendee.getEventsCheckedInto().add(eventId);
-        MainActivity.attendee.updateDBAttendee();
-
-        // run a transaction on the event to update attendee list
-        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
-            DocumentSnapshot snapshot = transaction.get(eventRef);
-            List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
-
-            checkedInAttendees.add(MainActivity.attendee.getIdentifier());
-            transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
-            return null;
         });
     }
 
