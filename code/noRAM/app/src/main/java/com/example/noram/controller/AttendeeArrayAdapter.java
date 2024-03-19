@@ -1,3 +1,10 @@
+/*
+This file is used to create ArrayList Adapters that adapt array list of Attendees.
+It is mainly used in AdminImagesFragment.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
 import android.content.Context;

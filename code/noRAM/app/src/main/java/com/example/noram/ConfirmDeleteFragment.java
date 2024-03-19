@@ -1,3 +1,11 @@
+/*
+This file is used to show a popup to let the user remove (or not) the element they clicked on. This
+is used in AdminEventsFragment and AdminProfilesFragment, where the element would be an event or a
+profile.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.app.Dialog;

@@ -13,19 +13,16 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.noram.MainActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * A class to represent a photo
  * @maintainer Carlin
  * @author Christiaan
  */
-public class Photo {
+public class AdminPhoto {
     private String photoName;
     private String photoPath;
     private Bitmap photoBitmap;
@@ -36,7 +33,7 @@ public class Photo {
     /**
      * A constructor to create a photo
      */
-    public Photo() {
+    public AdminPhoto() {
     }
 
     /**
@@ -44,7 +41,7 @@ public class Photo {
      * @param photoName the name of the photo
      * @param photoPath the path of the photo
      */
-    public Photo(String photoName, String photoPath) {
+    public AdminPhoto(String photoName, String photoPath) {
         this.photoName = photoName;
         this.photoPath = photoPath;
     }
@@ -107,9 +104,9 @@ public class Photo {
         // remove from database
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(photoPath);
         storageReference.delete().addOnSuccessListener(
-                unused -> Log.d("Firebase", "Photo successfully deleted!")
+                unused -> Log.d("Firebase", "AdminPhoto successfully deleted!")
         ).addOnFailureListener(
-                e -> Log.d("Firebase", "Photo unsuccessfully deleted!")
+                e -> Log.d("Firebase", "AdminPhoto unsuccessfully deleted!")
         );
 
         // if attendee's profile photo, reset default
@@ -126,15 +123,15 @@ public class Photo {
                         .update("defaultProfilePhoto", true);
             } else {
                 Log.e("deletePhoto",
-                        "Photo's path does not contain valid format to find ID.");
+                        "AdminPhoto's path does not contain valid format to find ID.");
             }
         }
 
     }
 
     /**
-     * Getter for the bitmap attribute of Photo
-     * @return The Photo's bitmap
+     * Getter for the bitmap attribute of AdminPhoto
+     * @return The AdminPhoto's bitmap
      */
     public Bitmap getBitmap(){
         return photoBitmap;
@@ -147,7 +144,7 @@ public class Photo {
     public void setBitmapFromDB(Context context){
         // verify we have the path
         if(photoPath == null){
-            throw new RuntimeException("Photo's path should be initialized.");
+            throw new RuntimeException("AdminPhoto's path should be initialized.");
         }
         MainActivity.db.downloadPhoto(photoPath,
                 t -> ((Activity) context).runOnUiThread(() -> bitMapUpdated(t)));
@@ -167,9 +164,9 @@ public class Photo {
     }
 
     /**
-     * Updates an imageView with the bitmap value of the Photo. If the bitmap has not been set yet,
+     * Updates an imageView with the bitmap value of the AdminPhoto. If the bitmap has not been set yet,
      * the view is added to a list who will get updated when the bitmap values is set.
-     * @param view The ImageView that will have its bitmap updated with the Photo's bitmap
+     * @param view The ImageView that will have its bitmap updated with the AdminPhoto's bitmap
      */
     public void updateWithBitmap(ImageView view){
         if(photoBitmap != null){

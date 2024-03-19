@@ -1,25 +1,24 @@
+/*
+This file is used to create ArrayList Adapters that adapt array list of Photos. It is mainly used in
+AdminImagesFragment.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import com.example.noram.MainActivity;
 import com.example.noram.R;
-import com.example.noram.model.Photo;
+import com.example.noram.model.AdminPhoto;
 
 import java.util.ArrayList;
 
@@ -28,8 +27,8 @@ import java.util.ArrayList;
  * A {@link PhotoArrayAdapter} object is used to display a list of Photos  in a Gridview.
  * @author Gabriel
  */
-public class PhotoArrayAdapter extends ArrayAdapter<Photo>{
-    private ArrayList<Photo> photos;
+public class PhotoArrayAdapter extends ArrayAdapter<AdminPhoto>{
+    private ArrayList<AdminPhoto> photos;
     private Context context;
 
     /**
@@ -38,7 +37,7 @@ public class PhotoArrayAdapter extends ArrayAdapter<Photo>{
      * @param context the context of the adapter
      * @param photos  the photos to be displayed
      */
-    public PhotoArrayAdapter(Context context, ArrayList<Photo> photos) {
+    public PhotoArrayAdapter(Context context, ArrayList<AdminPhoto> photos) {
         super(context, 0, photos);
         this.photos = photos;
         this.context = context;
@@ -62,7 +61,7 @@ public class PhotoArrayAdapter extends ArrayAdapter<Photo>{
         }
 
         // get photo data
-        Photo photo = photos.get(position);
+        AdminPhoto photo = photos.get(position);
 
         // get view
         ImageView photoView = view.findViewById(R.id.photoView);

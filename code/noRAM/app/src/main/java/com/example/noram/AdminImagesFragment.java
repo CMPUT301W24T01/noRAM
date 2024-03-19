@@ -13,21 +13,17 @@ database's storage. This also means that "maintenance image" (ex: cupcake-01.jpg
 package com.example.noram;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.PhotoArrayAdapter;
-import com.example.noram.model.Photo;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.noram.model.AdminPhoto;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
@@ -48,7 +44,7 @@ public class AdminImagesFragment extends Fragment {
     }
 
     public GridView imagesGrid; // images being displayed
-    ArrayList<Photo> imagesDataList; // data containing images
+    ArrayList<AdminPhoto> imagesDataList; // data containing images
     PhotoArrayAdapter imagesAdapter; // connect images being displayed with images' data
 
     /**
@@ -57,7 +53,7 @@ public class AdminImagesFragment extends Fragment {
      */
     public void deletePhoto(int photoPos){
         // remove photo from database
-        Photo photo = imagesDataList.get(photoPos);
+        AdminPhoto photo = imagesDataList.get(photoPos);
         photo.deletePhoto();
 
         // remove from local data
@@ -72,7 +68,7 @@ public class AdminImagesFragment extends Fragment {
      */
     public void addPhotoToGrid(StorageReference item, boolean isProfile){
         // Create new photo and update with item's values
-        Photo photo = new Photo();
+        AdminPhoto photo = new AdminPhoto();
         photo.setPhotoPath(item.getPath());
         photo.setPhotoProfile(isProfile);
         photo.setBitmapFromDB(getContext());
@@ -93,7 +89,7 @@ public class AdminImagesFragment extends Fragment {
 
         // get basic elements
         imagesGrid = rootView.findViewById(R.id.imagesGrid);
-        imagesDataList = new ArrayList<Photo>();
+        imagesDataList = new ArrayList<AdminPhoto>();
         imagesAdapter = new PhotoArrayAdapter(this.getContext(), imagesDataList);
         imagesGrid.setAdapter(imagesAdapter);
 
