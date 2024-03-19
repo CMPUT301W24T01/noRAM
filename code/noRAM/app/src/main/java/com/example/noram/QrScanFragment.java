@@ -142,7 +142,7 @@ public class QrScanFragment extends Fragment {
                 event.setId(eventId);
 
                 if (qrType == QRType.SIGN_IN) {
-                    EventManager.signInToEvent(eventId);
+                    EventManager.checkInToEvent(eventId);
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event

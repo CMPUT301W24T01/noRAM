@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.noram.AttendeeEventInfo;
+import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.DocumentReference;
@@ -53,7 +53,7 @@ public class EventManager {
      * @param event The event whose information need to be displayed
      */
     public static void displayEvent(Context context, Event event){
-        Intent intent = new Intent(context, AttendeeEventInfo.class);
+        Intent intent = new Intent(context, AttendeeEventInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         intent.putExtras(bundle);
@@ -69,7 +69,7 @@ public class EventManager {
      * @param event The event whose information need to be displayed
      */
     public static void displayCheckedInEvent(Context context, Event event){
-        Intent intent = new Intent(context, AttendeeEventInfo.class);
+        Intent intent = new Intent(context, AttendeeEventInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         bundle.putBoolean(checkedInLabel, true);

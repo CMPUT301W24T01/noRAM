@@ -20,8 +20,6 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.noram.AttendeeEventInfo;
-import com.example.noram.MainActivity;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
