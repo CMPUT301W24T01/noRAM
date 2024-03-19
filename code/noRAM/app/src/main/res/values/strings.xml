@@ -67,4 +67,10 @@
     <string name="admin_view_images_button">View Images</string>
     <string name="admin_label">Admin Mode</string>
     <string name="organizer_create_event_finish">Finish</string>
+    <string name="check_in_qr_code_settings_header">Check In QR Code Settings:</string>
+    <string name="auto_generate">Auto-Generate</string>
+    <string name="upload">Upload</string>
+    <string name="upload_qr_code_header">Upload QR Code</string>
+    <string name="uploadeduriplaceholder">UploadedURIPlaceholder</string>
+    <string name="promotional_qr_code_settings_header">Promotional QR Code Settings:</string>
 </resources>

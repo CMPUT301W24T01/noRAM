@@ -148,8 +148,7 @@ public class QRCode {
      * @return a null result if a QR code couldn't be found, else, the result, containing the encoded data
      */
     public static Result checkImageForQRCode(Bitmap bmp) {
-        // TODO: might want to move this to a QRValidator type class. Also, unit test this
-        // convert bitmap to a BinaryBitmap so
+        // convert bitmap to a BinaryBitmap so QRCodeReader can use it
         int[] pixels = new int[bmp.getWidth() * bmp.getHeight()];
         bmp.getPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         LuminanceSource luminanceSource = new RGBLuminanceSource(bmp.getWidth(), bmp.getHeight(), pixels);

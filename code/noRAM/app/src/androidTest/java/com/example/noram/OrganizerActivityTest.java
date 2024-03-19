@@ -136,7 +136,7 @@ public class OrganizerActivityTest {
         onView(withId(R.id.organizer_fragment_create_event_p1_edit_next_button))
                 .perform(scrollTo()).perform(click());
 
-        onView(withId(R.id.event_add_p2_gen_QR_button)).check(doesNotExist());
+        onView(withId(R.id.organizer_create_event_complete_button)).check(doesNotExist());
     }
 
     /**
@@ -178,7 +178,7 @@ public class OrganizerActivityTest {
                 .perform(scrollTo()).perform(click());
 
         // generate qr code and check that they appear
-        onView(withId(R.id.event_add_p2_gen_QR_button)).perform(click());
+        onView(withId(R.id.organizer_create_event_complete_button)).perform(click());
         onView(withId(R.id.qr_checkin)).check(matches(isDisplayed()));
         onView(withId(R.id.qr_promo)).check(matches(isDisplayed()));
     }
@@ -220,7 +220,7 @@ public class OrganizerActivityTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.organizer_fragment_create_event_p1_edit_next_button))
                 .perform(scrollTo()).perform(click());
-        onView(withId(R.id.event_add_p2_gen_QR_button)).perform(click());
+        onView(withId(R.id.organizer_create_event_complete_button)).perform(click());
 
         onView(withId(R.id.share_checkin)).perform(scrollTo()).perform(click());
 

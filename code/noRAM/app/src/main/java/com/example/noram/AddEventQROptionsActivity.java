@@ -8,6 +8,7 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -51,8 +53,10 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
     private TextView promoUriText;
     private Button promoUploadButton;
     private ImageView promoPreview;
-    private String promoQRCodeData;
-    private String checkinQRCodeData;
+    private String promoQRCodeData = null;
+    private String checkinQRCodeData = null;
+    private boolean isUploadingPromo = false;
+    private boolean isUploadingCheckin = false;
 
     /**
      * Create the event and set up button listeners
@@ -72,7 +76,6 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         finishButton.setOnClickListener(v -> completeEventCreation(bundle));
 
         // setup listeners + view for checkin section
-
         checkinUriText = findViewById(R.id.checkin_uri_placeholder_text);
         checkinUriText.setVisibility(View.INVISIBLE);
         checkinUriText.setText("");
@@ -93,8 +96,8 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
             checkinUriText.setVisibility(visibility);
             checkinUploadButton.setVisibility(visibility);
             checkinPreview.setVisibility(visibility);
+            isUploadingCheckin = checkedId == R.id.upload_button_checkin;
         });
-
 
         // setup listeners + view for promo section
         promoUriText = findViewById(R.id.promo_uri_placeholder_text);
@@ -117,6 +120,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
             promoUploadButton.setVisibility(visibility);
             promoUriText.setVisibility(visibility);
             promoPreview.setVisibility(visibility);
+            isUploadingPromo = checkedId == R.id.upload_button_promo;
         });
     }
 
@@ -125,36 +129,25 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
      * @param bundle The bundle containing the event information
      */
     private void completeEventCreation(Bundle bundle) {
-        // We can simply pass the received bundle through again - the next activity will construct the event
-        Intent intent = new Intent(AddEventQROptionsActivity.this, AddEventCompleteActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        // verify that valid QR codes are setup for both checkin and promo
+        boolean promoQRValid = !isUploadingPromo || promoQRCodeData != null;
+        boolean checkinQRValid = !isUploadingCheckin || checkinQRCodeData != null;
 
-        // we won't need to go back so we can finish this activity.
-        finish();
-    }
+        if (promoQRValid && checkinQRValid) {
+            // add QR data to the bundle
+            bundle.putString("promoQRData", promoQRCodeData);
+            bundle.putString("checkinQRData", checkinQRCodeData);
 
-    /**
-     * Show a dialog to select the type of QR code we want to upload for reuse
-     */
-    private void showQRReuseDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select QR Type");
-        builder.setMessage("Select whether you want to upload a QR code for promotion or check-in");
+            // We can simply pass the received bundle through again - the next activity will construct the event
+            Intent intent = new Intent(AddEventQROptionsActivity.this, AddEventCompleteActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
-        // Check in selection button
-        builder.setPositiveButton("Check-in", (dialog, which) -> {
-            lastQRTypeSelected = QRType.SIGN_IN;
-            showImagePicker();
-        });
-
-        // Promotion selection button
-        builder.setNeutralButton("Promotional", (dialog, which) -> {
-            lastQRTypeSelected = QRType.PROMOTIONAL;
-            showImagePicker();
-        });
-        builder.setNegativeButton("Cancel", null);
-        builder.create().show();
+            // we won't need to go back so we can finish this activity.
+            finish();
+        } else {
+            Toast.makeText(this, "Upload selected, but you haven't uploaded a code!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -211,17 +204,16 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
 
     /**
      * Checks if a qr code collides with an event already in the database
+     * @param uri uri that contains the QR Code
+     * @param qrData encoded data for the QR code
      */
     private void checkDatabaseQRCollision(Uri uri, String qrData) {
-
         OnSuccessListener<DocumentSnapshot> eventLookupListener = documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String dateTime = documentSnapshot.getString("endTime");
                 LocalDateTime eventEndTime = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 LocalDateTime currentTime = LocalDateTime.now();
 
-                // TODO: is there a good way to decouple any of this logic from the database, for
-                // unit testing? would be nice to do so.
                 if (currentTime.isAfter(eventEndTime)) {
                     reuseSuccess(uri, qrData);
                 } else {
@@ -249,6 +241,8 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
 
     /**
      * Called when we confirm that a QR code is OK for reuse
+     * @param uri uri that contains the QR Code
+     * @param qrData encoded data for the QR code
      */
     private void reuseSuccess(Uri uri, String qrData) {
         // make sure we aren't already using this QR code
@@ -260,10 +254,12 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         }
 
         if (lastQRTypeSelected == QRType.PROMOTIONAL) {
+            promoUriText.setTextColor(Color.BLACK);
             promoUriText.setText("Uploaded: " + uri.getLastPathSegment());
             promoPreview.setImageURI(uri);
             promoQRCodeData = qrData;
         } else if (lastQRTypeSelected == QRType.SIGN_IN) {
+            checkinUriText.setTextColor(Color.BLACK);
             checkinUriText.setText("Uploaded: " + uri.getLastPathSegment());
             checkinPreview.setImageURI(uri);
             checkinQRCodeData = qrData;
@@ -271,7 +267,8 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when we find a QR code is NOT ok for reuse
+     * Called when we find a QR code is NOT ok for reuse - shows failure dialog.
+     * @param errMsg error msg to include in the popup
      */
     private void reuseFailure(String errMsg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -282,10 +279,14 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
 
         if (lastQRTypeSelected == QRType.PROMOTIONAL) {
             promoUriText.setText("Upload failed, please try again.");
+            promoUriText.setTextColor(Color.RED);
             promoPreview.setImageURI(null);
+            promoQRCodeData = null;
         } else {
             checkinUriText.setText("Upload failed, please try again.");
+            checkinUriText.setTextColor(Color.RED);
             checkinPreview.setImageURI(null);
+            checkinQRCodeData = null;
         }
     }
  }
