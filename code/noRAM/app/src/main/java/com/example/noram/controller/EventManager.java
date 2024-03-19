@@ -28,10 +28,10 @@ public class EventManager {
 
 
     /**
-     * Sign in the current user to the event given by eventID
+     * Check-in the current user to the event given by eventID
      * @param eventId ID string of the event
      */
-    public static void signInToEvent(String eventId) {
+    public static void checkInToEvent(String eventId) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();

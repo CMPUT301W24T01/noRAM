@@ -53,10 +53,9 @@ public class AttendeeEventInfo extends AppCompatActivity {
      * Signup the user to current event in the database and display a message through a new activity
      */
     private void signup(){
-        // TODO: update database
-        // TODO: send to message page
+        // TODO: update database to add signed-in attendees to event
+        // TODO: send to message page: should send to signed-in page instead of checked-in page
         // sign-in the event and display sign-in message
-        EventManager.signInToEvent(event.getId());
         Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
         // load new page (signed-in event)
         EventManager.displayCheckedInEvent(this, event);
@@ -158,7 +157,6 @@ public class AttendeeEventInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // retrieve corresponding event in database
-        //int eventID = getIntent().getIntExtra(AttendeeEventListFragment.eventIDLabel,0);
         String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
 
         // retrieve event then load page
@@ -179,16 +177,6 @@ public class AttendeeEventInfo extends AppCompatActivity {
                 }
             }
         });
-        /*
-        Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
-        task.addOnSuccessListener(documentSnapshot -> {
-            // update event
-            event = new Event();
-            event.updateWithDocument(documentSnapshot);
-            // update page's info
-            baseSetup();
-        });
-        */
     }
 
 

@@ -143,7 +143,6 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         // Navigate the navbar to the events page, then call the events page to programmatically
         // click the right event.
         navBar.setSelectedItemId(NAV_EVENTS);
-        //((AttendeeEventListFragment) eventsFragment).viewEventPage(event);
         EventManager.displayEvent(this, event);
     }
 }
