@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
-
 
     <application
         android:allowBackup="true"
@@ -62,7 +61,7 @@
                     android:resource="@xml/file_paths" />
         </provider>
         <service
-            android:name=".model.Message"
+            android:name=".PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

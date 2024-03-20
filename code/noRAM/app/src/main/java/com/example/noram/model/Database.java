@@ -9,10 +9,16 @@ package com.example.noram.model;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,6 +42,7 @@ public class Database {
     private final CollectionReference photoRef = db.collection("Photos");
     private final CollectionReference qrRef = db.collection("QRCodes");
     private final CollectionReference eventsRef = db.collection("Events");
+    private final CollectionReference keyRef = db.collection("Keys");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -96,6 +103,14 @@ public class Database {
     }
 
     /**
+     * Getter method for the photo reference
+     * @return the photo reference
+     */
+    public CollectionReference getKeyRef() {
+        return keyRef;
+    }
+
+    /**
      *
      * Downloads the photo at the given path from Cloud Storage.
      * This is intended as a utility so that photo download is consistent through the app.
@@ -143,6 +158,26 @@ public class Database {
     public FirebaseStorage getStorage() {
         return storage;
     }
+
+    /**
+     * A method to get the messaging server key
+     * @return FCM Server Key
+     */
+    public String getFCMServerKey() {
+        return "AAAAHVKsL6M:APA91bFXNPbG_3lwTNdVHTtx5sdBYvn6Z-J3u5FNFngpg2hliiyvdForhPGIjLRirM_jIgJugzmvZWtC__qnQhNQv9Q2XntGbfAx8JDIBku_NJB2dTBcXdoBk8YLDFL4vGzhvRXOWZNy";
+        // return getKeyRef().document("FCMKEY").get().addOnSuccessListener(documentSnapshot -> documentSnapshot.getString("FCMKEY")).toString();
+    }
+
+    /**
+     *
+     * @param AttendeeIdentifier The attendee we wish to get the FCM Token for
+     * @return The attendee's FCM token
+     */
+    public String getAttendeeFCMToken(String AttendeeIdentifier) {
+        return "c-YJ06VPSRi79hKP4xPDwg:APA91bGEsj73QcWNW28AHN0E7lVaKggqzfVM5enrGBOQz_4RjlxgwTP_FMnNblNnY62_zot4BjQwFHx9_Ei0HWbizuCl48T8oQ-gu6sjeiKFPuoE7Asw341DwM9os5-0YI1ZgQmfDvfz";
+        // return getAttendeeRef().document(AttendeeIdentifier).get().addOnSuccessListener(documentSnapshot -> documentSnapshot.getString("FCMToken")).toString();
+    }
+
 
 }
 
