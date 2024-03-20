@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
@@ -141,7 +142,8 @@ public class AttendeeProfileFragment extends Fragment{
             Boolean editAllowLocation = allowLocation.isChecked();
 
             // Validate name and email fields
-            if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
+            Pair<Boolean, String> validateResult = AttendeeValidator.validateFromFields(editFirstName, editLastName, editEmail);
+            if (validateResult.first) {
                 attendee.setFirstName(editFirstName);
                 attendee.setLastName(editLastName);
                 attendee.setHomePage(editHomePage);
@@ -153,6 +155,8 @@ public class AttendeeProfileFragment extends Fragment{
                 } else {
                     attendee.generateDefaultProfilePhoto();
                 }
+            } else {
+                Toast.makeText(getActivity(), validateResult.second, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -268,33 +272,5 @@ public class AttendeeProfileFragment extends Fragment{
         homePage.setText(attendee.getHomePage());
         email.setText(attendee.getEmail());
         allowLocation.setChecked(attendee.getAllowLocation());
-    }
-
-    /**
-     * Validate the fields of the attendee information, return true if valid, false otherwise.
-     * If it is not valid display a message saying what is wrong
-     * @param editFirstName the first name that was entered in the field
-     * @param editLastName the last name that was entered in the field
-     * @param editEmail the email that was entered in the field
-     * @return true if all fields are valid, false otherwise
-     */
-    public Boolean validateAttendeeFields(String editFirstName, String editLastName, String editEmail) {
-        if (editFirstName.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your first name", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (editLastName.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your last name", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (editEmail.isEmpty()) {
-            Toast.makeText(getContext(), "Please enter your email", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(editEmail).matches()) {
-            Toast.makeText(getContext(), "Please enter a valid email", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
     }
 }
