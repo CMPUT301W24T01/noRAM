@@ -168,16 +168,5 @@ public class Database {
         // return getKeyRef().document("FCMKEY").get().addOnSuccessListener(documentSnapshot -> documentSnapshot.getString("FCMKEY")).toString();
     }
 
-    /**
-     *
-     * @param AttendeeIdentifier The attendee we wish to get the FCM Token for
-     * @return The attendee's FCM token
-     */
-    public String getAttendeeFCMToken(String AttendeeIdentifier) {
-        return "c-YJ06VPSRi79hKP4xPDwg:APA91bGEsj73QcWNW28AHN0E7lVaKggqzfVM5enrGBOQz_4RjlxgwTP_FMnNblNnY62_zot4BjQwFHx9_Ei0HWbizuCl48T8oQ-gu6sjeiKFPuoE7Asw341DwM9os5-0YI1ZgQmfDvfz";
-        // return getAttendeeRef().document(AttendeeIdentifier).get().addOnSuccessListener(documentSnapshot -> documentSnapshot.getString("FCMToken")).toString();
-    }
-
-
 }
 

@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.noram.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -359,18 +361,19 @@ public class Attendee {
         }
     }
 
+    /**
+     * A method to generate the FCM token for the attendee
+     */
     public void generateAttendeeFCMToken() {
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(Task<String> task) {
-                if (!task.isSuccessful()) {
-                    Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                    return;
-                }
-                // Get new FCM registration token
-                String token = task.getResult();
-                setFCMToken(token);
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                return;
             }
+            // Get new FCM registration token
+            String token = task.getResult();
+            setFCMToken(token);
         });
+        updateDBAttendee();
     }
 }
