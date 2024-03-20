@@ -8,7 +8,7 @@ import com.example.noram.model.Attendee;
 /**
  * Class to validate an attendee
  */
-public class AttendeeValidator implements Validator{
+public class AttendeeValidator {
     /**
      * Validate an attendee
      * @param attendee attendee object to validate

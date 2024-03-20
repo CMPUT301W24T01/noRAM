@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Class to validate an event
  */
-public class EventValidator implements Validator {
+public class EventValidator {
     /**
      * Validate an event object
      * @param event event object to validate
