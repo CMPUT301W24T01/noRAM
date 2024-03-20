@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.example.noram.model.Event;
+import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -118,7 +119,8 @@ public class QrScanFragment extends Fragment {
      * @param qrCodeString qr code encoded string
      */
     private void processQRCode(String qrCodeString) {
-        DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
+        String qrDocId = HashHelper.hashSHA256(qrCodeString);
+        DocumentReference doc = MainActivity.db.getQrRef().document(qrDocId);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
 
         doc.get().addOnCompleteListener(task -> {

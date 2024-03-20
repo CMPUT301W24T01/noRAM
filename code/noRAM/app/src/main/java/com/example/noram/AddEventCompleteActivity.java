@@ -116,7 +116,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
      */
     private void shareQRCode(QRCode qrCode) {
         ShareHelper shareHelper = new ShareHelper();
-        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getEncodedData(), getApplicationContext());
+        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getHashId(), getApplicationContext());
         startActivity(Intent.createChooser(shareIntent, null));
     }
 }

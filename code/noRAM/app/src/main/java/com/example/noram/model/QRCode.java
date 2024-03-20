@@ -33,6 +33,7 @@ import java.util.Map;
  * @author Cole
  */
 public class QRCode {
+    private String hashId;
     private String encodedData;
     private String associatedEvent;
     private QRType qrCodeType;
@@ -46,10 +47,19 @@ public class QRCode {
      * @param eventId event id string associated with the QR code
      */
     public QRCode(String data, String eventId, QRType type) {
+        hashId = HashHelper.hashSHA256(data);
         qrCodeType = type;
         associatedEvent = eventId;
         encodedData = data;
         updateBitmap();
+    }
+
+    /**
+     * Get the hash Id for the QR code. This is used for the document ID in firebase.
+     * @return hash id.
+     */
+    public String getHashId() {
+        return hashId;
     }
 
     /**
@@ -66,6 +76,7 @@ public class QRCode {
      */
     public void setEncodedData(String encodedData) {
         this.encodedData = encodedData;
+        hashId = HashHelper.hashSHA256(encodedData);
         updateBitmap();
         updateDBQRCode();
     }
@@ -117,9 +128,10 @@ public class QRCode {
      */
     public void updateDBQRCode() {
         Map<String, Object> data = new HashMap<>();
+        data.put("encodedData", encodedData);
         data.put("event", associatedEvent);
         data.put("type", qrCodeType.toString());
-        MainActivity.db.getQrRef().document(encodedData).set(data);
+        MainActivity.db.getQrRef().document(hashId).set(data);
     }
 
     /**
@@ -163,7 +175,6 @@ public class QRCode {
             // QR Code not found/decoded - assume it's not a valid image
             result = null;
         }
-
         return result;
     }
 }

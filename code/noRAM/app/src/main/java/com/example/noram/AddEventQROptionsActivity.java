@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -34,8 +35,13 @@ import com.google.zxing.Result;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * Activity for the QR code options when creating an event
@@ -195,7 +201,8 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
         if (checkResult != null) {
             // use the bitmap, move on to next activity
             String qrData = checkResult.getText();
-            checkDatabaseQRCollision(uri, qrData);
+            String qrHash = HashHelper.hashSHA256(qrData);
+            checkDatabaseQRCollision(uri, qrHash, qrData);
         } else {
             // show error message...
             reuseFailure("Couldn't find QR Code in Image");
@@ -207,7 +214,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
      * @param uri uri that contains the QR Code
      * @param qrData encoded data for the QR code
      */
-    private void checkDatabaseQRCollision(Uri uri, String qrData) {
+    private void checkDatabaseQRCollision(Uri uri, String qrHash, String qrData) {
         OnSuccessListener<DocumentSnapshot> eventLookupListener = documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String dateTime = documentSnapshot.getString("endTime");
@@ -215,13 +222,13 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
                 LocalDateTime currentTime = LocalDateTime.now();
 
                 if (currentTime.isAfter(eventEndTime)) {
-                    reuseSuccess(uri, qrData);
+                    reuseSuccess(uri, qrHash, qrData);
                 } else {
                     // BAD: the added QR code is already in use
                     reuseFailure("QR Already in Use");
                 }
             } else {
-                reuseSuccess(uri, qrData);
+                reuseSuccess(uri, qrHash, qrData);
             }
         };
 
@@ -232,11 +239,11 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
                 // lookup event
                 MainActivity.db.getEventsRef().document(eventId).get().addOnSuccessListener(eventLookupListener);
             } else {
-                reuseSuccess(uri, qrData);
+                reuseSuccess(uri, qrHash, qrData);
             }
         };
 
-        MainActivity.db.getQrRef().document(qrData).get().addOnSuccessListener(qrLookupListener);
+        MainActivity.db.getQrRef().document(qrHash).get().addOnSuccessListener(qrLookupListener);
     }
 
     /**
@@ -244,7 +251,7 @@ public class AddEventQROptionsActivity extends AppCompatActivity {
      * @param uri uri that contains the QR Code
      * @param qrData encoded data for the QR code
      */
-    private void reuseSuccess(Uri uri, String qrData) {
+    private void reuseSuccess(Uri uri, String qrHash, String qrData) {
         // make sure we aren't already using this QR code
         boolean alreadyUsedForCheckin = lastQRTypeSelected == QRType.PROMOTIONAL && qrData.equals(checkinQRCodeData);
         boolean alreadyUsedForPromo = lastQRTypeSelected == QRType.SIGN_IN && qrData.equals(promoQRCodeData);
