@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.util.Pair;
 
 import com.example.noram.model.Event;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -220,16 +221,10 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
 
-                // Check inputs
-                String errorText = null;
-                if (name.isEmpty()) {errorText = "Name";}
-                else if (location.isEmpty()) {errorText = "Location";}
-                else if (startDateTime == null) {errorText = "Start Time";}
-                else if (endDateTime == null) {errorText = "End Time";}
-                else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
 
                 // Only continue to next step of event creation if inputs are valid
-                if (errorText == null) {
+                if (validateResult.first) {
 
                     // Make milestones list
                     List<Integer> milestones;
@@ -260,7 +255,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
 
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getBaseContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), String.format("%s is invalid", validateResult.second), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -356,22 +351,4 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             );
         }
     }
-
-    // Helper functions
-    /**
-     * Checks whether or not inputted string is valid comma-separated numbers
-     * @param milestones Inputted string to check
-     * @return true if all characters in milestones is digit or comma, false otherwise
-     */
-    private boolean isValidMilestoneList(String milestones) {
-        if (!milestones.isEmpty()) {
-            for (char c : milestones.toCharArray()) {
-                if (!(Character.isDigit(c) || c == ',')) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 }
