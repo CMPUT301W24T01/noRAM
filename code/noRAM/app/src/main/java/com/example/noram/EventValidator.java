@@ -35,6 +35,10 @@ public class EventValidator implements Validator {
             valid = false;
             errMsg = "End Time is empty";
         }
+        if (event.getStartTime() != null && event.getEndTime() != null && event.getStartTime().isAfter(event.getEndTime())) {
+            valid = false;
+            errMsg = "Start time is after end time";
+        }
         if (event.getMilestones() == null) {
             valid = false;
             errMsg = "Milestones is null";
@@ -71,7 +75,10 @@ public class EventValidator implements Validator {
             valid = false;
             errMsg = "End Time is empty";
         }
-
+        if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
+            valid = false;
+            errMsg = "Start time is after end time";
+        }
         if (milestonesString.isEmpty()) {
             valid = false;
             errMsg = "Milestones are empty";
