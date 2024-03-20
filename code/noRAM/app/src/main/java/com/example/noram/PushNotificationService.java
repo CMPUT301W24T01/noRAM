@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PushNotificationService extends FirebaseMessagingService {
@@ -71,52 +72,66 @@ public class PushNotificationService extends FirebaseMessagingService {
         // sendRegistrationToServer(token);
     }
 
-
-
     /**
-     * Sends a notification to the given topic
+     * A method to send a notification to the attendees of an event
      * @param title the title of the notification
      * @param data the data of the notification
-     * // @param EventName the name of the event to send the notification to
+     * @param eventID the ID of the event
      */
-    public void sendNotification(String title, String data) { // String EventName
+    public void sendNotification(String title, String data, String eventID) { // String EventName
+        MainActivity.db.getEventsRef().document(eventID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<String> attendeeList = (List<String>) task.getResult().get("checkedInAttendees");
+                assert attendeeList != null;
+                for (String attendeeID : attendeeList) {
+                    MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            String FCMToken = task1.getResult().getString("FCMToken");
+                            Log.d("FCMToken", FCMToken);
 
-        // Set the URL and token
-        String url = "https://fcm.googleapis.com/fcm/send";
-        String token = "key=" + MainActivity.db.getFCMServerKey();
-        Log.d("Token", token);
+                            // Set the URL and token
+                            String url = "https://fcm.googleapis.com/fcm/send";
+                            String token = "key=" + MainActivity.db.getFCMServerKey();
+                            Log.d("Token", token);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
-                response -> Log.d("Response", response.toString()),
-                error -> Log.d("Error", error.toString())) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", token);
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
+                                    response -> Log.d("Response", response.toString()),
+                                    error -> Log.d("Error", error.toString())) {
+                                @Override
+                                public Map<String, String> getHeaders() {
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("Authorization", token);
+                                    headers.put("Content-Type", "application/json");
+                                    return headers;
+                                }
 
-            @Override
-            public byte[] getBody() {
-                JSONObject message = new JSONObject();
-                JSONObject notification = new JSONObject();
-                try {
-                    notification.put("title", "HELLO");
-                    notification.put("body", "DATA");
-                    message.put("to", "c-YJ06VPSRi79hKP4xPDwg:APA91bGEsj73QcWNW28AHN0E7lVaKggqzfVM5enrGBOQz_4RjlxgwTP_FMnNblNnY62_zot4BjQwFHx9_Ei0HWbizuCl48T8oQ-gu6sjeiKFPuoE7Asw341DwM9os5-0YI1ZgQmfDvfz");
-                    message.put("notification", notification);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                                @Override
+                                public byte[] getBody() {
+                                    JSONObject message = new JSONObject();
+                                    JSONObject notification = new JSONObject();
+                                    MainActivity.db.getAttendeeRef().document("").get().addOnSuccessListener(documentSnapshot -> {
+                                        try {
+                                            notification.put("title", title);
+                                            notification.put("body", data);
+                                            message.put("to", documentSnapshot.getString("FCMToken"));
+                                            message.put("notification", notification);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                    return message.toString().getBytes();
+                                }
+                            };
+
+                            Log.d("Request", Arrays.toString(jsonObjectRequest.getBody()));
+
+                            // Add the request to the RequestQueue
+                            // Volley.newRequestQueue(this).add(jsonObjectRequest);
+
+                        }
+                    });
                 }
-                return message.toString().getBytes();
             }
-        };
-
-        Log.d("Request", Arrays.toString(jsonObjectRequest.getBody()));
-
-        // Add the request to the RequestQueue
-        // Volley.newRequestQueue(this).add(jsonObjectRequest);
+        });
     }
-
 }

@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
         }
 
-        pushService.sendNotification("Test Title", "Test Data");
+        // pushService.sendNotification("Test Title", "Test Data");
     }
 
     /**
