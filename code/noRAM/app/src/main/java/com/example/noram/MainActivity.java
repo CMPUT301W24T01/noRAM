@@ -20,12 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
-import com.example.noram.model.Message;
 import com.example.noram.model.Organizer;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.List;
 
@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public static Attendee attendee = null;
     public static Organizer organizer = null;
     private Button adminButton;
+    public static PushNotificationService pushService = new PushNotificationService();
 
-    public static Message message = new Message(); // TEMP DONT LET ME PUSH THIS PLEASE
 
     /**
      * Create and setup the main activity.
@@ -87,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
+
+        // ask for notification permission
+        // Reference: https://developer.android.com/training/notify-user/permissions#request-permission, accessed feb 19 2024
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED && android.os.Build.VERSION.SDK_INT >= 33) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
+        }
+
+        pushService.sendNotification("Test Title", "Test Data");
     }
 
     /**
