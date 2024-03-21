@@ -9,6 +9,7 @@ package com.example.noram;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,7 +57,10 @@ public class AddEventCompleteActivity extends AppCompatActivity {
                 eventBundle.getString("details"),
                 eventBundle.getIntegerArrayList("milestones"),
                 eventBundle.getBoolean("trackLocation")
+
+
         );
+        Log.d("HERE", "HELLO");
         event.updateDBEvent();
 
         //upload photo to event poster cloud storage with matching event id

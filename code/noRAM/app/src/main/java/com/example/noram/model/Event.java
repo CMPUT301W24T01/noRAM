@@ -75,6 +75,7 @@ public class Event {
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+        updateDBEvent();
     }
 
     /**
@@ -333,8 +334,6 @@ public class Event {
 
         promoQR.updateDBQRCode();
         checkInQR.updateDBQRCode();
-
-        MainActivity.pushService.subscribeToTopic(name);
     }
 
     /**

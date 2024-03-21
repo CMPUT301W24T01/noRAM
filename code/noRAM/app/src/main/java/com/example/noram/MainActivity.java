@@ -20,12 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.List;
 
@@ -94,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
         }
 
-        // pushService.sendNotification("Test Title", "Test Data");
     }
 
     /**

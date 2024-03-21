@@ -14,6 +14,8 @@ import static android.content.ContentValues.TAG;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.noram.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -29,28 +31,6 @@ import java.util.Map;
 
 public class PushNotificationService extends FirebaseMessagingService {
     private final FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
-
-    public void subscribeToTopic(String topic) {
-        firebaseMessaging.subscribeToTopic(topic)
-                .addOnCompleteListener(task -> {
-                    String msg = "Subscribed";
-                    if (!task.isSuccessful()) {
-                        msg = "Subscribe failed";
-                    }
-                    Log.d("Subscribe", msg);
-                });
-    }
-
-    public void unsubscribeFromTopic(String topic) {
-        firebaseMessaging.unsubscribeFromTopic(topic)
-                .addOnCompleteListener(task -> {
-                    String msg = "Unsubscribed";
-                    if (!task.isSuccessful()) {
-                        msg = "Unsubscribe failed";
-                    }
-                    Log.d("Unsubscribe", msg);
-                });
-    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -76,62 +56,59 @@ public class PushNotificationService extends FirebaseMessagingService {
      * A method to send a notification to the attendees of an event
      * @param title the title of the notification
      * @param data the data of the notification
-     * @param eventID the ID of the event
+     * @param event the event to send the notification to
      */
-    public void sendNotification(String title, String data, String eventID) { // String EventName
-        MainActivity.db.getEventsRef().document(eventID).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<String> attendeeList = (List<String>) task.getResult().get("checkedInAttendees");
-                assert attendeeList != null;
-                for (String attendeeID : attendeeList) {
-                    MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            String FCMToken = task1.getResult().getString("FCMToken");
-                            Log.d("FCMToken", FCMToken);
+    public void sendNotification(String title, String data, Event event) {
 
-                            // Set the URL and token
-                            String url = "https://fcm.googleapis.com/fcm/send";
-                            String token = "key=" + MainActivity.db.getFCMServerKey();
-                            Log.d("Token", token);
+        List<String> attendeeList = event.getCheckedInAttendees();
+        for (String attendeeID : attendeeList) {
+            MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    MainActivity.db.getKeyRef().document("FCMKEY").get().addOnSuccessListener(task1 -> {
 
-                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
-                                    response -> Log.d("Response", response.toString()),
-                                    error -> Log.d("Error", error.toString())) {
-                                @Override
-                                public Map<String, String> getHeaders() {
-                                    Map<String, String> headers = new HashMap<>();
-                                    headers.put("Authorization", token);
-                                    headers.put("Content-Type", "application/json");
-                                    return headers;
-                                }
+                        String FCMToken = task.getResult().getString("FCMToken");
+                        String url = "https://fcm.googleapis.com/fcm/send";
+                        String token = "key=" + task1.getString("FCMToken");
 
-                                @Override
-                                public byte[] getBody() {
-                                    JSONObject message = new JSONObject();
-                                    JSONObject notification = new JSONObject();
-                                    MainActivity.db.getAttendeeRef().document("").get().addOnSuccessListener(documentSnapshot -> {
-                                        try {
-                                            notification.put("title", title);
-                                            notification.put("body", data);
-                                            message.put("to", documentSnapshot.getString("FCMToken"));
-                                            message.put("notification", notification);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
-                                    return message.toString().getBytes();
-                                }
-                            };
 
-                            Log.d("Request", Arrays.toString(jsonObjectRequest.getBody()));
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
+                                response -> Log.d("Response", response.toString()),
+                                error -> Log.d("Error", error.toString())) {
+                            @Override
+                            public Map<String, String> getHeaders() {
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Authorization", token);
+                                headers.put("Content-Type", "application/json");
+                                return headers;
+                            }
 
-                            // Add the request to the RequestQueue
-                            // Volley.newRequestQueue(this).add(jsonObjectRequest);
+                            @Override
+                            public byte[] getBody() {
+                                JSONObject message = new JSONObject();
+                                JSONObject notification = new JSONObject();
+                                MainActivity.db.getAttendeeRef().document("").get().addOnSuccessListener(documentSnapshot -> {
+                                    try {
+                                        notification.put("title", title);
+                                        notification.put("body", data);
+                                        message.put("to", FCMToken);
+                                        message.put("notification", notification);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                return message.toString().getBytes();
+                            }
+                        };
 
-                        }
+                        Log.d("Request", Arrays.toString(jsonObjectRequest.getBody()));
+
+                        // Add the request to the RequestQueue
+                        // Volley.newRequestQueue(this).add(jsonObjectRequest);
+
                     });
                 }
-            }
-        });
+            });
+        }
+
     }
 }
