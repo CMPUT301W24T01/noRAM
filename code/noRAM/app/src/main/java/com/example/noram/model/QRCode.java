@@ -11,8 +11,17 @@ import android.graphics.Color;
 
 import com.example.noram.MainActivity;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.HashMap;
@@ -24,6 +33,7 @@ import java.util.Map;
  * @author Cole
  */
 public class QRCode {
+    private String hashId;
     private String encodedData;
     private String associatedEvent;
     private QRType qrCodeType;
@@ -37,10 +47,19 @@ public class QRCode {
      * @param eventId event id string associated with the QR code
      */
     public QRCode(String data, String eventId, QRType type) {
+        hashId = HashHelper.hashSHA256(data);
         qrCodeType = type;
         associatedEvent = eventId;
         encodedData = data;
         updateBitmap();
+    }
+
+    /**
+     * Get the hash Id for the QR code. This is used for the document ID in firebase.
+     * @return hash id.
+     */
+    public String getHashId() {
+        return hashId;
     }
 
     /**
@@ -57,6 +76,7 @@ public class QRCode {
      */
     public void setEncodedData(String encodedData) {
         this.encodedData = encodedData;
+        hashId = HashHelper.hashSHA256(encodedData);
         updateBitmap();
         updateDBQRCode();
     }
@@ -108,9 +128,10 @@ public class QRCode {
      */
     public void updateDBQRCode() {
         Map<String, Object> data = new HashMap<>();
+        data.put("encodedData", encodedData);
         data.put("event", associatedEvent);
         data.put("type", qrCodeType.toString());
-        MainActivity.db.getQrRef().document(encodedData).set(data);
+        MainActivity.db.getQrRef().document(hashId).set(data);
     }
 
     /**
@@ -131,5 +152,29 @@ public class QRCode {
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Validate that a bitmap has a QR Code in it.
+     * @param bmp bitmap to validate
+     * @return a null result if a QR code couldn't be found, else, the result, containing the encoded data
+     */
+    public static Result checkImageForQRCode(Bitmap bmp) {
+        // convert bitmap to a BinaryBitmap so QRCodeReader can use it
+        int[] pixels = new int[bmp.getWidth() * bmp.getHeight()];
+        bmp.getPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        LuminanceSource luminanceSource = new RGBLuminanceSource(bmp.getWidth(), bmp.getHeight(), pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
+
+        // read the bitmap with a qr code reader
+        Result result;
+        QRCodeReader reader = new QRCodeReader();
+        try {
+            result = reader.decode(binaryBitmap);
+        } catch (NotFoundException | ChecksumException | FormatException e) {
+            // QR Code not found/decoded - assume it's not a valid image
+            result = null;
+        }
+        return result;
     }
 }
