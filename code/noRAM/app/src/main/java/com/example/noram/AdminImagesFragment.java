@@ -100,7 +100,10 @@ public class AdminImagesFragment extends Fragment {
                     @Override
                     public void onSuccess(ListResult listResult) {
                         for(StorageReference item : listResult.getItems()){
-                            addPhotoToGrid(item, true);
+                            // add photo if it's not a setting photo
+                            if(!item.getPath().contains("Cupcake")){
+                                addPhotoToGrid(item, true);
+                            }
                         }
                     }
                 });
