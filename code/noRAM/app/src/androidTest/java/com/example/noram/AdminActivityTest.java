@@ -46,10 +46,10 @@ public class AdminActivityTest {
     }
 
     /**
-     * Test that we switch between the admin fragments correctly
+     * Test that we transition between the admin fragments correctly
      */
     @Test
-    public void fragmentsSwitchTest(){
+    public void fragmentsTransitionTest(){
         onView(withId(R.id.fragment_admin_home)).check(matches(isDisplayed()));
         // click on events & check
         onView(withId(R.id.events_button)).perform(click());
