@@ -101,7 +101,8 @@ public class AdminImagesFragment extends Fragment {
                     public void onSuccess(ListResult listResult) {
                         for(StorageReference item : listResult.getItems()){
                             // add photo if it's not a setting photo
-                            if(!item.getPath().contains("Cupcake")){
+                            String path = item.getPath().toLowerCase();
+                            if(!path.contains("cupcake") && !path.contains("-default")){
                                 addPhotoToGrid(item, true);
                             }
                         }
