@@ -229,7 +229,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 }
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getContext(), String.format("%s is invalid", validateResult.second), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), validateResult.second, Toast.LENGTH_SHORT).show();
                 }
             }
         });

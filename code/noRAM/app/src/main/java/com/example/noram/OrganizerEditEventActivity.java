@@ -255,7 +255,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
 
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getBaseContext(), String.format("%s is invalid", validateResult.second), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), validateResult.second, Toast.LENGTH_SHORT).show();
                 }
             }
         });

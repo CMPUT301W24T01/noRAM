@@ -79,11 +79,7 @@ public class EventValidator {
             valid = false;
             errMsg = "Start time is after end time";
         }
-        if (milestonesString.isEmpty()) {
-            valid = false;
-            errMsg = "Milestones are empty";
-        }
-
+        
         for (char c : milestonesString.toCharArray()) {
             if (!(Character.isDigit(c) || c == ',')) {
                 valid = false;
