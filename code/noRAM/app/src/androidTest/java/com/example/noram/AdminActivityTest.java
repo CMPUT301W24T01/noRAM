@@ -2,6 +2,8 @@ package com.example.noram;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertSame;
 
@@ -41,5 +43,24 @@ public class AdminActivityTest {
         // note we don't test for the main activity here, since in the unit test
         // we didn't start it. instead check that the activity gets destroyed.
         assertSame(scenario.getState(), Lifecycle.State.DESTROYED);
+    }
+
+    /**
+     * Test that we transition between the admin fragments correctly
+     */
+    @Test
+    public void fragmentsTransitionTest(){
+        onView(withId(R.id.fragment_admin_home)).check(matches(isDisplayed()));
+        // click on events & check
+        onView(withId(R.id.events_button)).perform(click());
+        onView(withId(R.id.fragment_admin_events)).check(matches(isDisplayed()));
+        // check for profiles
+        onView(withId(R.id.admin_back_button)).perform(click());
+        onView(withId(R.id.profiles_button)).perform(click());
+        onView(withId(R.id.fragment_admin_profiles)).check(matches(isDisplayed()));
+        // check for photos
+        onView(withId(R.id.admin_back_button)).perform(click());
+        onView(withId(R.id.images_button)).perform(click());
+        onView(withId(R.id.fragment_admin_images)).check(matches(isDisplayed()));
     }
 }

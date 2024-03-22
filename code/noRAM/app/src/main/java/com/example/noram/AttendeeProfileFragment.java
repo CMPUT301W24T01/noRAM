@@ -197,9 +197,9 @@ public class AttendeeProfileFragment extends Fragment{
         String deletePhotoStr = attendee.getProfilePhotoString();
         StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
         storageReference.delete().addOnSuccessListener(
-                unused -> Log.d("Firebase", "Photo successfully deleted!")
+                unused -> Log.d("Firebase", "AdminPhoto successfully deleted!")
         ).addOnFailureListener(
-                e -> Log.d("Firebase", "Photo unsuccessfully deleted!")
+                e -> Log.d("Firebase", "AdminPhoto unsuccessfully deleted!")
         );
 
         attendee.setDefaultProfilePhoto(true);
