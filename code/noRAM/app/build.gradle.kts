@@ -68,4 +68,7 @@ dependencies {
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
 
+    // Confetti Library
+    implementation("nl.dionsegijn:konfetti-xml:2.0.4")
+
 }

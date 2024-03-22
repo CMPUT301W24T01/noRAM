@@ -19,6 +19,9 @@
         android:theme="@style/Theme.NoRAM"
         tools:targetApi="31">
         <activity
+            android:name=".CheckInConfettiActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrganizerEventNotificationsActivity"
             android:exported="false" />
         <activity
