@@ -14,6 +14,7 @@ import static android.content.ContentValues.TAG;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.noram.model.Event;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -76,22 +77,27 @@ public class PushNotificationService extends FirebaseMessagingService {
      * A method to send a notification to the attendees of an event
      * @param title the title of the notification
      * @param data the data of the notification
-     * @param eventID the ID of the event
+     * @param event the event to send the notification to
      */
-    public void sendNotification(String title, String data, String eventID) { // String EventName
-        MainActivity.db.getEventsRef().document(eventID).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<String> attendeeList = (List<String>) task.getResult().get("checkedInAttendees");
-                assert attendeeList != null;
-                for (String attendeeID : attendeeList) {
-                    MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            String FCMToken = task1.getResult().getString("FCMToken");
+    public void sendNotification(String title, String data, Event event) { // String EventName
+
+        List<String> attendeeList = event.getCheckedInAttendees();
+        assert attendeeList != null;
+        for (String attendeeID : attendeeList) {
+            MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+
+                    MainActivity.db.getKeyRef().document("FCMKEY").get().addOnCompleteListener(task2 -> {
+
+                        if (task2.isSuccessful()) {
+
+                            String FCMToken = task.getResult().getString("fcmtoken");
                             Log.d("FCMToken", FCMToken);
 
                             // Set the URL and token
                             String url = "https://fcm.googleapis.com/fcm/send";
-                            String token = "key=" + MainActivity.db.getFCMServerKey();
+
+                            String token = "key=" + task2.getResult().get("FCMKEY");
                             Log.d("Token", token);
 
                             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
@@ -127,11 +133,12 @@ public class PushNotificationService extends FirebaseMessagingService {
 
                             // Add the request to the RequestQueue
                             // Volley.newRequestQueue(this).add(jsonObjectRequest);
+                            // Volley.newRequestQueue(getApplicationContext()).add(jsonObjectRequest);
 
                         }
                     });
                 }
-            }
-        });
+            });
+        }
     }
 }
