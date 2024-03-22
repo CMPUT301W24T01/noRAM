@@ -228,14 +228,6 @@ public class Attendee {
     }
 
     /**
-     * Get the FCM token for the attendee
-     * @return FCM token
-     */
-    public String getFCMToken() {
-        return FCMToken;
-    }
-
-    /**
      * Set the FCM token for the attendee
      * @param FCMToken new token
      */

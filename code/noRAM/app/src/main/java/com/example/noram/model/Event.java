@@ -333,8 +333,6 @@ public class Event {
 
         promoQR.updateDBQRCode();
         checkInQR.updateDBQRCode();
-
-        MainActivity.pushService.subscribeToTopic(name);
     }
 
     /**

@@ -75,7 +75,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     // Volley
-    implementation("com.android.volley:volley:1.2.1")
+    // implementation("com.android.volley:volley:1.2.1")
 
     // Google Auth
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
@@ -83,7 +83,7 @@ dependencies {
     // Firebase Admin SDK
     // implementation("com.google.firebase:firebase-admin:9.2.0")
 
-
+    implementation("com.squareup.okhttp3:okhttp:4.3.1")
 
 
 
