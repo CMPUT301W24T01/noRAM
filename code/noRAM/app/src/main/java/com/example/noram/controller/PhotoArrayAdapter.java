@@ -67,7 +67,6 @@ public class PhotoArrayAdapter extends ArrayAdapter<AdminPhoto>{
         ImageView photoView = view.findViewById(R.id.photoView);
 
         // set default bitmap then update with photo's real bitmap (asynchronous)
-        photoView.setImageResource(R.drawable.add_photo_24px);
         photo.updateWithBitmap(photoView);
 
         return view;

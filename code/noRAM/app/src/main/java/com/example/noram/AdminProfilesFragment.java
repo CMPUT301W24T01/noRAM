@@ -93,7 +93,7 @@ public class AdminProfilesFragment extends Fragment {
                             doc.getString("homePage"),
                             doc.getString("email"),
                             doc.getBoolean("allowLocation"),
-                            doc.getBoolean("defaultsProfilePhoto"),
+                            doc.getBoolean("defaultProfilePhoto"),
                             (List<String>) doc.get("eventsCheckedInto")
                     );
                     profilesDataList.add(attendee);
