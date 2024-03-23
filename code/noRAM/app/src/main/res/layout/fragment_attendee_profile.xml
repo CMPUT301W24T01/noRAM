@@ -108,7 +108,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_attendee_email" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/attendee_info_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,9 +119,11 @@
             app:layout_constraintEnd_toStartOf="@+id/attendee_info_save_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/button_ui"
+            android:textColor="@color/button_text_color"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/attendee_info_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -133,7 +135,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/attendee_info_cancel_button"
             app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/button_ui"
+            android:textColor="@color/button_text_color"/>
 
         <TextView
             android:id="@+id/attendee_first_name_label"
