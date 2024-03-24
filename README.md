@@ -36,3 +36,4 @@ androidx.test.espresso:espresso-core:3.5.1       | https://developer.android.com
 androidx.test.espresso:espresso-intents:3.5.1    | https://androidx.tech/artifacts/test.espresso/espresso-intents/                 | Espresso intent functions. 
 androidx.test.espresso:espresso-contrib:3.5.1    | https://androidx.tech/artifacts/test.espresso/espresso-contrib/                 | Espresso contrib functions. 
 org.mockito:mockito-android:5.11.0               | https://javadoc.io/doc/org.mockito/mockito-android/latest/index.html            | Mockito android library for unit testing. 
+nl.dionsegijn:konfetti-xml:2.0.4                 | https://github.com/DanielMartinus/Konfetti                                      | Library for fun confetti animations. 
