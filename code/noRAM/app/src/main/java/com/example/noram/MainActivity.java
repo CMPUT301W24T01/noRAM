@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set the main activity to this instance for use in other classes
         mn = this;
 
         // NOTE: temporary buttons to move to each activity

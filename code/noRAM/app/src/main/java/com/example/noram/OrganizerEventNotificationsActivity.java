@@ -1,3 +1,9 @@
+/*
+This file is used for the OrganizerEventNotificationsActivity class. This class is used to allow event organizers to send notifications for their event.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -14,17 +20,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.Objects;
+
 /**
  * The OrganizerEventNotificationsActivity class allows event organizers to send locations for their event.
  * A {@link AppCompatActivity} subclass.
+ * @Maintainer Christiaan
+ * @Author Christiaan
  */
 public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
     // Attributes
     Event event = new Event();
-
-    private String title = "";
-    private String content = "";
 
     /**
      * Setup the activity when it is created.
@@ -42,7 +49,7 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
         // Ensure intent contains event
         Intent intent = getIntent();
         if (intent.hasExtra("event")) {
-            String eventID = intent.getExtras().getString("event");
+            String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
             assert (eventID != null);
             Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
             task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -63,15 +70,19 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
             });
         }
 
+        // Set up views
         TextView editTitle = findViewById(R.id.organizer_notifications_edit_title_text);
         TextView editContent = findViewById(R.id.organizer_notifications_edit_content_text);
         AppCompatButton sendButton = findViewById(R.id.organizer_notifications_send_button);
         AppCompatButton cancelButton = findViewById(R.id.organizer_notifications_cancel_button);
         ImageButton backButton = findViewById(R.id.organizer_notifications_back_button);
 
+        // Set up buttons
+
         backButton.setOnClickListener(v -> finish());
 
         sendButton.setOnClickListener(v -> {
+            // Send notification
             String title = editTitle.getText().toString();
             String content = editContent.getText().toString();
             MainActivity.pushService.sendNotification(title, content, event);

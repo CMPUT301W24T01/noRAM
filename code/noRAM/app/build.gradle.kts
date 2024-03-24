@@ -77,11 +77,8 @@ dependencies {
     // Google Auth
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
 
-    // Firebase Admin SDK
-    // implementation("com.google.firebase:firebase-admin:9.2.0")
-
+    // OkHttp Library to send HTTP requests
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
-
 
     // Confetti Library
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")

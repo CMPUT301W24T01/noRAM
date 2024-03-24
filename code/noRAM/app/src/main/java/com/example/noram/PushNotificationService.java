@@ -1,6 +1,7 @@
 /*
-
-
+This file is used to create the PushNotificationService class. This class is used to send notifications to attendees of an event.
+Outstanding Issues:
+- Currently only sends notifications in app to the main activity
  */
 
 package com.example.noram;
@@ -30,8 +31,18 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * The PushNotificationService class is used to send notifications to attendees of an event.
+ * A {@link FirebaseMessagingService} subclass.
+ * @Maintainer Christiaan
+ * @Author Christiaan
+ */
 public class PushNotificationService extends FirebaseMessagingService {
 
+    /**
+     * Called when a new token is generated. Will update the FCM token of the attendee.
+     * @param token the new token
+     */
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
@@ -68,8 +79,14 @@ public class PushNotificationService extends FirebaseMessagingService {
      * @param event the event to send the notification to
      */
     public void sendNotification(String title, String data, Event event) {
+
+        // Get the list of attendees
+
         List<String> attendeeList = event.getCheckedInAttendees();
         assert attendeeList != null;
+
+        // Send a notification to each attendee
+
         for (String attendeeID : attendeeList) {
 
             Log.d("AttendeeID", attendeeID);
@@ -77,15 +94,21 @@ public class PushNotificationService extends FirebaseMessagingService {
             MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
 
+                    // Get the server key
+
                     MainActivity.db.getKeyRef().document("FCMKEY").get().addOnCompleteListener(task2 -> {
 
                         if (task2.isSuccessful()) {
+
+                            // Get the attendee's FCM token
 
                             String token = "key=" + task2.getResult().get("FCMKEY");
 
                             OkHttpClient client = new OkHttpClient();
 
                             MediaType mediaType = MediaType.parse("application/json");
+
+                            // Create the message to send
 
                             JSONObject message = new JSONObject();
                             JSONObject notification = new JSONObject();
@@ -99,6 +122,8 @@ public class PushNotificationService extends FirebaseMessagingService {
                                 Log.d("Error", e.toString());
                             }
 
+                            // Add to the message
+
                             RequestBody body = RequestBody.create(mediaType, message.toString());
                             Request request = new Request.Builder()
                                     .url("https://fcm.googleapis.com/fcm/send")
@@ -111,6 +136,8 @@ public class PushNotificationService extends FirebaseMessagingService {
                             Log.d("Message", message.toString());
                             Log.d("Token", token);
                             Log.d("Body", body.toString());
+
+                            // Send the message
 
                             try {
                                 Response response = client.newCall(request).execute();
