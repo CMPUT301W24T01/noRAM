@@ -73,4 +73,10 @@
     <string name="upload_qr_code_header">Upload QR Code</string>
     <string name="uploadeduriplaceholder">UploadedURIPlaceholder</string>
     <string name="promotional_qr_code_settings_header">Promotional QR Code Settings:</string>
+    <string name="arrow_pointing_to_the_left">Arrow pointing to the left</string>
+    <string name="new_push_notification">New Push Notification</string>
+    <string name="title">Title:</string>
+    <string name="content">Content:</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
 </resources>

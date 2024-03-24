@@ -23,7 +23,7 @@
         android:layout_height="50dp"
         android:background="#00FF0808"
         android:backgroundTint="#00473434"
-        android:contentDescription="Arrow pointing to the left"
+        android:contentDescription="@string/arrow_pointing_to_the_left"
         android:outlineProvider="none"
         android:src="@drawable/outline_arrow_back_ios_new_24"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="New Push Notification"
+                android:text="@string/new_push_notification"
                 android:textSize="24sp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:ems="10"
-                android:hint="Title:"
+                android:hint="@string/title"
                 android:inputType="textShortMessage"
                 android:textSize="20sp"
                 app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_title" />
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:ems="10"
-                android:hint="Content:"
+                android:hint="@string/content"
                 android:inputType="textShortMessage"
                 android:textSize="20sp"
                 app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_edit_title_text" />
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:layout_weight="1"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:layout_weight="1"
-            android:text="Send"
+            android:text="@string/send"
             android:textAllCaps="false" />
     </LinearLayout>
 
