@@ -59,12 +59,6 @@ public class PushNotificationService extends FirebaseMessagingService {
             builder.show();
         });
 
-        // Display the notification with an alert dialog
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle(remoteMessage.getNotification().getTitle());
-//        builder.setMessage(remoteMessage.getNotification().getBody());
-//        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-//        builder.show();
     }
 
     /**
