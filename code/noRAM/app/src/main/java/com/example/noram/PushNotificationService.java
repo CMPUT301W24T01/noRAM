@@ -7,6 +7,7 @@ package com.example.noram;
 
 import android.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
 
@@ -48,12 +49,22 @@ public class PushNotificationService extends FirebaseMessagingService {
         Log.d(TAG, "Message Notification Title: " + Objects.requireNonNull(remoteMessage.getNotification()).getTitle());
         Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
+        // Change to the UI Thread
+        MainActivity.mn.runOnUiThread(() -> {
+            // Display the notification with an alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
+            builder.setTitle(remoteMessage.getNotification().getTitle());
+            builder.setMessage(remoteMessage.getNotification().getBody());
+            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        });
+
         // Display the notification with an alert dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(remoteMessage.getNotification().getTitle());
-        builder.setMessage(remoteMessage.getNotification().getBody());
-        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-        builder.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(remoteMessage.getNotification().getTitle());
+//        builder.setMessage(remoteMessage.getNotification().getBody());
+//        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+//        builder.show();
     }
 
     /**
@@ -66,6 +77,8 @@ public class PushNotificationService extends FirebaseMessagingService {
         List<String> attendeeList = event.getCheckedInAttendees();
         assert attendeeList != null;
         for (String attendeeID : attendeeList) {
+
+            Log.d("AttendeeID", attendeeID);
 
             MainActivity.db.getAttendeeRef().document(attendeeID).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -100,9 +113,15 @@ public class PushNotificationService extends FirebaseMessagingService {
                                     .addHeader("Content-Type", "application/json")
                                     .build();
 
+                            Log.d("Request", request.toString());
+                            Log.d("Message", message.toString());
+                            Log.d("Token", token);
+                            Log.d("Body", body.toString());
+
                             try {
                                 Response response = client.newCall(request).execute();
                                 Log.d("Response", response.toString());
+                                response.close();
                             } catch (IOException e) {
                                 Log.d("Error", e.toString());
                             }

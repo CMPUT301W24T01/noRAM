@@ -237,6 +237,14 @@ public class Attendee {
     }
 
     /**
+     * Get the FCM token for the attendee
+     * @return the FCM token
+     */
+    public String getFCMToken() {
+        return FCMToken;
+    }
+
+    /**
      * A method to change the color of the default profile picture
      * @param src the source bitmap
      * @param color_1_replacement the color to replace the default color with
@@ -365,7 +373,7 @@ public class Attendee {
             // Get new FCM registration token
             String token = task.getResult();
             setFCMToken(token);
+            Log.d("FCM", token);
         });
-        updateDBAttendee();
     }
 }
