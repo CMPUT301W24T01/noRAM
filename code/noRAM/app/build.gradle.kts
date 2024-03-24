@@ -69,13 +69,10 @@ dependencies {
 
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
-
+    
     // Add the dependencies for the Firebase Cloud Messaging and Analytics libraries
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
-
-    // Volley
-    // implementation("com.android.volley:volley:1.2.1")
 
     // Google Auth
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
@@ -86,5 +83,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
 
 
+    // Confetti Library
+    implementation("nl.dionsegijn:konfetti-xml:2.0.4")
 
 }
