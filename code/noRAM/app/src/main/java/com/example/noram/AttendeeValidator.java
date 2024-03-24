@@ -30,17 +30,20 @@ public class AttendeeValidator {
     public static Pair<Boolean, String> validateFromFields(String firstName, String lastName, String email) {
         boolean valid = true;
         String errMsg = "";
-        if (firstName.isEmpty()) {
+
+        // We check fields in opposite order they appear in the UI so that the first missing field
+        // gives the error message.
+        if (email.isEmpty() || !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
             valid = false;
-            errMsg = "First name is empty";
+            errMsg = "Email is invalid";
         }
         if (lastName.isEmpty()) {
             valid = false;
             errMsg = "Last name is empty";
         }
-        if (email.isEmpty() || !PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (firstName.isEmpty()) {
             valid = false;
-            errMsg = "Email is invalid";
+            errMsg = "First name is empty";
         }
         return new Pair<>(valid, errMsg);
     }

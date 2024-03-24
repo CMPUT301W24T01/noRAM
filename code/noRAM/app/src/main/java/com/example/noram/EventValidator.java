@@ -19,6 +19,9 @@ public class EventValidator {
     public static Pair<Boolean, String> validate(Event event) {
         boolean valid = true;
         String errMsg = "";
+
+        // We check fields in opposite order they appear in the UI so that the first missing field
+        // gives the error message.
         if (event.getName().isEmpty()) {
             valid = false;
             errMsg = "Name is empty";
@@ -43,6 +46,7 @@ public class EventValidator {
             valid = false;
             errMsg = "Milestones is null";
         }
+
         return new Pair<>(valid, errMsg);
     }
 
