@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -82,7 +83,7 @@ public class PushNotificationService extends FirebaseMessagingService {
 
         // Get the list of attendees
 
-        List<String> attendeeList = event.getCheckedInAttendees();
+        Set<String> attendeeList = (Set<String>) event.getCheckedInAttendees(); // cast to Set<String> so no duplicate attendees
 
         if (attendeeList == null) {
             throw new IllegalArgumentException("Attendee list is null");
