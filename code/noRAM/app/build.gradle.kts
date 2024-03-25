@@ -7,6 +7,8 @@ android {
     namespace = "com.example.noram"
     compileSdk = 34
 
+    packagingOptions.resources.excludes.add("/META-INF/*")
+
     defaultConfig {
         applicationId = "com.example.noram"
         minSdk = 26
@@ -70,7 +72,7 @@ dependencies {
     
     // Add the dependencies for the Firebase Cloud Messaging and Analytics libraries
     implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
+    // implementation("com.google.firebase:firebase-analytics")
 
     // Google Auth
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
