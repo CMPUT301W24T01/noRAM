@@ -140,8 +140,11 @@ public class MainActivity extends AppCompatActivity {
                                     Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
                                     List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
+                                    attendee.generateAttendeeFCMToken();
+                                    attendee.updateDBAttendee();
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
+                                    attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
                                 }
                                 // If the user's information is not complete, show the info activity

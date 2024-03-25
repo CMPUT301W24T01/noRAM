@@ -159,14 +159,5 @@ public class Database {
         return storage;
     }
 
-    /**
-     * A method to get the messaging server key
-     * @return FCM Server Key
-     */
-    public String getFCMServerKey() {
-        return "AAAAHVKsL6M:APA91bFXNPbG_3lwTNdVHTtx5sdBYvn6Z-J3u5FNFngpg2hliiyvdForhPGIjLRirM_jIgJugzmvZWtC__qnQhNQv9Q2XntGbfAx8JDIBku_NJB2dTBcXdoBk8YLDFL4vGzhvRXOWZNy";
-        // return getKeyRef().document("FCMKEY").get().addOnSuccessListener(documentSnapshot -> documentSnapshot.getString("FCMKEY")).toString();
-    }
-
 }
 
