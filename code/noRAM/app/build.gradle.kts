@@ -7,6 +7,8 @@ android {
     namespace = "com.example.noram"
     compileSdk = 34
 
+    packagingOptions.resources.excludes.add("/META-INF/*")
+
     defaultConfig {
         applicationId = "com.example.noram"
         minSdk = 26
@@ -67,6 +69,15 @@ dependencies {
 
     //Photos from device
     implementation("com.github.dhaval2404:imagepicker:2.1")
+    
+    // Add the dependencies for the Firebase Cloud Messaging
+    implementation("com.google.firebase:firebase-messaging")
+
+    // Google Auth
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
+
+    // OkHttp Library to send HTTP requests
+    implementation("com.squareup.okhttp3:okhttp:4.3.1")
 
     // Confetti Library
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")

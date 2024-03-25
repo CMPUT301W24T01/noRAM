@@ -7,8 +7,15 @@ Outstanding Issues:
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
@@ -32,6 +39,7 @@ public class Attendee {
     private Boolean allowLocation = false;
     private List<String> eventsCheckedInto = new ArrayList<>();
     private Boolean usingDefaultProfilePhoto = true;
+    private String FCMToken = "";
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -219,6 +227,23 @@ public class Attendee {
     }
 
     /**
+     * Set the FCM token for the attendee
+     * @param FCMToken new token
+     */
+    public void setFCMToken(String FCMToken) {
+        this.FCMToken = FCMToken;
+        updateDBAttendee();
+    }
+
+    /**
+     * Get the FCM token for the attendee
+     * @return the FCM token
+     */
+    public String getFCMToken() {
+        return FCMToken;
+    }
+
+    /**
      * A method to change the color of the default profile picture
      * @param src the source bitmap
      * @param color_1_replacement the color to replace the default color with
@@ -333,5 +358,21 @@ public class Attendee {
             };
             MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
+    }
+
+    /**
+     * A method to generate the FCM token for the attendee
+     */
+    public void generateAttendeeFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                return;
+            }
+            // Get new FCM registration token
+            String token = task.getResult();
+            setFCMToken(token);
+            Log.d("FCM", token);
+        });
     }
 }
