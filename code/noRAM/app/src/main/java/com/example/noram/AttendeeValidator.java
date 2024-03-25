@@ -1,3 +1,6 @@
+/* File for validating Attendee objects - provides multiple methods to validate an attendee object
+* Outstanding Issues: None.
+*/
 package com.example.noram;
 
 import androidx.core.util.Pair;
