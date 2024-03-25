@@ -27,12 +27,24 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    // FOR USE WITH BENCHMARKING DO NOT INCLUDE IN FINAL BUILD
+    buildTypes {
+        debug {
+            isDebuggable = false
+        }
+    }
 }
 
 dependencies {
@@ -81,5 +93,9 @@ dependencies {
 
     // Confetti Library
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")
+
+    // Benchmark Library
+    implementation("androidx.benchmark:benchmark-junit4:1.2.3")
+
 
 }

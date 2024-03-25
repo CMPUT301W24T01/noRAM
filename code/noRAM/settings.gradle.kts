@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "noRAM"
 include(":app")
- 
+include(":benchmark")
