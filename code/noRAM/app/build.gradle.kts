@@ -7,8 +7,6 @@ android {
     namespace = "com.example.noram"
     compileSdk = 34
 
-    packagingOptions { resources.excludes.add("META-INF/*") }
-
     defaultConfig {
         applicationId = "com.example.noram"
         minSdk = 26
