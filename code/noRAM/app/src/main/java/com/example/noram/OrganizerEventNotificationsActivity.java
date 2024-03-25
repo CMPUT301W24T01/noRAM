@@ -31,7 +31,7 @@ import java.util.Objects;
 public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
     // Attributes
-    Event event = new Event();
+    private Event event = new Event();
 
     /**
      * Setup the activity when it is created.

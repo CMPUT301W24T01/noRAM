@@ -103,8 +103,8 @@ public class Database {
     }
 
     /**
-     * Getter method for the photo reference
-     * @return the photo reference
+     * Getter method for the key reference
+     * @return the key reference
      */
     public CollectionReference getKeyRef() {
         return keyRef;

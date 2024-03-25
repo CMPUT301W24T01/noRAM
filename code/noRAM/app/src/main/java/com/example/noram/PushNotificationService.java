@@ -83,7 +83,10 @@ public class PushNotificationService extends FirebaseMessagingService {
         // Get the list of attendees
 
         List<String> attendeeList = event.getCheckedInAttendees();
-        assert attendeeList != null;
+
+        if (attendeeList == null) {
+            throw new IllegalArgumentException("Attendee list is null");
+        }
 
         // Send a notification to each attendee
 

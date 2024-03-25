@@ -69,7 +69,6 @@ public class Attendee {
         this.allowLocation = allowLocation;
         this.eventsCheckedInto = eventsCheckedInto;
         this.usingDefaultProfilePhoto = defaultPhoto;
-        // generateAttendeeFCMToken();
     }
 
     /**
