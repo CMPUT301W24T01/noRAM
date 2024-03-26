@@ -7,11 +7,97 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerEventAttendeeActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Attendees"
+    <View
+        android:id="@+id/organizer_event_attendee_header"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:background="@color/main_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/organizer_event_attendee_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:foregroundTint="#FFFFFF"
+        android:text="List of Attendees"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_event_attendee_header"
+        app:layout_constraintStart_toEndOf="@+id/organizer_event_attendee_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/organizer_event_attendee_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="6dp"
+        android:background="?android:selectableItemBackground"
+        android:foregroundTint="#FFFFFF"
+        android:padding="8sp"
+        android:src="@drawable/outline_arrow_back_ios_new_24"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_event_attendee_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/organizer_event_attendee_header" />
+
+    <EditText
+        android:id="@+id/organizer_event_attendee_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/event_search_hint"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/organizer_event_attendee_search_label"
+        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_header" />
+
+    <ProgressBar
+        android:id="@+id/organizer_event_attendee_loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
+    <ListView
+        android:id="@+id/organizer_event_attendee_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_search" >
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/organizer_event_attendee_search_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_search" />
+
+    <TextView
+        android:id="@+id/organizer_event_attendee_search_label"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="#00FFFFFF"
+        android:gravity="center_vertical"
+        android:text="Search:"
+        android:textAlignment="gravity"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

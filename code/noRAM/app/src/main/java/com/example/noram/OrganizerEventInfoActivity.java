@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event for the organizer.
+Outstanding Issues:
+- Not all fields on xml page are filled, needs to get organizer content and event posters
+ */
+
 package com.example.noram;
 
 import android.content.Intent;

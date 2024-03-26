@@ -14,16 +14,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class to represent an Event
  * @maintainer Carlin
  * @author Carlin
  * @author Cole
+ * @author Ethan
  */
 public class Event {
     private String id;
@@ -351,5 +354,38 @@ public class Event {
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
+    }
+
+    /**
+     * Get the list of checked in attendees and the number of times they have checked in
+     * @return a pair of lists, the first being the list of attendees and the second being the number of times they have checked in
+     */
+    public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
+        ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                Attendee attendee;
+                // If the user exists, get the user's information
+                String identifier = document.getString("identifier");
+                String firstname = document.getString("firstName");
+                String lastname = document.getString("lastName");
+                String homepage = document.getString("homePage");
+                String email = document.getString("email");
+                Boolean allowLocation = document.getBoolean("allowLocation");
+                Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
+                List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
+                attendee = new Attendee(identifier, firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
+                checkedInAttendeeObjects.add(attendee);
+            }
+
+            ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();
+
+            for (Attendee attendee : checkedInAttendeeObjects) {
+                int count = Collections.frequency(checkedInAttendees, attendee.getIdentifier());
+                attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
+            }
+
+            callback.accept(attendeeCheckInCounters);
+        });
     }
 }
