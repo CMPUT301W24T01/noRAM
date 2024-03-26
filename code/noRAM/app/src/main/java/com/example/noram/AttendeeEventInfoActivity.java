@@ -16,23 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * An activity displaying the information about an event. Depending on event's data, the layout page
@@ -150,6 +145,14 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
             MainActivity.db.downloadPhoto(findImage,
                     t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
         }
+
+        // use the organizer ID to get organizer information.
+        MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
+            organizerText.setText("Organized by " + documentSnapshot.getString("name"));
+            String organizerPhotoPath = documentSnapshot.getString("photoPath");
+            MainActivity.db.downloadPhoto(organizerPhotoPath,
+                    t -> runOnUiThread(() -> organizerImage.setImageBitmap(t)));
+        });
         //Note for when we download organizer photo:
         //remove purple background, and android icon in xml
         //if you want image to format nicely.
@@ -161,10 +164,7 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         //Log.d("EventInfo", event.getDetails());
         //Log.d("EventInfo", event.getLocation());
 
-        //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
-        // TODO: update organizer image
         //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
-        // TODO: update event image
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});

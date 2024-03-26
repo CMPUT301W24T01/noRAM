@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -142,10 +143,19 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
+
+                                    // get the organizer object from the database
+                                    db.getOrganizerRef().document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> organizer = documentSnapshot.toObject(Organizer.class));
                                 } else {
+                                    // create new attendee
                                     attendee = new Attendee(currentUser.getUid());
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
+
+                                    // create new organizer, and sync it with the new attendee for now.
+                                    organizer = new Organizer();
+                                    organizer.syncWithAttendee(attendee);
+                                    organizer.updateDBOrganizer();
                                 }
                                 // If the user's information is not complete, show the info activity
                                 if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {

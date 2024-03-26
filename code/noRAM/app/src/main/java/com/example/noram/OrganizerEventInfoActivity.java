@@ -55,7 +55,17 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
                     event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
                     event.getLocation()
             ));
+            // Get event image
+            String eventImagePath = "event_banners/"+event.getId()+"-upload";
+            MainActivity.db.downloadPhoto(eventImagePath,
+                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
         });
+
+        // Since we only display events the organizer has, we can just use the current user's organizer details
+        organizerText.setText("Organized by " + MainActivity.organizer.getName() + (" (You)"));
+        MainActivity.db.downloadPhoto(MainActivity.organizer.getPhotoPath(),
+                t -> runOnUiThread(() -> organizerImage.setImageBitmap(t)));
+
     }
 
     /**
@@ -106,10 +116,6 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_event_info);
 
-        // retrieve corresponding event in database
-        String eventID = getIntent().getExtras().getString("event");
-        baseSetup(eventID);
-
         // get all variables from page
         ImageButton backButton = findViewById(R.id.organizer_event_back_button);
         ImageButton menuButton = findViewById(R.id.organizer_event_menu_button);
@@ -125,6 +131,10 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
 
         // set up menu button
         menuButton.setOnClickListener(v -> {showMenu();});
+
+        // retrieve corresponding event in database
+        String eventID = getIntent().getExtras().getString("event");
+        baseSetup(eventID);
     }
 
     /**

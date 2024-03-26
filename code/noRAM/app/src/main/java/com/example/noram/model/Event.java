@@ -38,6 +38,7 @@ public class Event {
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private List<String> checkedInAttendees;
+    private String organizerId;
 
     /**
      * Default constructor for Event
@@ -63,7 +64,8 @@ public class Event {
             LocalDateTime endTime,
             String details,
             ArrayList<Integer> milestones,
-            boolean trackLocation) {
+            boolean trackLocation,
+            String organizerId) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -75,6 +77,7 @@ public class Event {
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+        this.organizerId = organizerId;
     }
 
     /**
@@ -102,7 +105,8 @@ public class Event {
             QRCode checkInQR,
             QRCode promoQR,
             boolean trackLocation,
-            List<String> checkedInAttendees) {
+            List<String> checkedInAttendees,
+            String organizerId) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -114,6 +118,7 @@ public class Event {
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
+        this.organizerId = organizerId;
     }
 
     // Getters
@@ -296,6 +301,22 @@ public class Event {
     }
 
     /**
+     * Get the ID of the organizer associated with the event
+     * @return string id.
+     */
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    /**
+     * Set the organizer ID, the organizer who created the event
+     * @param organizerId new organizer ID
+     */
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
+    /**
      * Check for equality between an event and another object
      * @param obj object to check for equality
      * @return true if equal, false otherwise.
@@ -329,6 +350,7 @@ public class Event {
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("organizerID", organizerId);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();
@@ -351,5 +373,6 @@ public class Event {
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
+        this.setOrganizerId(doc.getString("organizerID"));
     }
 }
