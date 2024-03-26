@@ -57,8 +57,8 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         // TODO: update database to add signed-in attendees to event
         // TODO: send to message page: should send to signed-in page instead of checked-in page
         // sign-in the event and display sign-in message
-        EventManager.checkInToEvent(event.getId());
-        Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
+        EventManager.signUpForEvent(event.getId());
+        Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
         // load new page (signed-in event)
         EventManager.displayCheckedInEvent(this, event);
         // remove old page
@@ -137,8 +137,8 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         LocalDateTime startTime = event.getStartTime();
         eventLocation.setText(String.format("%s from %s - %s @ %s",
                 startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
+                startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                 event.getLocation()
         ));
 
@@ -204,6 +204,4 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

@@ -38,6 +38,7 @@ public class Event {
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private List<String> checkedInAttendees;
+    private List<String> signedUpAttendees;
 
     /**
      * Default constructor for Event
@@ -75,6 +76,7 @@ public class Event {
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+        this.signedUpAttendees = new ArrayList<>();
     }
 
     /**
@@ -90,6 +92,7 @@ public class Event {
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param signedUpAttendees list of signed up attendees
      */
     public Event(
             String id,
@@ -102,7 +105,8 @@ public class Event {
             QRCode checkInQR,
             QRCode promoQR,
             boolean trackLocation,
-            List<String> checkedInAttendees) {
+            List<String> checkedInAttendees,
+            List<String> signedUpAttendees) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -114,6 +118,7 @@ public class Event {
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
+        this.signedUpAttendees = signedUpAttendees;
     }
 
     // Getters
@@ -197,8 +202,23 @@ public class Event {
         return trackLocation;
     }
 
-    // Setters
+    /**
+     * Get the list of checked in attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getCheckedInAttendees() {
+        return checkedInAttendees;
+    }
 
+    /**
+     * Get the list of signed up attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getSignedUpAttendees() {
+        return signedUpAttendees;
+    }
+
+    // Setters
     /**
      * Set id of event
      * @param id new id for event
@@ -280,14 +300,6 @@ public class Event {
     }
 
     /**
-     * Get the list of checked in attendees
-      * @return list of attendee identifiers
-     */
-    public List<String> getCheckedInAttendees() {
-        return checkedInAttendees;
-    }
-
-    /**
      * Set the list of checked in attendees
      * @param checkedInAttendees new list of checked in attendees
      */
@@ -295,6 +307,11 @@ public class Event {
         this.checkedInAttendees = checkedInAttendees;
     }
 
+    public void setSignedUpAttendees(List<String> signedUpAttendees) {
+        this.signedUpAttendees = signedUpAttendees;
+    }
+
+    // Functions
     /**
      * Check for equality between an event and another object
      * @param obj object to check for equality
@@ -312,7 +329,6 @@ public class Event {
         return Objects.equals(this.getId(), other.getId());
     }
 
-    // Functions
     /**
      * Updates the event in the database
      */
@@ -329,6 +345,7 @@ public class Event {
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("signedUpAttendees", signedUpAttendees);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();
@@ -347,9 +364,26 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
-        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
+    }
+
+    /**
+     * Adds string representation of attendee into checkedInAttendees list
+     * @param attendee string representation of attendee
+     */
+    public void addCheckedInAttendee(String attendee) {
+        checkedInAttendees.add(attendee);
+    }
+
+    /**
+     * Adds string representation of attendee into signedUpAttendees list
+     * @param attendee string representation of attendee
+     */
+    public void addSignedUpAttendee(String attendee) {
+        signedUpAttendees.add(attendee);
     }
 }

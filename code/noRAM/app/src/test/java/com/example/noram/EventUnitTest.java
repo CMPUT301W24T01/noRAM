@@ -113,7 +113,8 @@ public class EventUnitTest {
             QRCode checkInQR = new QRCode("checkIn", "id", QRType.SIGN_IN);
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn);
+            List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn, signedUp);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -126,6 +127,7 @@ public class EventUnitTest {
             assertEquals(event.getCheckInQR(), checkInQR);
             assertEquals(event.getPromoQR(), promoQR);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getSignedUpAttendees(), signedUp);
         }
     }
 }

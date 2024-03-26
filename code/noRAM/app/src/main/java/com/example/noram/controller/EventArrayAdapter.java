@@ -75,8 +75,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         LocalDateTime startTime = event.getStartTime();
         eventTime.setText(String.format("%s from %s - %s",
                 startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma"))
+                startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
         ));
         eventLocation.setText(event.getLocation());
 
