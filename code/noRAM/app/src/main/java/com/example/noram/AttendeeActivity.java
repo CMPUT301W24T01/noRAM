@@ -6,6 +6,7 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,13 +137,23 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
 
     /**
      * Go to the event passed by event by navigating to it
-     * @param event event to go to
+     * @param eventId id of the event to go to
      */
     @Override
-    public void goToEvent(Event event) {
-        // Navigate the navbar to the events page, then call the events page to programmatically
-        // click the right event.
+    public void goToEvent(String eventId) {
+        // Navigate the navbar to the events page, then go to the confetti page
+        Intent intent = new Intent(this, CheckInConfettiActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("eventId", eventId);
+
+        // get the event name from the DB so we can display it on the confetti page.
+        // We do this here so we never see the placeholder text on the confetti page.
+        MainActivity.db.getEventsRef().document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+            String eventName = documentSnapshot.getString("name");
+            bundle.putString("eventName", eventName);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
         navBar.setSelectedItemId(NAV_EVENTS);
-        EventManager.displayEvent(this, event);
     }
 }

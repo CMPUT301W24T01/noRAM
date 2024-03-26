@@ -16,6 +16,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/admin_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container"/>
+
     <ImageButton
         android:id="@+id/admin_home_button"
         android:layout_width="wrap_content"
@@ -24,8 +36,25 @@
         android:foregroundTint="#FFFFFF"
         android:padding="8sp"
         android:src="@drawable/home_32px"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container"
         app:layout_constraintStart_toStartOf="@+id/admin_header"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/admin_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:foregroundTint="#FFFFFF"
+        android:padding="8sp"
+        android:src="@drawable/outline_arrow_back_ios_new_24"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container"
+        app:layout_constraintStart_toStartOf="@+id/admin_header"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
@@ -41,7 +70,7 @@
         android:id="@+id/admin_footer"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:background="#FFFFFF"
+        android:background="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

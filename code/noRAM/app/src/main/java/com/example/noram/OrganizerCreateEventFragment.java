@@ -18,6 +18,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -194,15 +195,10 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 boolean trackLocation = trackLocationCheck.isChecked();
 
                 // Check inputs
-                String errorText = null;
-                if (name.isEmpty()) {errorText = "Name";}
-                else if (location.isEmpty()) {errorText = "Location";}
-                else if (startDateTime == null) {errorText = "Start Time";}
-                else if (endDateTime == null) {errorText = "End Time";}
-                else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
 
                 // Only continue to next step of event creation if inputs are valid
-                if (errorText == null) {
+                if (validateResult.first) {
 
                     Intent intent = new Intent(getActivity(), AddEventQROptionsActivity.class);
                     Bundle bundle = new Bundle();
@@ -233,7 +229,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 }
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), validateResult.second, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -406,22 +402,5 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     )
             );
         }
-    }
-
-    // Helper functions
-    /**
-     * Checks whether or not inputted string is valid comma-separated numbers
-     * @param milestones Inputted string to check
-     * @return true if all characters in milestones is digit or comma, false otherwise
-     */
-    private boolean isValidMilestoneList(String milestones) {
-        if (!milestones.isEmpty()) {
-            for (char c : milestones.toCharArray()) {
-                if (!(Character.isDigit(c) || c == ',')) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

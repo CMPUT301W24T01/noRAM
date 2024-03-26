@@ -16,7 +16,7 @@ import com.example.noram.model.Event;
 public interface GoToEventListener {
     /**
      * Request that the application goes to the event's page
-     * @param event event to go to
+     * @param eventId id of the event to go to
      */
-    void goToEvent(Event event);
+    void goToEvent(String eventId);
 }
