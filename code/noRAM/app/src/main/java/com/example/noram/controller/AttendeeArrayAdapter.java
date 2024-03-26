@@ -63,7 +63,7 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         // get attendee data
         Attendee attendee = attendees.get(position);
 
-        // create photo
+        // create attendee's photo
         AdminPhoto photo = new AdminPhoto();
         photo.setPhotoPath(attendee.getProfilePhotoString());
         photo.setBitmapFromDB(context);
