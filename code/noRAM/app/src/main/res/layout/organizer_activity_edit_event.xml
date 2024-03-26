@@ -150,6 +150,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:textColor="@color/button_text_color"
             android:text="@string/organizer_activity_edit_event_cancel_button"
             android:textAllCaps="false" />
 
@@ -160,6 +162,8 @@
             android:layout_margin="10sp"
             android:layout_weight="1"
             android:text="@string/organizer_activity_edit_event_apply_button"
+            android:background="@drawable/button_background"
+            android:textColor="@color/button_text_color"
             android:textAllCaps="false" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
