@@ -36,19 +36,16 @@ import java.util.ArrayList;
  * @author Gabriel
  * @author Cole
  */
-public class AttendeeEventListFragment extends Fragment {
-    private CollectionReference eventRef; // list of events in database
+public class AttendeeEventListFragment extends EventListFragmentTemplate {
+    private final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
     private ListView allEventList; // list of all events in UI
     private ListView userEventList; // list of all user's events in UI
     private ListView searchEventList; // list of events' search results
     private ArrayList<Event> allEventDataList; // data list of all events
     private ArrayList<Event> userEventDataList; // data list of all user's events
-    private ArrayList<Event> searchEventDataList; // data list of events' search results
-    private EditText searchInput; // searchbar
 
     EventArrayAdapter allEventAdapter; // adapter for allEvent list
     EventArrayAdapter userEventAdapter; // adapter for userEvent list
-    EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
 
     /**
      * Required empty public constructor
@@ -70,6 +67,28 @@ public class AttendeeEventListFragment extends Fragment {
     }
 
     /**
+     * Hook from EventListFragmentTemplate that shows the searchList view on the screen and hide
+     * other views that could be blocking the searchlist from being visible
+     */
+    @Override
+    protected void showSearchList(){
+        searchEventList.setVisibility(View.VISIBLE);
+        allEventList.setVisibility(View.INVISIBLE);
+        userEventList.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Hook from AttendeeEventListFragment that is called when a view in the searchList view is
+     * clicked on
+     * @param event The event that was clicked on (in the searchList)
+     */
+    @Override
+    protected void searchElementsClick(Event event){
+        // display event that has been clicked on
+        EventManager.displayEvent(getActivity(),event);
+    }
+
+    /**
      * Create the fragment
      * @param savedInstanceState If the fragment is being re-created from
      * a previous saved state, this is the state.
@@ -82,7 +101,7 @@ public class AttendeeEventListFragment extends Fragment {
     /**
      * Makes the user's personal events visible and hides the other lists
      */
-    public void displayMyEvents(){
+    private void displayMyEvents(){
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
@@ -91,45 +110,10 @@ public class AttendeeEventListFragment extends Fragment {
     /**
      * Makes the list of all events visible and hides the other list
      */
-    public void displayAllEvents(){
+    private void displayAllEvents(){
         allEventList.setVisibility(View.VISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
-    }
-
-    /**
-     * Query the database and makes the list containing the result of a recent search visible,
-     * while hiding the other lists
-     * @param search The input of the user in the search, used in the database's query
-     */
-    public void searchEvents(String search){
-        // show search list
-        searchEventList.setVisibility(View.VISIBLE);
-        allEventList.setVisibility(View.INVISIBLE);
-        userEventList.setVisibility(View.INVISIBLE);
-
-        // remove old search
-        searchEventDataList.clear();
-        // search through events' details, name and location
-        eventRef.get().addOnSuccessListener(querySnapshot -> {
-            for(QueryDocumentSnapshot doc: querySnapshot){
-
-                String name = doc.getString("name");
-                String details = doc.getString("details");
-                String location = doc.getString("location");
-
-                if((name != null && name.toLowerCase().contains(search.toLowerCase()))||
-                (details != null && details.toLowerCase().contains(search.toLowerCase())) ||
-                (location != null && location.toLowerCase().contains(search.toLowerCase())) )
-                {
-                    // add valid events to result
-                    Event event = new Event();
-                    event.updateWithDocument(doc);
-                    searchEventDataList.add(event);
-                    searchEventAdapter.notifyDataSetChanged();
-                }
-            }
-        });
     }
 
     /**
@@ -147,49 +131,27 @@ public class AttendeeEventListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
-        // get event collection
-        eventRef = MainActivity.db.getEventsRef();
-
         // get all views and initialize variables
         Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
         Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
-        searchInput = rootView.findViewById(R.id.searchInput);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<>();
         userEventList = rootView.findViewById(R.id.userEventsList);
         userEventDataList = new ArrayList<>();
+
+        // setup search functionality
         searchEventList = rootView.findViewById(R.id.searchEventsList);
-        searchEventDataList = new ArrayList<>();
+        setupSearch(searchEventList, rootView.findViewById(R.id.searchInput));
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
         userEventAdapter = new EventArrayAdapter(this.getContext(), userEventDataList);
-        searchEventAdapter = new EventArrayAdapter(this.getContext(), searchEventDataList);
         allEventList.setAdapter(allEventAdapter);
         userEventList.setAdapter(userEventAdapter);
-        searchEventList.setAdapter(searchEventAdapter);
 
         // connect each button to corresponding function
         myEventsButton.setOnClickListener(view -> displayMyEvents());
         allEventsButton.setOnClickListener(view -> displayAllEvents());
-
-        // connect searchbar to listen for user input
-        searchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // do nothing
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                searchEvents(editable.toString());
-            }
-        });
 
         // connect the three lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
@@ -198,10 +160,6 @@ public class AttendeeEventListFragment extends Fragment {
         });
         userEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = userEventDataList.get(position);
-            EventManager.displayEvent(getActivity(),event);
-        });
-        searchEventList.setOnItemClickListener((parent, view, position, id) -> {
-            Event event = searchEventDataList.get(position);
             EventManager.displayEvent(getActivity(),event);
         });
 
