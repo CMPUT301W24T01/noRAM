@@ -53,16 +53,36 @@ public abstract class EventListFragmentTemplate extends Fragment {
         });
 
         searchInput.addTextChangedListener(new TextWatcher() {
+            /**
+             * Notify that within s, the count characters beginning at start are about to be
+             * replaced by new text with length after
+             * @param s Text currently inside EditText
+             * @param start Index indicating the beginning of the characters that will be replaced
+             * @param count Number of characters being replaced
+             * @param after Number of characters that are replacing the old ones
+             */
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // do nothing
             }
 
+            /**
+             * notify that, within s, the count characters beginning at start have just replaced
+             * old text that had length before.
+             * @param s Text currently inside EditText
+             * @param start Starting index of the characters that were replaced
+             * @param before Number of characters that have been replaced
+             * @param count Number of new characters that replaced the old ones
+             */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // do nothing
             }
 
+            /**
+             * Notify that, somewhere within s, the text has been changed
+             * @param editable Text currently inside EditText
+             */
             @Override
             public void afterTextChanged(Editable editable) {
                 searchEvents(editable.toString());
