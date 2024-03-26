@@ -34,6 +34,12 @@ public abstract class EventListFragmentTemplate extends Fragment {
     EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
     private final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
 
+    /**
+     * Setup the ListView and EditText passed so that any text entered in the EditText will show the
+     * ListView with corresponding search results, pulled from the database
+     * @param searchList The ListView that will display search results
+     * @param searchInput The EditText that will take user input for searches
+     */
     protected void setupSearch(ListView searchList, EditText searchInput){
         // basic connections between lists and adapters
         searchEventDataList = new ArrayList<>();
@@ -46,7 +52,6 @@ public abstract class EventListFragmentTemplate extends Fragment {
             searchElementsClick(event);
         });
 
-        // connect searchbar to listen for user input
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
