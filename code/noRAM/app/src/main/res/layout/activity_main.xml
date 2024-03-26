@@ -104,7 +104,7 @@
         android:id="@+id/header_bar"
         android:layout_width="match_parent"
         android:layout_height="40sp"
-        android:background="@color/button_background_color"
+        android:background="@color/main_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
