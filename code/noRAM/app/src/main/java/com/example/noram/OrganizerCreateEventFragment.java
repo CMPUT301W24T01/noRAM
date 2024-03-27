@@ -218,7 +218,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 }
 
                 // Check inputs
-                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, 0);
 
                 // Only continue to next step of event creation if inputs are valid
                 if (validateResult.first) {

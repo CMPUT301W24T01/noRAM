@@ -59,9 +59,9 @@ public class EventManager {
         // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
-            List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
-            checkedInAttendees.add(MainActivity.attendee.getIdentifier());
-            transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
+            List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+            signedUpAttendees.add(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
             return null;
         });
     }

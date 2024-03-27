@@ -31,6 +31,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
     private TextView eventLocation;
     private ImageView eventImage;
     private TextView eventDescription;
+    private TextView eventSignUps;
 
     /**
      * Update page's event ("event") with database's info
@@ -55,6 +56,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
                     event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
                     event.getLocation()
             ));
+            updateSignUpText();
         });
     }
 
@@ -119,6 +121,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         eventLocation = findViewById(R.id.organizer_event_location);
         eventImage = findViewById(R.id.organizer_event_image);
         eventDescription = findViewById(R.id.organizer_event_description);
+        eventSignUps = findViewById(R.id.eventSignUps);
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
@@ -135,5 +138,24 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         super.onResume();
         String eventID = getIntent().getExtras().getString("event");
         baseSetup(eventID);
+    }
+
+    /**
+     * Updates displayed count of signed-up attendees
+     */
+    private void updateSignUpText() {
+        if (event.isLimitedSignUps()) {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
     }
 }

@@ -244,6 +244,9 @@ public class Event {
      * @return size of signedUpAttendees ArrayList
      */
     public int getSignUpCount() {
+        if (signedUpAttendees == null) {
+            return 0;
+        }
         return signedUpAttendees.size();
     }
 

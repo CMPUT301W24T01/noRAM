@@ -250,7 +250,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
                 }
 
-                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, event.getSignUpCount());
 
                 // Only continue to next step of event creation if inputs are valid
                 if (validateResult.first) {

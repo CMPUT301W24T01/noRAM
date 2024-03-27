@@ -69,6 +69,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         TextView eventTitle = view.findViewById(R.id.event_title);
         TextView eventTime = view.findViewById(R.id.event_time);
         TextView eventLocation = view.findViewById(R.id.event_location);
+        TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
 
         // update fields and return view
         eventTitle.setText(event.getName());
@@ -79,7 +80,19 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                 event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
         ));
         eventLocation.setText(event.getLocation());
-
+        if (event.isLimitedSignUps()) {
+            eventSignUpCapacity.setText(String.format(
+                    getContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUpCapacity.setText(String.format(
+                    getContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
         return view;
     }
 }

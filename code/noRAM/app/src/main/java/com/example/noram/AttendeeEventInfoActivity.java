@@ -49,6 +49,7 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
     private TextView eventLocation; // event's location
     private ImageView eventImage; // event's image
     private TextView eventDescription; // event's description
+    private TextView eventSignUps;
     private final CollectionReference eventsRef = MainActivity.db.getEventsRef(); // events in the database
     /**
      * Signup the user to current event in the database and display a message through a new activity
@@ -61,10 +62,9 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
             // sign-up to the event and display sign-up message
             EventManager.signUpForEvent(event.getId());
             Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
-            // load new page (signed-in event)
-            EventManager.displayCheckedInEvent(this, event);
-            // remove old page
-            finish();
+            event.addSignedUpAttendee(MainActivity.attendee.getIdentifier());
+            // Update sign ups display
+            updateSignUpText();
         }
         else {
             Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
@@ -136,6 +136,7 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         eventLocation = findViewById(R.id.eventLocation);
         eventImage = findViewById(R.id.eventImage);
         eventDescription = findViewById(R.id.eventDescription);
+        eventSignUps = findViewById(R.id.eventSignUps);
 
         // update page's info
         eventTitle.setText(event.getName());
@@ -147,6 +148,8 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
                 event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                 event.getLocation()
         ));
+        updateSignUpText();
+
 
         //download the event image from db and populate the screen
         eventImage = findViewById(R.id.eventImage);
@@ -209,5 +212,24 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Updates displayed count of signed-up attendees
+     */
+    private void updateSignUpText() {
+        if (event.isLimitedSignUps()) {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
     }
 }
