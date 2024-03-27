@@ -9,17 +9,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockConstruction;
 
+import com.example.noram.model.Attendee;
+import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedConstruction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Unit tests for the Event class
@@ -128,5 +134,36 @@ public class EventUnitTest {
             assertEquals(event.getPromoQR(), promoQR);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
         }
+    }
+
+    /**
+     * Test the countCheckIns method of the event
+     */
+    @ParameterizedTest
+    @MethodSource("provideCountCheckIns")
+    public void countCheckInsTest(ArrayList<String> attendeeIDs, ArrayList<Attendee> attendeeObjects, Integer attendeeNumber, ArrayList<Integer> attendeeCheckInCounts) {
+        Event event = new Event();
+        event.setCheckedInAttendees(attendeeIDs);
+        ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters =  event.countCheckIns(attendeeObjects);
+        assertEquals(attendeeCheckInCounters.size(), attendeeNumber);
+        for (int i = 0; i < attendeeCheckInCounters.size(); i++) {
+            assertEquals(attendeeCheckInCounters.get(i).getCheckInCount(), attendeeCheckInCounts.get(i));
+        }
+
+    }
+
+    /**
+     * Provides parameters for the countCheckInsTest
+     * @return Stream of arguments for the test
+     */
+    private static Stream<Arguments> provideCountCheckIns() {
+        return Stream.of(
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(1, 1, 1, 1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(), 0, new ArrayList<>()),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"))), 1, new ArrayList<>(Arrays.asList(1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "a", "b", "c", "c", "a", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(3, 1, 2, 1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("d", "d", "d", "d", "d", "d", "d", "d", "d", "d")), new ArrayList<>(Arrays.asList(new Attendee("d"))), 1, new ArrayList<>(Arrays.asList(10))),
+                Arguments.of(new ArrayList<>(), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(0, 0, 0, 0)))
+        );
     }
 }

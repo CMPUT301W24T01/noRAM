@@ -14,16 +14,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class to represent an Event
  * @maintainer Carlin
  * @author Carlin
  * @author Cole
+ * @author Ethan
  */
 public class Event {
     private String id;
@@ -351,5 +354,40 @@ public class Event {
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
+    }
+
+    /**
+     * Get the list of checked in attendees and the number of times they have checked in
+     * @return a pair of lists, the first being the list of attendees and the second being the number of times they have checked in
+     */
+    public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
+        ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                Map<String, Object> data = document.getData();
+                Attendee attendee = new Attendee((String) data.get("identifier"));
+                attendee.updateWithMap(data);
+                checkedInAttendeeObjects.add(attendee);
+            }
+
+            ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
+
+            callback.accept(attendeeCheckInCounters);
+        });
+    }
+
+    /**
+     * Count the number of times each attendee has checked in
+     * @param attendees the list of attendees to count check-ins for
+     * @return a list of attendees and the number of times they have checked in
+     */
+    public ArrayList<AttendeeCheckInCounter> countCheckIns(ArrayList<Attendee> attendees) {
+        ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();
+
+        for (Attendee attendee : attendees) {
+            int count = Collections.frequency(checkedInAttendees, attendee.getIdentifier());
+            attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
+        }
+        return attendeeCheckInCounters;
     }
 }

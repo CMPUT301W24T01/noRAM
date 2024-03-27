@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event for the organizer.
+Outstanding Issues:
+- Not all fields on xml page are filled, needs to get organizer content and event posters
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -82,7 +88,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         if (itemId == R.id.organizer_event_edit_details) {
             newActivity = OrganizerEditEventActivity.class;
         } else if (itemId == R.id.organizer_event_attendees) {
-            newActivity = OrganizerEventAttendeeActivity.class;
+            newActivity = OrganizerEventAttendeeListActivity.class;
         } else if (itemId == R.id.organizer_event_map) {
             newActivity = OrganizerEventMapActivity.class;
         } else if (itemId == R.id.organizer_event_milestones) {
