@@ -25,6 +25,10 @@ public class EventValidator {
 
         // We check fields in opposite order they appear in the UI so that the first missing field
         // gives the error message.
+        if (event.getSignUpLimit() >= 0 && event.getSignUpLimit() < event.getSignUpCount()) {
+            valid = false;
+            errMsg = "Sign-up limit is set below current number of signed-up attendees";
+        }
         if (event.getMilestones() == null) {
             valid = false;
             errMsg = "Milestones is null";

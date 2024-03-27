@@ -69,8 +69,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private TextView editMilestones;
     private AppCompatButton uploadPosterButton;
     private CheckBox trackLocationCheck;
-    TextView editLimitSignUps;
-    CheckBox limitSignUpsCheck;
+    private TextView editLimitSignUps;
+    private CheckBox limitSignUpsCheck;
 
     // Main behaviour
     /**
