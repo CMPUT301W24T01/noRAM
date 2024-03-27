@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
@@ -25,9 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.io.IOException;
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The main activity of the application. This activity is the first activity that is launched
@@ -113,17 +114,15 @@ public class MainActivity extends AppCompatActivity {
      * attendee associated with the UID.
      */
     private void signInFirebase() {
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = db.getmAuth().getCurrentUser();
 
         // https://firebase.google.com/docs/auth/android/anonymous-auth?authuser=1#java
         db.getmAuth().signInAnonymously()
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInAnonymously:success");
-                        Log.d(TAG, "UID: " + currentUser.getUid());
                         FirebaseUser user = db.getmAuth().getCurrentUser();
+                        Log.d(TAG, "signInAnonymously:success");
+                        Log.d(TAG, "UID: " + user.getUid());
 
                         // Get the user's data from the database
                         db.getAttendeeRef().document(user.getUid()).get().addOnCompleteListener(task1 -> {
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
                                 } else {
-                                    attendee = new Attendee(currentUser.getUid());
+                                    attendee = new Attendee(user.getUid());
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
                                 }
