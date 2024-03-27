@@ -2,14 +2,24 @@ package com.example.noram.controller;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
+import com.example.noram.R;
 import com.example.noram.model.Event;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
@@ -31,7 +41,8 @@ public class EventManager {
      * Check-in the current user to the event given by eventID
      * @param eventId ID string of the event
      */
-    public static void checkInToEvent(String eventId) {
+    @SuppressLint("MissingPermission")
+    public static void checkInToEvent(String eventId, Location userLocation) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
@@ -42,6 +53,13 @@ public class EventManager {
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
             transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
+
+            //add to checkedInAttendeeLocations
+            if (userLocation != null) {
+                List<Location> checkedInAttendeesLocations = (List<Location>) snapshot.get("checkedInAttendeesLocations");
+                checkedInAttendeesLocations.add(userLocation);
+                transaction.update(eventRef, "checkedInAttendeesLocations", checkedInAttendeesLocations);
+            }
             return null;
         });
     }

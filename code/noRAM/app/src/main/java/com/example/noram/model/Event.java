@@ -6,6 +6,8 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
+import android.location.Location;
+
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
@@ -38,6 +40,8 @@ public class Event {
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private List<String> checkedInAttendees;
+
+    private List<Location> checkedInAttendeesLocations;
 
     /**
      * Default constructor for Event
@@ -75,6 +79,7 @@ public class Event {
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+
     }
 
     /**
@@ -90,6 +95,7 @@ public class Event {
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param checkedInAttendeesLocations list is locations of checked-in attendees
      */
     public Event(
             String id,
@@ -102,7 +108,8 @@ public class Event {
             QRCode checkInQR,
             QRCode promoQR,
             boolean trackLocation,
-            List<String> checkedInAttendees) {
+            List<String> checkedInAttendees,
+            List<Location> checkedInAttendeesLocations) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -114,6 +121,7 @@ public class Event {
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
+        this.checkedInAttendeesLocations = checkedInAttendeesLocations;
     }
 
     // Getters
@@ -294,6 +302,21 @@ public class Event {
     public void setCheckedInAttendees(List<String> checkedInAttendees) {
         this.checkedInAttendees = checkedInAttendees;
     }
+    /**
+     * Get the list of checked in attendees locations
+     * @return list of attendee locations
+     */
+    public List<Location> getCheckedInAttendeesLocations() {
+        return checkedInAttendeesLocations;
+    }
+
+    /**
+     * Set the list of checked in attendees locations
+     * @param checkedInAttendees new list of checked in attendees locations
+     */
+    public void setCheckedInAttendeesLocations(List<Location> checkedInAttendees) {
+        this.checkedInAttendeesLocations  = checkedInAttendees;
+    }
 
     /**
      * Check for equality between an event and another object
@@ -329,6 +352,7 @@ public class Event {
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("checkedInAttendeeLocations", checkedInAttendeesLocations);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();
@@ -348,6 +372,7 @@ public class Event {
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setCheckedInAttendeesLocations((List<Location>) doc.get("checkedInAttendeesLocations"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));

@@ -6,7 +6,9 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,8 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRType;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.noram.controller.EventManager;
@@ -118,6 +122,7 @@ public class QrScanFragment extends Fragment {
      * Processes the scanned QR code based on the encoded data
      * @param qrCodeString qr code encoded string
      */
+    @SuppressLint("MissingPermission")
     private void processQRCode(String qrCodeString) {
         DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
@@ -142,7 +147,14 @@ public class QrScanFragment extends Fragment {
                 event.setId(eventId);
 
                 if (qrType == QRType.SIGN_IN) {
-                    EventManager.checkInToEvent(eventId);
+                    Location attendeeLocation = null;
+                    if (MainActivity.attendee.getAllowLocation()) {
+                        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+                        //TODO add a onsuccess and onfail listener
+                        //grabbing current loaction of the phone
+                        attendeeLocation = fusedLocationClient.getLastLocation().getResult();
+                    }
+                    EventManager.checkInToEvent(eventId, attendeeLocation);
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event

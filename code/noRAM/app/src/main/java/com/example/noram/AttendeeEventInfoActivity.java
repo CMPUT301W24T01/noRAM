@@ -57,7 +57,7 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
         // TODO: update database to add signed-in attendees to event
         // TODO: send to message page: should send to signed-in page instead of checked-in page
         // sign-in the event and display sign-in message
-        EventManager.checkInToEvent(event.getId());
+        EventManager.checkInToEvent(event.getId(), null);
         Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
         // load new page (signed-in event)
         EventManager.displayCheckedInEvent(this, event);
