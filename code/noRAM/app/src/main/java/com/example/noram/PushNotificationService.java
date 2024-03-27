@@ -47,7 +47,7 @@ public class PushNotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        MainActivity.attendee.setFCMToken(token);
+        if (MainActivity.attendee != null) { MainActivity.attendee.setFCMToken(token); }
     }
 
     /**
