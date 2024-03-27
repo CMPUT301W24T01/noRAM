@@ -8,19 +8,15 @@ package com.example.noram.model;
 
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.example.noram.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -374,5 +370,20 @@ public class Attendee {
             setFCMToken(token);
             Log.d("FCM", token);
         });
+    }
+
+    /**
+     * A method to update the attendee with a Map object
+     * @param map the Map with information about the attendee attributes
+     */
+    public void updateWithMap(Map<String, Object> map) {
+        this.firstName = (String) map.get("firstName");
+        this.lastName = (String) map.get("lastName");
+        this.homePage = (String) map.get("homePage");
+        this.email = (String) map.get("email");
+        this.allowLocation = (Boolean) map.get("allowLocation");
+        this.usingDefaultProfilePhoto = (Boolean) map.get("defaultProfilePhoto");
+        this.eventsCheckedInto = (List<String>) map.get("eventsCheckedInto");
+        this.FCMToken = (String) map.get("FCMToken");
     }
 }

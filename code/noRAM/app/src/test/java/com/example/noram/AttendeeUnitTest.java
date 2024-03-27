@@ -14,6 +14,9 @@ import com.example.noram.model.Attendee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Tests for the Attendee class
@@ -131,5 +134,30 @@ public class AttendeeUnitTest {
         String photo = attendee.getProfilePhotoString();
         // Assert
         assertEquals("profile_photos/id-upload", photo);
+    }
+
+    /**
+     * Tests that the updateWithMap method properly updates the fields of an attendee
+     */
+    @Test
+    public void updateWithMapTest() {
+        Attendee attendee = new Attendee("id");
+        Map<String, Object> map = new HashMap<>();
+        map.put("firstName", "a");
+        map.put("lastName", "b");
+        map.put("homePage", "c");
+        map.put("email", "d");
+        map.put("allowLocation", true);
+        map.put("defaultProfilePhoto", false);
+        map.put("eventsCheckedInto", new ArrayList<>(Arrays.asList("test")));
+        attendee.updateWithMap(map);
+
+        assertEquals("a", attendee.getFirstName());
+        assertEquals("b", attendee.getLastName());
+        assertEquals("c", attendee.getHomePage());
+        assertEquals("d", attendee.getEmail());
+        assertEquals(true, attendee.getAllowLocation());
+        assertEquals(false, attendee.getDefaultProfilePhoto());
+        assertEquals(new ArrayList<>(Arrays.asList("test")), attendee.getEventsCheckedInto());
     }
 }

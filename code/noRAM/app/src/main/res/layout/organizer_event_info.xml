@@ -101,8 +101,8 @@
                 android:layout_marginEnd="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/organizer_event_location"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                app:layout_constraintTop_toBottomOf="@+id/eventSignUps"/>
 
             <TextView
                 android:id="@+id/organizer_event_description"
@@ -205,6 +205,16 @@
                 app:layout_constraintStart_toEndOf="@+id/organizer_event_menu_button"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.62" />
+
+            <TextView
+                android:id="@+id/eventSignUps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/signup_count_format"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/organizer_event_location" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

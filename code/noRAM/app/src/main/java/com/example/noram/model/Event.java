@@ -14,16 +14,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class to represent an Event
  * @maintainer Carlin
  * @author Carlin
  * @author Cole
+ * @author Ethan
  */
 public class Event {
     private String id;
@@ -37,8 +40,10 @@ public class Event {
     private String promoQRID;
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private List<String> checkedInAttendees;
     private String organizerId;
+    private List<String> checkedInAttendees;
+    private List<String> signedUpAttendees;
+    private Long signUpLimit;
 
     /**
      * Default constructor for Event
@@ -55,6 +60,7 @@ public class Event {
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
      * @param trackLocation is location tracking of check-ins enabled
+     * @param signUpLimit number of signups for event allowed (-1 for no limit)
      */
     public Event(
             String id,
@@ -65,7 +71,8 @@ public class Event {
             String details,
             ArrayList<Integer> milestones,
             boolean trackLocation,
-            String organizerId) {
+            String organizerId,
+            Long signUpLimit) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -76,6 +83,8 @@ public class Event {
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
         this.organizerId = organizerId;
+        this.signedUpAttendees = new ArrayList<>();
+        this.signUpLimit = signUpLimit;
     }
 
     /**
@@ -91,6 +100,8 @@ public class Event {
      * @param promoQRID id of QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param signedUpAttendees list of signed up attendees
+     * @param signUpLimit number of signups for event allowed (-1 for no limit)
      */
     public Event(
             String id,
@@ -104,7 +115,9 @@ public class Event {
             String promoQRID,
             boolean trackLocation,
             List<String> checkedInAttendees,
-            String organizerId) {
+            String organizerId,
+            List<String> signedUpAttendees,
+            Long signUpLimit) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -117,6 +130,8 @@ public class Event {
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
         this.organizerId = organizerId;
+        this.signedUpAttendees = signedUpAttendees;
+        this.signUpLimit = signUpLimit;
     }
 
     // Getters
@@ -184,8 +199,48 @@ public class Event {
         return trackLocation;
     }
 
-    // Setters
+    /**
+     * Get the list of checked in attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getCheckedInAttendees() {
+        return checkedInAttendees;
+    }
 
+    /**
+     * Get the list of signed up attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getSignedUpAttendees() {
+        return signedUpAttendees;
+    }
+
+    /**
+     * Get the sign up limit
+     * @return sign up limit
+     */
+    public Long getSignUpLimit() {
+        return signUpLimit;
+    }
+
+    /**
+     * Return true if signups are limited (limit set to 0 or above), false otherwise
+     * @return whether or not sign-ups are limited
+     */
+    public boolean isLimitedSignUps() {return signUpLimit >= 0;}
+
+    /**
+     * Returns the number of signed-up attendees
+     * @return size of signedUpAttendees ArrayList
+     */
+    public int getSignUpCount() {
+        if (signedUpAttendees == null) {
+            return 0;
+        }
+        return signedUpAttendees.size();
+    }
+
+    // Setters
     /**
      * Set id of event
      * @param id new id for event
@@ -251,14 +306,6 @@ public class Event {
     }
 
     /**
-     * Get the list of checked in attendees
-      * @return list of attendee identifiers
-     */
-    public List<String> getCheckedInAttendees() {
-        return checkedInAttendees;
-    }
-
-    /**
      * Set the list of checked in attendees
      * @param checkedInAttendees new list of checked in attendees
      */
@@ -315,6 +362,23 @@ public class Event {
     }
 
     /**
+     * Sets the list of signed up attendees
+     * @param signedUpAttendees new list of signed up attendees
+     */
+    public void setSignedUpAttendees(List<String> signedUpAttendees) {
+        this.signedUpAttendees = signedUpAttendees;
+    }
+
+    /**
+     * Sets sign up limit
+     * @param signUpLimit new sign up limit
+     */
+    public void setSignUpLimit(Long signUpLimit) {
+        this.signUpLimit = signUpLimit;
+    }
+
+    // Functions
+    /**
      * Check for equality between an event and another object
      * @param obj object to check for equality
      * @return true if equal, false otherwise.
@@ -331,7 +395,6 @@ public class Event {
         return Objects.equals(this.getId(), other.getId());
     }
 
-    // Functions
     /**
      * Updates the event in the database
      */
@@ -349,6 +412,8 @@ public class Event {
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
         data.put("organizerID", organizerId);
+        data.put("signedUpAttendees", signedUpAttendees);
+        data.put("signUpLimit", signUpLimit);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -364,10 +429,57 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
-        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQRID(doc.getString("promoQRID"));
         this.setCheckInQRID(doc.getString("checkInQRID"));
         this.setOrganizerId(doc.getString("organizerID"));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
+        this.setSignUpLimit(doc.getLong("signUpLimit"));
+    }
+
+    /**
+     * Adds string representation of attendee into signedUpAttendees list
+     * @param attendee string representation of attendee
+     */
+    public void addSignedUpAttendee(String attendee) {
+        signedUpAttendees.add(attendee);
+    }
+
+    /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
+     * * @param callback the callback to provide the list of attendees and their check-in counts to
+     */
+    public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
+        ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        if (checkedInAttendees.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+        MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                Map<String, Object> data = document.getData();
+                Attendee attendee = new Attendee((String) data.get("identifier"));
+                attendee.updateWithMap(data);
+                checkedInAttendeeObjects.add(attendee);
+            }
+
+            ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
+            callback.accept(attendeeCheckInCounters);
+        });
+    }
+
+    /**
+     * Count the number of times each attendee has checked in
+     * @param attendees the list of attendees to count check-ins for
+     * @return an ArrayList of AttendeeCheckInCounter objects
+     */
+    public ArrayList<AttendeeCheckInCounter> countCheckIns(ArrayList<Attendee> attendees) {
+        ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();
+
+        for (Attendee attendee : attendees) {
+            int count = Collections.frequency(checkedInAttendees, attendee.getIdentifier());
+            attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
+        }
+        return attendeeCheckInCounters;
     }
 }

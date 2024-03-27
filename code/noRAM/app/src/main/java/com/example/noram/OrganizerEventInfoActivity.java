@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event for the organizer.
+Outstanding Issues:
+- Not all fields on xml page are filled, needs to get organizer content and event posters
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -36,6 +42,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
     private ImageView promoQRImage;
     private ImageView checkinQRShare;
     private ImageView promoQRShare;
+    private TextView eventSignUps;
 
     /**
      * Update page's event ("event") with database's info
@@ -64,6 +71,8 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
             String eventImagePath = "event_banners/"+event.getId()+"-upload";
             MainActivity.db.downloadPhoto(eventImagePath,
                     t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+
+            updateSignUpText();
 
             // Get event QR codes
             String checkinID = event.getCheckInQRID();
@@ -113,7 +122,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         if (itemId == R.id.organizer_event_edit_details) {
             newActivity = OrganizerEditEventActivity.class;
         } else if (itemId == R.id.organizer_event_attendees) {
-            newActivity = OrganizerEventAttendeeActivity.class;
+            newActivity = OrganizerEventAttendeeListActivity.class;
         } else if (itemId == R.id.organizer_event_map) {
             newActivity = OrganizerEventMapActivity.class;
         } else if (itemId == R.id.organizer_event_milestones) {
@@ -150,6 +159,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         checkinQRImage = findViewById(R.id.checkin_qr_code_img);
         checkinQRShare = findViewById(R.id.share_checkin_qr);
         promoQRShare = findViewById(R.id.share_promo_qr);
+        eventSignUps = findViewById(R.id.eventSignUps);
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
@@ -182,4 +192,22 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, null));
     }
 
+    /**
+     * Updates displayed count of signed-up attendees
+     */
+    private void updateSignUpText() {
+        if (event.isLimitedSignUps()) {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
+    }
 }
