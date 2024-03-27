@@ -357,8 +357,8 @@ public class Event {
     }
 
     /**
-     * Get the list of checked in attendees and the number of times they have checked in
-     * @return a pair of lists, the first being the list of attendees and the second being the number of times they have checked in
+     * Get the list of checked in attendees and the number of times they have checked in to provide to the callback
+     * @param callback the callback to provide the list of attendees and their check-in counts to
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
@@ -379,7 +379,7 @@ public class Event {
     /**
      * Count the number of times each attendee has checked in
      * @param attendees the list of attendees to count check-ins for
-     * @return a list of attendees and the number of times they have checked in
+     * @return an ArrayList of AttendeeCheckInCounter objects
      */
     public ArrayList<AttendeeCheckInCounter> countCheckIns(ArrayList<Attendee> attendees) {
         ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();

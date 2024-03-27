@@ -373,8 +373,8 @@ public class Attendee {
     }
 
     /**
-     * A method to update the attendee with a document snapshot
-     * @param map the map with information about the attendee attributes
+     * A method to update the attendee with a Map object
+     * @param map the Map with information about the attendee attributes
      */
     public void updateWithMap(Map<String, Object> map) {
         this.firstName = (String) map.get("firstName");
