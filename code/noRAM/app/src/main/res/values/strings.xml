@@ -66,4 +66,23 @@
     <string name="admin_view_profiles_button">View Profiles</string>
     <string name="admin_view_images_button">View Images</string>
     <string name="admin_label">Admin Mode</string>
+    <string name="admin_events_page_title">Events List</string>
+    <string name="admin_users_page_title">Users List</string>
+    <string name="admin_images_page_title">Image Gallery</string>
+    <string name="organizer_create_event_finish">Finish</string>
+    <string name="check_in_qr_code_settings_header">Check In QR Code Settings:</string>
+    <string name="auto_generate">Auto-Generate</string>
+    <string name="upload">Upload</string>
+    <string name="upload_qr_code_header">Upload QR Code</string>
+    <string name="uploadeduriplaceholder">UploadedURIPlaceholder</string>
+    <string name="promotional_qr_code_settings_header">Promotional QR Code Settings:</string>
+    <string name="arrow_pointing_to_the_left">Arrow pointing to the left</string>
+    <string name="new_push_notification">New Push Notification</string>
+    <string name="title">Title:</string>
+    <string name="content">Content:</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="checkin_continue_button_text">Continue</string>
+    <string name="have_fun_at_event_placeholder"><![CDATA[Have fun at <event>!]]></string>
+    <string name="thanks_for_checking_in_header">Thanks For Checking In!</string>
 </resources>

@@ -177,7 +177,7 @@ public class Event {
     }
 
     /**
-     * Returns Photo of check-in QR code
+     * Returns photo of check-in QR code
      * @return checkInQR attribute
      */
     public QRCode getCheckInQR() {
@@ -185,7 +185,7 @@ public class Event {
     }
 
     /**
-     * Returns Photo of promotional QR code
+     * Returns photo of promotional QR code
      * @return promoQR attribute
      */
     public QRCode getPromoQR() {

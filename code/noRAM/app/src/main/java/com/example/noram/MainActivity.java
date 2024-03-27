@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     public static Attendee attendee = null;
     public static Organizer organizer = null;
     private Button adminButton;
+    public static PushNotificationService pushService = new PushNotificationService();
+    public static MainActivity mn;
+
 
     /**
      * Create and setup the main activity.
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Set the main activity to this instance for use in other classes
+        mn = this;
 
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;
@@ -83,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
+        }
+
+        // ask for notification permission
+        // Reference: https://developer.android.com/training/notify-user/permissions#request-permission, accessed feb 19 2024
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED && android.os.Build.VERSION.SDK_INT >= 33) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 0);
         }
     }
 
@@ -127,8 +140,11 @@ public class MainActivity extends AppCompatActivity {
                                     Boolean defaultPhoto = document.getBoolean("defaultProfilePhoto");
                                     List<String> eventsCheckedInto = (List<String>) document.get("eventsCheckedInto");
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
+                                    attendee.generateAttendeeFCMToken();
+                                    attendee.updateDBAttendee();
                                 } else {
                                     attendee = new Attendee(currentUser.getUid());
+                                    attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
                                 }
                                 // If the user's information is not complete, show the info activity
