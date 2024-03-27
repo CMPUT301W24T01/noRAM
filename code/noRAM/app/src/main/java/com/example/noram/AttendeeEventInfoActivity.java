@@ -56,13 +56,19 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
     private void signup(){
         // TODO: update database to add signed-in attendees to event
         // TODO: send to message page: should send to signed-in page instead of checked-in page
-        // sign-in the event and display sign-in message
-        EventManager.signUpForEvent(event.getId());
-        Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
-        // load new page (signed-in event)
-        EventManager.displayCheckedInEvent(this, event);
-        // remove old page
-        finish();
+        // Check sign-up limit
+        if (!event.isLimitedSignUps() || event.getSignUpCount() < event.getSignUpLimit()) {
+            // sign-up to the event and display sign-up message
+            EventManager.signUpForEvent(event.getId());
+            Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
+            // load new page (signed-in event)
+            EventManager.displayCheckedInEvent(this, event);
+            // remove old page
+            finish();
+        }
+        else {
+            Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

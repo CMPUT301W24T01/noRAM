@@ -17,6 +17,8 @@
     <string name="organizer_fragment_create_event_p1_details_hint">Details</string>
     <string name="organizer_fragment_create_event_p1_milestones_hint">Event Milestones (comma separated)</string>
     <string name="organizer_fragment_create_event_p1_location_check_text">Track check-in locations for this event?</string>
+    <string name="organizer_fragment_create_event_p1_limitSignUps_check_text">Limit sign-ups for this event?</string>
+    <string name="organizer_fragment_create_event_p1_limitSignUps_hint">Maximum number of sign-ups</string>
     <string name="organizer_fragment_create_event_next_button">Next</string>
 
     <string name="organizer_fragment_create_event_p2_header">Create Event - Part 2</string>
