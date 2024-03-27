@@ -41,6 +41,8 @@ public class Event {
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private List<String> checkedInAttendees;
+    private List<String> signedUpAttendees;
+    private Long signUpLimit;
 
     /**
      * Default constructor for Event
@@ -57,6 +59,7 @@ public class Event {
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
      * @param trackLocation is location tracking of check-ins enabled
+     * @param signUpLimit number of signups for event allowed (-1 for no limit)
      */
     public Event(
             String id,
@@ -66,7 +69,8 @@ public class Event {
             LocalDateTime endTime,
             String details,
             ArrayList<Integer> milestones,
-            boolean trackLocation) {
+            boolean trackLocation,
+            Long signUpLimit) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -78,6 +82,8 @@ public class Event {
         this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+        this.signedUpAttendees = new ArrayList<>();
+        this.signUpLimit = signUpLimit;
     }
 
     /**
@@ -93,6 +99,8 @@ public class Event {
      * @param promoQR QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param signedUpAttendees list of signed up attendees
+     * @param signUpLimit number of signups for event allowed (-1 for no limit)
      */
     public Event(
             String id,
@@ -105,7 +113,9 @@ public class Event {
             QRCode checkInQR,
             QRCode promoQR,
             boolean trackLocation,
-            List<String> checkedInAttendees) {
+            List<String> checkedInAttendees,
+            List<String> signedUpAttendees,
+            Long signUpLimit) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -117,6 +127,8 @@ public class Event {
         this.promoQR = promoQR;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
+        this.signedUpAttendees = signedUpAttendees;
+        this.signUpLimit = signUpLimit;
     }
 
     // Getters
@@ -200,8 +212,48 @@ public class Event {
         return trackLocation;
     }
 
-    // Setters
+    /**
+     * Get the list of checked in attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getCheckedInAttendees() {
+        return checkedInAttendees;
+    }
 
+    /**
+     * Get the list of signed up attendees
+     * @return list of attendee identifiers
+     */
+    public List<String> getSignedUpAttendees() {
+        return signedUpAttendees;
+    }
+
+    /**
+     * Get the sign up limit
+     * @return sign up limit
+     */
+    public Long getSignUpLimit() {
+        return signUpLimit;
+    }
+
+    /**
+     * Return true if signups are limited (limit set to 0 or above), false otherwise
+     * @return whether or not sign-ups are limited
+     */
+    public boolean isLimitedSignUps() {return signUpLimit >= 0;}
+
+    /**
+     * Returns the number of signed-up attendees
+     * @return size of signedUpAttendees ArrayList
+     */
+    public int getSignUpCount() {
+        if (signedUpAttendees == null) {
+            return 0;
+        }
+        return signedUpAttendees.size();
+    }
+
+    // Setters
     /**
      * Set id of event
      * @param id new id for event
@@ -283,14 +335,6 @@ public class Event {
     }
 
     /**
-     * Get the list of checked in attendees
-      * @return list of attendee identifiers
-     */
-    public List<String> getCheckedInAttendees() {
-        return checkedInAttendees;
-    }
-
-    /**
      * Set the list of checked in attendees
      * @param checkedInAttendees new list of checked in attendees
      */
@@ -298,6 +342,23 @@ public class Event {
         this.checkedInAttendees = checkedInAttendees;
     }
 
+    /**
+     * Sets the list of signed up attendees
+     * @param signedUpAttendees new list of signed up attendees
+     */
+    public void setSignedUpAttendees(List<String> signedUpAttendees) {
+        this.signedUpAttendees = signedUpAttendees;
+    }
+
+    /**
+     * Sets sign up limit
+     * @param signUpLimit new sign up limit
+     */
+    public void setSignUpLimit(Long signUpLimit) {
+        this.signUpLimit = signUpLimit;
+    }
+
+    // Functions
     /**
      * Check for equality between an event and another object
      * @param obj object to check for equality
@@ -315,7 +376,6 @@ public class Event {
         return Objects.equals(this.getId(), other.getId());
     }
 
-    // Functions
     /**
      * Updates the event in the database
      */
@@ -332,6 +392,8 @@ public class Event {
         data.put("promoQR", promoQR.getEncodedData());
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("signedUpAttendees", signedUpAttendees);
+        data.put("signUpLimit", signUpLimit);
         MainActivity.db.getEventsRef().document(id).set(data);
 
         promoQR.updateDBQRCode();
@@ -350,15 +412,24 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
-        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
+        this.setSignUpLimit(doc.getLong("signUpLimit"));
         this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
         this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
     }
 
     /**
-     * Get the list of checked in attendees and the number of times they have checked in to provide to the callback
-     * @param callback the callback to provide the list of attendees and their check-in counts to
+     * Adds string representation of attendee into signedUpAttendees list
+     * @param attendee string representation of attendee
+     */
+    public void addSignedUpAttendee(String attendee) {
+        signedUpAttendees.add(attendee);
+    }
+
+    /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
+     * * @param callback the callback to provide the list of attendees and their check-in counts to
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
@@ -371,7 +442,6 @@ public class Event {
             }
 
             ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
-
             callback.accept(attendeeCheckInCounters);
         });
     }

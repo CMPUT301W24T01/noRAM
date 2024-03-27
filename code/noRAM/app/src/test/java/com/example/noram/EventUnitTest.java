@@ -84,7 +84,8 @@ public class EventUnitTest {
             String details = "details";
             ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
             Boolean trackLocation = true;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation);
+            Long signUpLimit = -1L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -94,6 +95,8 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
+            assertFalse(event.isLimitedSignUps());
+            assertEquals(signUpLimit, event.getSignUpLimit());
             assertNotNull(event.getCheckInQR());
             assertNotNull(event.getPromoQR());
         }
@@ -120,7 +123,9 @@ public class EventUnitTest {
             QRCode checkInQR = new QRCode("checkIn", "id", QRType.SIGN_IN);
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn);
+            List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
+            Long signUpLimit = 1200L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn, signedUp, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -130,9 +135,12 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
+            assertTrue(event.isLimitedSignUps());
+            assertEquals(event.getSignUpLimit(), signUpLimit);
             assertEquals(event.getCheckInQR(), checkInQR);
             assertEquals(event.getPromoQR(), promoQR);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getSignedUpAttendees(), signedUp);
         }
     }
 

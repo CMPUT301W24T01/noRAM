@@ -69,6 +69,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private TextView editMilestones;
     private AppCompatButton uploadPosterButton;
     private CheckBox trackLocationCheck;
+    private TextView editLimitSignUps;
+    private CheckBox limitSignUpsCheck;
 
     // Main behaviour
     /**
@@ -137,6 +139,11 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     editDetails.setText(event.getDetails());
                     editMilestones.setText(event.getMilestones().toString().replaceAll("[\\[\\]]", ""));
                     trackLocationCheck.setChecked(event.isTrackLocation());
+                    limitSignUpsCheck.setChecked(event.isLimitedSignUps());
+                    editLimitSignUps.setText(event.isLimitedSignUps() ? Long.toString(event.getSignUpLimit()) : "" );
+                    if (event.isLimitedSignUps()) {
+                        editLimitSignUps.setVisibility(View.VISIBLE);
+                    }
                 }
             });
             task.addOnFailureListener(new OnFailureListener() {
@@ -166,6 +173,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         editMilestones  = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
         uploadPosterButton = findViewById(R.id.organizer_activity_edit_event_edit_upload_poster_button);
         trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
+        limitSignUpsCheck = findViewById(R.id.organizer_activity_edit_event_edit_limitSignUps_check);
+        editLimitSignUps = findViewById(R.id.organizer_activity_edit_event_signUpLimit_text);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +198,22 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             @Override
             public void onClick(View v) {
                 new DatePickerFragment(endYear, endMonth, endDay).show(getSupportFragmentManager(), "end");
+            }
+        });
+
+        limitSignUpsCheck.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener to display/hide input box for sign-up limit
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                if (editLimitSignUps.getVisibility() == View.GONE) {
+                    editLimitSignUps.setVisibility(View.VISIBLE);
+                }
+                else {
+                    editLimitSignUps.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -220,8 +245,12 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
+                Long signUpLimit = -1L;
+                if (limitSignUpsCheck.isChecked()) {
+                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                }
 
-                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, event.getSignUpCount());
 
                 // Only continue to next step of event creation if inputs are valid
                 if (validateResult.first) {
@@ -247,6 +276,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     event.setDetails(details);
                     event.setMilestones(new ArrayList<>(milestones));
                     event.setTrackLocation(trackLocation);
+                    event.setSignUpLimit(signUpLimit);
 
                     // Update event in database
                     event.updateDBEvent();

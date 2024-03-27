@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -39,13 +40,14 @@ public class EventValidatorUnitTest {
      */
     private static Stream<Arguments> objectProvideParameter() {
         return Stream.of(
-                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), true),
-                Arguments.of(new Event("id", "", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), false),
-                Arguments.of(new Event("id", "My Event", "", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), false),
-                Arguments.of(new Event("id", "My Event", "My House", null, LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), false),
-                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), null, "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), false),
-                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", null, null, null, false, new ArrayList<>()), false),
-                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.of(2002, 2, 2, 2, 2), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>()), false)
+                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), true),
+                Arguments.of(new Event("id", "", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "", LocalDateTime.now(), LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "My House", null, LocalDateTime.now(), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), null, "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.now(), "cool details", null, null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.of(2002, 2, 2, 2, 2), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(), -1L), false),
+                Arguments.of(new Event("id", "My Event", "My House", LocalDateTime.now(), LocalDateTime.of(2002, 2, 2, 2, 2), "cool details", new ArrayList<>(), null, null, false, new ArrayList<>(), new ArrayList<>(Arrays.asList("a", "b","c")), 0L), false)
         );
     }
 
@@ -60,8 +62,8 @@ public class EventValidatorUnitTest {
      */
     @ParameterizedTest
     @MethodSource("fieldsProvideParameter")
-    public void eventValidatorFieldsTest(String name, String location, LocalDateTime start, LocalDateTime end, String milestones, boolean expectedResult) {
-        Pair<Boolean, String> result = EventValidator.validateFromFields(name, location, start, end, milestones);
+    public void eventValidatorFieldsTest(String name, String location, LocalDateTime start, LocalDateTime end, String milestones, Long signUpLimit, int currentSignUps, boolean expectedResult) {
+        Pair<Boolean, String> result = EventValidator.validateFromFields(name, location, start, end, milestones, signUpLimit, currentSignUps);
         assertEquals(expectedResult, result.first);
     }
 
@@ -71,13 +73,14 @@ public class EventValidatorUnitTest {
      */
     private static Stream<Arguments> fieldsProvideParameter() {
         return Stream.of(
-                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", true),
-                Arguments.of("", "My House", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", false),
-                Arguments.of("Bill", "", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", false),
-                Arguments.of("Bill", "My House", null, LocalDateTime.now(), "1,2,10,50,100", false),
-                Arguments.of("Bill", "My House", LocalDateTime.now(), null, "1,2,10,50,100", false),
-                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.now(), "apple", false),
-                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.of(2002, 2, 2, 2, 2), "1,2,3,4", false)
+                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", -1L, 0, true),
+                Arguments.of("", "My House", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", -1L, 0, false),
+                Arguments.of("Bill", "", LocalDateTime.now(), LocalDateTime.now(), "1,2,10,50,100", -1L, 0, false),
+                Arguments.of("Bill", "My House", null, LocalDateTime.now(), "1,2,10,50,100", -1L, 0, false),
+                Arguments.of("Bill", "My House", LocalDateTime.now(), null, "1,2,10,50,100", -1L, 0, false),
+                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.now(), "apple", -1L, 0, false),
+                Arguments.of("Bill", "My House", LocalDateTime.now(), LocalDateTime.of(2002, 2, 2, 2, 2), "1,2,3,4", -1L, 0, false),
+                Arguments.of("Bill", "My house", LocalDateTime.now(), LocalDateTime.now(), "1,2,3,4", 0L, 1, false)
         );
     }
 

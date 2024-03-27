@@ -71,7 +71,9 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             checkInQRCode,
             promoQRCode,
             eventBundle.getBoolean("trackLocation"),
-            new ArrayList<>()
+            new ArrayList<>(),
+            new ArrayList<>(),
+            eventBundle.getLong("signUpLimit")
         );
         event.updateDBEvent();
 
