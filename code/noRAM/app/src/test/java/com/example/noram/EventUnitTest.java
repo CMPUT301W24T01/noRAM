@@ -3,7 +3,6 @@ package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -56,8 +55,8 @@ public class EventUnitTest {
         assertNull(event.getEndTime());
         assertNull(event.getDetails());
         assertNull(event.getMilestones());
-        assertNull(event.getCheckInQR());
-        assertNull(event.getPromoQR());
+        assertNull(event.getCheckInQRID());
+        assertNull(event.getPromoQRID());
     }
 
     /**
@@ -89,8 +88,8 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
-            assertNotNull(event.getCheckInQR());
-            assertNotNull(event.getPromoQR());
+            assertNull(event.getCheckInQRID());
+            assertNull(event.getPromoQRID());
             assertEquals(event.getOrganizerId(), organizerId);
         }
     }
@@ -117,7 +116,7 @@ public class EventUnitTest {
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
             String organizerId = "organizerId";
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn, organizerId);
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -127,8 +126,8 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
-            assertEquals(event.getCheckInQR(), checkInQR);
-            assertEquals(event.getPromoQR(), promoQR);
+            assertEquals(event.getCheckInQRID(), checkInQR.getHashId());
+            assertEquals(event.getPromoQRID(), promoQR.getHashId());
             assertEquals(event.getCheckedInAttendees(), checkedIn);
             assertEquals(event.getOrganizerId(), organizerId);
         }

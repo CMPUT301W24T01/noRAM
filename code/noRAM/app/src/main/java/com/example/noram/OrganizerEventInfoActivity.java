@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Event;
+import com.example.noram.model.QRCode;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -31,6 +32,10 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
     private TextView eventLocation;
     private ImageView eventImage;
     private TextView eventDescription;
+    private ImageView checkinQRImage;
+    private ImageView promoQRImage;
+    private ImageView checkinQRShare;
+    private ImageView promoQRShare;
 
     /**
      * Update page's event ("event") with database's info
@@ -59,6 +64,22 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
             String eventImagePath = "event_banners/"+event.getId()+"-upload";
             MainActivity.db.downloadPhoto(eventImagePath,
                     t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+
+            // Get event QR codes
+            String checkinID = event.getCheckInQRID();
+            String promoID = event.getPromoQRID();
+            MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+                QRCode checkinCode = new QRCode();
+                checkinCode.updateWithMap(documentSnapshot1.getData());
+                checkinQRShare.setOnClickListener(v -> shareQRCode(checkinCode));
+                checkinQRImage.setImageBitmap(checkinCode.getBitmap());
+            });
+            MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+                QRCode promoCode = new QRCode();
+                promoCode.updateWithMap(documentSnapshot1.getData());
+                promoQRShare.setOnClickListener(v -> shareQRCode(promoCode));
+                promoQRImage.setImageBitmap(promoCode.getBitmap());
+            });
         });
 
         // Since we only display events the organizer has, we can just use the current user's organizer details
@@ -125,6 +146,10 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         eventLocation = findViewById(R.id.organizer_event_location);
         eventImage = findViewById(R.id.organizer_event_image);
         eventDescription = findViewById(R.id.organizer_event_description);
+        promoQRImage = findViewById(R.id.promo_qr_code_img);
+        checkinQRImage = findViewById(R.id.checkin_qr_code_img);
+        checkinQRShare = findViewById(R.id.share_checkin_qr);
+        promoQRShare = findViewById(R.id.share_promo_qr);
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
@@ -146,4 +171,15 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         String eventID = getIntent().getExtras().getString("event");
         baseSetup(eventID);
     }
+
+    /**
+     * Opens a UI to share a QR code
+     * @param qrCode qr code to share
+     */
+    private void shareQRCode(QRCode qrCode) {
+        ShareHelper shareHelper = new ShareHelper();
+        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getHashId(), getApplicationContext());
+        startActivity(Intent.createChooser(shareIntent, null));
+    }
+
 }
