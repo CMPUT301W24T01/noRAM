@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.noram.model.QRCode;
-import com.example.noram.model.QRType;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +39,7 @@ public class QRCodeUnitTest {
     /**
      * Tests the update with map method in the QR code properly sets fields.
      */
+    @Test
     public void updateWithMapTest() {
         QRCode qrCode = mock(QRCode.class);
         doCallRealMethod().when(qrCode).updateWithMap(any(Map.class));
@@ -52,17 +52,17 @@ public class QRCodeUnitTest {
         String encodedData = "data!";
         String hashId = "coolHash";
         String associatedEvent = "coolEvent!";
-        QRType type = QRType.PROMOTIONAL;
+        String type = "PROMOTIONAL";
         Map<String, Object> data = new HashMap<>();
         data.put("encodedData", encodedData);
-        data.put("associatedEvent", associatedEvent);
+        data.put("event", associatedEvent);
         data.put("type", type);
         data.put("hashID", hashId);
         qrCode.updateWithMap(data);
 
         assertEquals(encodedData, qrCode.getEncodedData());
         assertEquals(hashId, qrCode.getHashId());
-        assertEquals(type, qrCode.getQrCodeType());
+        assertEquals(type, qrCode.getQrCodeType().toString());
         assertEquals(associatedEvent, qrCode.getAssociatedEvent());
 
     }
