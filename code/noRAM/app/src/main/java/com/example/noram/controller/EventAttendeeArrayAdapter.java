@@ -35,7 +35,7 @@ public class EventAttendeeArrayAdapter extends ArrayAdapter<AttendeeCheckInCount
     /**
      * A constructor to create an EventAttendeeArrayAdapter
      * @param context the context of the adapter
-     * @param attendeesAndCounts the attendees and their check-in counts
+     * @param attendeesAndCounts an ArrayList of attendees and their check-in counts AttendeeCheckInCounter objects
      */
     public EventAttendeeArrayAdapter(Context context, ArrayList<AttendeeCheckInCounter> attendeesAndCounts) {
         super(context, 0, attendeesAndCounts);
