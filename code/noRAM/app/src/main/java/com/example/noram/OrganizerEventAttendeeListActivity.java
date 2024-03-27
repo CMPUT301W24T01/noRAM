@@ -29,7 +29,7 @@ import java.util.Locale;
  * The OrganizerEventAttendeeActivity class displays the list of attendees for an event.
  * A {@link AppCompatActivity} subclass.
  */
-public class OrganizerEventAttendeeActivity extends AppCompatActivity {
+public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private Event event;
     private ListView attendeeList; // list of all attendees in UI
     private ListView searchAttendeeList; // list of attendees' search results

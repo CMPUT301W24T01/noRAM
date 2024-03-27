@@ -136,6 +136,9 @@ public class AttendeeUnitTest {
         assertEquals("profile_photos/id-upload", photo);
     }
 
+    /**
+     * Tests that the updateWithMap method properly updates the fields of an attendee
+     */
     @Test
     public void updateWithMapTest() {
         Attendee attendee = new Attendee("id");

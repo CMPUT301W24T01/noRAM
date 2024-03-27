@@ -88,7 +88,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         if (itemId == R.id.organizer_event_edit_details) {
             newActivity = OrganizerEditEventActivity.class;
         } else if (itemId == R.id.organizer_event_attendees) {
-            newActivity = OrganizerEventAttendeeActivity.class;
+            newActivity = OrganizerEventAttendeeListActivity.class;
         } else if (itemId == R.id.organizer_event_map) {
             newActivity = OrganizerEventMapActivity.class;
         } else if (itemId == R.id.organizer_event_milestones) {
