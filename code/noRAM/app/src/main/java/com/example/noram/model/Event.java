@@ -361,7 +361,7 @@ public class Event {
      * Updates the event given a database 'event' document
      * @param doc The database document containing the fields used to update the event instance
      */
-    public void updateWithDocument(DocumentSnapshot doc){
+    public void updateWithDocument(DocumentSnapshot doc) {
         this.setId(doc.getId());
         this.setName(doc.getString("name"));
         this.setDetails(doc.getString("details"));

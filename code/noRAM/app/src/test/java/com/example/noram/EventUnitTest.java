@@ -78,7 +78,8 @@ public class EventUnitTest {
             String details = "details";
             ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
             Boolean trackLocation = true;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation);
+            String organizerId = "orgId";
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -90,6 +91,7 @@ public class EventUnitTest {
             assertEquals(event.isTrackLocation(), trackLocation);
             assertNotNull(event.getCheckInQR());
             assertNotNull(event.getPromoQR());
+            assertEquals(event.getOrganizerId(), organizerId);
         }
     }
 
@@ -114,7 +116,8 @@ public class EventUnitTest {
             QRCode checkInQR = new QRCode("checkIn", "id", QRType.SIGN_IN);
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn);
+            String organizerId = "organizerId";
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn, organizerId);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -127,6 +130,7 @@ public class EventUnitTest {
             assertEquals(event.getCheckInQR(), checkInQR);
             assertEquals(event.getPromoQR(), promoQR);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getOrganizerId(), organizerId);
         }
     }
 }

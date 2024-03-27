@@ -85,4 +85,5 @@
     <string name="checkin_continue_button_text">Continue</string>
     <string name="have_fun_at_event_placeholder"><![CDATA[Have fun at <event>!]]></string>
     <string name="thanks_for_checking_in_header">Thanks For Checking In!</string>
+    <string name="display_name">Display Name</string>
 </resources>

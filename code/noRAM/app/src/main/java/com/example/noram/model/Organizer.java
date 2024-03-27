@@ -19,6 +19,7 @@ public class Organizer {
     private String identifier;
     private String name;
     private String photoPath;
+    private boolean usingAttendeeProfilePicture = false;
 
     /**
      * Create a new organizer.
@@ -86,6 +87,22 @@ public class Organizer {
     }
 
     /**
+     * Get whether or not the organizer is using an attendee profile picture
+     * @return true if they are, false otherwise
+     */
+    public boolean isUsingAttendeeProfilePicture() {
+        return usingAttendeeProfilePicture;
+    }
+
+    /**
+     * Set whether the organizer is using an attendee profile picture
+     * @param usingAttendeeProfilePicture new value
+     */
+    public void setUsingAttendeeProfilePicture(boolean usingAttendeeProfilePicture) {
+        this.usingAttendeeProfilePicture = usingAttendeeProfilePicture;
+    }
+
+    /**
      * Update the organizer in the database
      */
     public void updateDBOrganizer() {
@@ -102,5 +119,4 @@ public class Organizer {
         photoPath = attendee.getProfilePhotoString();
         identifier = attendee.getIdentifier();
     }
-
 }
