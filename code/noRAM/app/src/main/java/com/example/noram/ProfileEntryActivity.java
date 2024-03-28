@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -213,6 +212,8 @@ public class ProfileEntryActivity extends AppCompatActivity {
             attendee.setEmail(editEmail);
             attendee.setAllowLocation(editAllowLocation);
             attendee.generateAndReturnDefaultProfilePhoto(t -> ProfileEntryActivity.this.runOnUiThread(() -> imageView.setImageBitmap(t)));
+            MainActivity.organizer.syncWithAttendee(attendee);
+            MainActivity.organizer.updateDBOrganizer();
 
             // hide the rest of the fields
             firstName.setVisibility(View.INVISIBLE);

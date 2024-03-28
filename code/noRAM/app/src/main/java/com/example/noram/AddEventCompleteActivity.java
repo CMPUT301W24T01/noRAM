@@ -9,7 +9,6 @@ package com.example.noram;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,36 +51,39 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         String checkinQRData = eventBundle.getString("checkinQRData");
 
         //set unique id for this event
-        UUID myRand = UUID.randomUUID();
+        UUID eventID = UUID.randomUUID();
         QRCode promoQRCode = promoQRData == null
-            ? new QRCode(myRand + "-promo", myRand.toString(), QRType.PROMOTIONAL)
-            : new QRCode(promoQRData, myRand.toString(), QRType.PROMOTIONAL);
+            ? new QRCode(eventID + "-promo", eventID.toString(), QRType.PROMOTIONAL)
+            : new QRCode(promoQRData, eventID.toString(), QRType.PROMOTIONAL);
         QRCode checkInQRCode = checkinQRData == null
-            ? new QRCode(myRand + "-event", myRand.toString(), QRType.SIGN_IN)
-            : new QRCode(checkinQRData, myRand.toString(), QRType.SIGN_IN);
+            ? new QRCode(eventID + "-event", eventID.toString(), QRType.SIGN_IN)
+            : new QRCode(checkinQRData, eventID.toString(), QRType.SIGN_IN);
 
         Event event = new Event(
-            myRand.toString(),
+            eventID.toString(),
             eventBundle.getString("name"),
             eventBundle.getString("location"),
             (LocalDateTime) eventBundle.getSerializable("startTime"),
             (LocalDateTime) eventBundle.getSerializable("endTime"),
             eventBundle.getString("details"),
             eventBundle.getIntegerArrayList("milestones"),
-            checkInQRCode,
-            promoQRCode,
+            checkInQRCode.getHashId(),
+            promoQRCode.getHashId(),
             eventBundle.getBoolean("trackLocation"),
             new ArrayList<>(),
+            MainActivity.organizer.getIdentifier(),
             new ArrayList<>(),
             eventBundle.getLong("signUpLimit")
         );
         event.updateDBEvent();
+        promoQRCode.updateDBQRCode();
+        checkInQRCode.updateDBQRCode();
 
         //upload photo to event poster cloud storage with matching event id
         //set db with event poster. Only perform this action if an image was passed in the bundle
         if (eventBundle.getParcelable("imageUri") != null) {
             Uri imageUri = eventBundle.getParcelable("imageUri");
-            String uriString = "event_banners/" + myRand+ "-upload";
+            String uriString = "event_banners/" + eventID+ "-upload";
             // upload file to cloud storage
             MainActivity.db.uploadPhoto(imageUri, uriString);
         }
@@ -89,14 +91,14 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         // show QR codes
         ImageView promoQR = findViewById(R.id.qr_promo);
         ImageView checkinQR = findViewById(R.id.qr_checkin);
-        promoQR.setImageBitmap(event.getPromoQR().getBitmap());
-        checkinQR.setImageBitmap(event.getCheckInQR().getBitmap());
+        promoQR.setImageBitmap(promoQRCode.getBitmap());
+        checkinQR.setImageBitmap(checkInQRCode.getBitmap());
 
         // share buttons
         ImageView shareCheckInButton = findViewById(R.id.share_checkin);
         ImageView sharePromoButton = findViewById(R.id.share_promo);
-        shareCheckInButton.setOnClickListener(v -> shareQRCode(event.getCheckInQR()));
-        sharePromoButton.setOnClickListener(v -> shareQRCode(event.getPromoQR()));
+        shareCheckInButton.setOnClickListener(v -> shareQRCode(checkInQRCode));
+        sharePromoButton.setOnClickListener(v -> shareQRCode(promoQRCode));
 
         Button goToEventButton = findViewById(R.id.event_details_button);
         goToEventButton.setOnClickListener(new View.OnClickListener() {
