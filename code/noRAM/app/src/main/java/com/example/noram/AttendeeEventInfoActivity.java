@@ -36,16 +36,7 @@ import java.util.List;
  * @maintainer Gabriel
  * @author Gabriel
  */
-public class AttendeeEventInfoActivity extends AppCompatActivity {
-    private Event event; // current event being inquired
-    private TextView eventTitle; // event's title
-    private TextView organizerText; // text indicating event's organizer
-    private ImageView organizerImage; // profile picture of event's organizer
-    private TextView eventLocation; // event's location
-    private ImageView eventImage; // event's image
-    private TextView eventDescription; // event's description
-    private TextView eventSignUps;
-    private final CollectionReference eventsRef = MainActivity.db.getEventsRef(); // events in the database
+public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
     /**
      * Signup the user to current event in the database and display a message through a new activity
      */
@@ -104,10 +95,13 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
     }
 
     /**
-     * Update page's event ("event") with database's info
+     * Hook from EventInfoActivityTemplate that is called before updating the base page, used to do
+     * additional setup before updating the basic information.
      */
-    private void baseSetup(){
-        // check that check-in wasn't specified
+    @Override
+    protected void preSetup(){
+        // We add check-in information if relevant
+        // First check that check-in wasn't specified
         boolean specifiedCheckedIn = getIntent().getExtras().getBoolean(EventManager.checkedInLabel);
         if(specifiedCheckedIn){
             checkedInDisplay();
@@ -122,61 +116,6 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
                 notCheckedInDisplay();
             }
         }
-
-        // get all variables from page
-        ImageButton backButton = findViewById(R.id.backButton);
-        eventTitle = findViewById(R.id.eventTitle);
-        organizerText = findViewById(R.id.organizerText);
-        organizerImage = findViewById(R.id.organizerImage);
-        eventLocation = findViewById(R.id.eventLocation);
-        eventImage = findViewById(R.id.eventImage);
-        eventDescription = findViewById(R.id.eventDescription);
-        eventSignUps = findViewById(R.id.eventSignUps);
-
-        // update page's info
-        eventTitle.setText(event.getName());
-        eventDescription.setText(event.getDetails());
-        LocalDateTime startTime = event.getStartTime();
-        eventLocation.setText(String.format("%s from %s - %s @ %s",
-                startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                event.getLocation()
-        ));
-        updateSignUpText();
-
-
-        //download the event image from db and populate the screen
-        eventImage = findViewById(R.id.eventImage);
-        String findImage = "event_banners/"+event.getId()+"-upload";
-        // set imageview and update organizer image preview
-        if (FirebaseStorage.getInstance().getReference().child(findImage) != null) {
-            MainActivity.db.downloadPhoto(findImage,
-                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
-        }
-
-        // use the organizer ID to get organizer information.
-        MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
-            organizerText.setText("Organized by " + documentSnapshot.getString("name"));
-            String organizerPhotoPath = documentSnapshot.getString("photoPath");
-            MainActivity.db.downloadPhoto(organizerPhotoPath,
-                    t -> runOnUiThread(() -> organizerImage.setImageBitmap(t)));
-        });
-        //Note for when we download organizer photo:
-        //remove purple background, and android icon in xml
-        //if you want image to format nicely.
-        //use android:scaleType="fitCenter"
-        //look at xml fpr eventImage
-
-        //Log.d("Uploaded photo", findImage);
-        //Log.d("EventInfo", event.getName());
-        //Log.d("EventInfo", event.getDetails());
-        //Log.d("EventInfo", event.getLocation());
-
-        //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
-
-        // connect back button
-        backButton.setOnClickListener(v -> {finish();});
     }
 
     /**
@@ -187,49 +126,11 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        // retrieve corresponding event in database
+        // retrieve corresponding event in database, then load page
         String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
 
-        // retrieve event then load page
         assert eventID != null;
-        eventsRef.document(eventID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            /**
-             * Update the page's event with the document's info
-             * @param documentSnapshot the document snapshot of the event
-             */
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()){
-                    // update event
-                    event = new Event();
-                    event.updateWithDocument(documentSnapshot);
-                    // update page's info
-                    baseSetup();
-                }
-                else{
-                    // doesn't exist
-                    Log.e("AttendeeEventInfo", "Couldn't find the event in the database");
-                }
-            }
-        });
+        initializePage(eventID);
     }
 
-    /**
-     * Updates displayed count of signed-up attendees
-     */
-    private void updateSignUpText() {
-        if (event.isLimitedSignUps()) {
-            eventSignUps.setText(String.format(
-                    getBaseContext().getString(R.string.signup_limit_format),
-                    event.getSignUpCount(),
-                    event.getSignUpLimit())
-            );
-        }
-        else {
-            eventSignUps.setText(String.format(
-                    getBaseContext().getString(R.string.signup_count_format),
-                    event.getSignUpCount())
-            );
-        }
-    }
 }
