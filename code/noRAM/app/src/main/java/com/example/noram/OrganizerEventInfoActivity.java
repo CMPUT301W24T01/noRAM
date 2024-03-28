@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 import com.google.android.gms.tasks.Task;
@@ -168,7 +169,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         menuButton.setOnClickListener(v -> {showMenu();});
 
         // retrieve corresponding event in database
-        String eventID = getIntent().getExtras().getString("event");
+        String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
         baseSetup(eventID);
     }
 
@@ -178,7 +179,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String eventID = getIntent().getExtras().getString("event");
+        String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
         baseSetup(eventID);
     }
 
