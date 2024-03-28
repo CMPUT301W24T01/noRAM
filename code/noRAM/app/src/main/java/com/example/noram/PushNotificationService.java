@@ -6,11 +6,10 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
-
-import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,7 +46,7 @@ public class PushNotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        MainActivity.attendee.setFCMToken(token);
+        if (MainActivity.attendee != null) { MainActivity.attendee.setFCMToken(token); }
     }
 
     /**
@@ -82,8 +81,7 @@ public class PushNotificationService extends FirebaseMessagingService {
     public void sendNotification(String title, String data, Event event) {
 
         // Get the list of attendees
-
-        Set<String> attendeeList = (Set<String>) event.getCheckedInAttendees(); // cast to Set<String> so no duplicate attendees
+        Set<String> attendeeList = new HashSet<>(event.getCheckedInAttendees()); // cast to Set<String> so no duplicate attendees
 
         if (attendeeList == null) {
             throw new IllegalArgumentException("Attendee list is null");

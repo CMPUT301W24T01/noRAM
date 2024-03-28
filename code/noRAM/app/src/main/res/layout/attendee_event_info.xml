@@ -11,7 +11,7 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#AD96FF"
+        android:background="@color/main_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +30,7 @@
         app:tint="#FFFFFF" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -71,26 +72,24 @@
                 android:id="@+id/eventImage"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/eventLocation"
-                android:scaleType="fitCenter"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/eventSignUps" />
 
             <ImageView
                 android:id="@+id/organizerImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="25dp"
-                android:background="#B68FFE"
                 app:layout_constraintBottom_toTopOf="@+id/eventLocation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/organizerText"
                 app:layout_constraintTop_toBottomOf="@+id/eventTitle"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/eventLocation"
@@ -132,6 +131,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/eventDescription" />
+
+            <TextView
+                android:id="@+id/eventSignUps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/signup_count_format"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/eventLocation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

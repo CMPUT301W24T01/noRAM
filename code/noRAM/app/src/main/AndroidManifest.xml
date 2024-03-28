@@ -30,7 +30,7 @@
             android:name=".OrganizerEventMilestonesActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerEventAttendeeActivity"
+            android:name=".OrganizerEventAttendeeListActivity"
             android:exported="false" />
         <activity
             android:name=".OrganizerEventMapActivity"

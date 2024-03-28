@@ -16,23 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * An activity displaying the information about an event. Depending on event's data, the layout page
@@ -48,13 +43,18 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
     private void signup(){
         // TODO: update database to add signed-in attendees to event
         // TODO: send to message page: should send to signed-in page instead of checked-in page
-        // sign-in the event and display sign-in message
-        EventManager.checkInToEvent(event.getId());
-        Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
-        // load new page (signed-in event)
-        EventManager.displayCheckedInEvent(this, event);
-        // remove old page
-        finish();
+        // Check sign-up limit
+        if (!event.isLimitedSignUps() || event.getSignUpCount() < event.getSignUpLimit()) {
+            // sign-up to the event and display sign-up message
+            EventManager.signUpForEvent(event.getId());
+            Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
+            event.addSignedUpAttendee(MainActivity.attendee.getIdentifier());
+            // Update sign ups display
+            updateSignUpText();
+        }
+        else {
+            Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -132,6 +132,5 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         assert eventID != null;
         initializePage(eventID);
     }
-
 
 }

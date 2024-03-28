@@ -35,6 +35,7 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
     // events in the database
     protected final CollectionReference eventsRef = MainActivity.db.getEventsRef();
     protected Event event; // current event being displayed
+    protected TextView eventSignUps; // number of people signed up in the events
 
     /**
      * Hook that is called before updating the base page, used to do additional setup before
@@ -57,6 +58,10 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
         TextView eventLocation = findViewById(R.id.eventLocation);
         ImageView eventImage = findViewById(R.id.eventImage);
         TextView eventDescription = findViewById(R.id.eventDescription);
+        eventSignUps = findViewById(R.id.eventSignUps);
+
+        // update signup count
+        updateSignUpText();
 
         // update page's info
         eventTitle.setText(event.getName());
@@ -89,6 +94,25 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
+    }
+
+    /**
+     * Updates displayed count of signed-up attendees
+     */
+    protected void updateSignUpText() {
+        if (event.isLimitedSignUps()) {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
     }
 
     /**

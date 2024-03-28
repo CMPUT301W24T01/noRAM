@@ -1,3 +1,9 @@
+/*
+This file is used to display the information about an event for the organizer.
+Outstanding Issues:
+- Not all fields on xml page are filled, needs to get organizer content and event posters
+ */
+
 package com.example.noram;
 
 import android.content.Intent;
@@ -11,6 +17,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Event;
+import com.example.noram.model.QRCode;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -31,6 +38,11 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
     private TextView eventLocation;
     private ImageView eventImage;
     private TextView eventDescription;
+    private ImageView checkinQRImage;
+    private ImageView promoQRImage;
+    private ImageView checkinQRShare;
+    private ImageView promoQRShare;
+    private TextView eventSignUps;
 
     /**
      * Update page's event ("event") with database's info
@@ -55,7 +67,35 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
                     event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
                     event.getLocation()
             ));
+            // Get event image
+            String eventImagePath = "event_banners/"+event.getId()+"-upload";
+            MainActivity.db.downloadPhoto(eventImagePath,
+                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+
+            updateSignUpText();
+
+            // Get event QR codes
+            String checkinID = event.getCheckInQRID();
+            String promoID = event.getPromoQRID();
+            MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+                QRCode checkinCode = new QRCode();
+                checkinCode.updateWithMap(documentSnapshot1.getData());
+                checkinQRShare.setOnClickListener(v -> shareQRCode(checkinCode));
+                checkinQRImage.setImageBitmap(checkinCode.getBitmap());
+            });
+            MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+                QRCode promoCode = new QRCode();
+                promoCode.updateWithMap(documentSnapshot1.getData());
+                promoQRShare.setOnClickListener(v -> shareQRCode(promoCode));
+                promoQRImage.setImageBitmap(promoCode.getBitmap());
+            });
         });
+
+        // Since we only display events the organizer has, we can just use the current user's organizer details
+        organizerText.setText("Organized by " + MainActivity.organizer.getName() + (" (You)"));
+        MainActivity.db.downloadPhoto(MainActivity.organizer.getPhotoPath(),
+                t -> runOnUiThread(() -> organizerImage.setImageBitmap(t)));
+
     }
 
     /**
@@ -82,7 +122,7 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         if (itemId == R.id.organizer_event_edit_details) {
             newActivity = OrganizerEditEventActivity.class;
         } else if (itemId == R.id.organizer_event_attendees) {
-            newActivity = OrganizerEventAttendeeActivity.class;
+            newActivity = OrganizerEventAttendeeListActivity.class;
         } else if (itemId == R.id.organizer_event_map) {
             newActivity = OrganizerEventMapActivity.class;
         } else if (itemId == R.id.organizer_event_milestones) {
@@ -106,10 +146,6 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_event_info);
 
-        // retrieve corresponding event in database
-        String eventID = getIntent().getExtras().getString("event");
-        baseSetup(eventID);
-
         // get all variables from page
         ImageButton backButton = findViewById(R.id.organizer_event_back_button);
         ImageButton menuButton = findViewById(R.id.organizer_event_menu_button);
@@ -119,12 +155,21 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         eventLocation = findViewById(R.id.organizer_event_location);
         eventImage = findViewById(R.id.organizer_event_image);
         eventDescription = findViewById(R.id.organizer_event_description);
+        promoQRImage = findViewById(R.id.promo_qr_code_img);
+        checkinQRImage = findViewById(R.id.checkin_qr_code_img);
+        checkinQRShare = findViewById(R.id.share_checkin_qr);
+        promoQRShare = findViewById(R.id.share_promo_qr);
+        eventSignUps = findViewById(R.id.eventSignUps);
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
 
         // set up menu button
         menuButton.setOnClickListener(v -> {showMenu();});
+
+        // retrieve corresponding event in database
+        String eventID = getIntent().getExtras().getString("event");
+        baseSetup(eventID);
     }
 
     /**
@@ -135,5 +180,34 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
         super.onResume();
         String eventID = getIntent().getExtras().getString("event");
         baseSetup(eventID);
+    }
+
+    /**
+     * Opens a UI to share a QR code
+     * @param qrCode qr code to share
+     */
+    private void shareQRCode(QRCode qrCode) {
+        ShareHelper shareHelper = new ShareHelper();
+        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getHashId(), getApplicationContext());
+        startActivity(Intent.createChooser(shareIntent, null));
+    }
+
+    /**
+     * Updates displayed count of signed-up attendees
+     */
+    private void updateSignUpText() {
+        if (event.isLimitedSignUps()) {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUps.setText(String.format(
+                    getBaseContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
     }
 }

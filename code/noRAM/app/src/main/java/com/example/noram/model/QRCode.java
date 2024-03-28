@@ -41,6 +41,11 @@ public class QRCode {
 
     // Constructors
     /**
+     * Empty constructor, to create an object that will be populated from the database.
+     */
+    public QRCode() {}
+
+    /**
      * Default Constructor for a QR code. Generates a unique id.
      * @param data event id string associated with the QR code
      * @param type type of the QR code.
@@ -78,7 +83,6 @@ public class QRCode {
         this.encodedData = encodedData;
         hashId = HashHelper.hashSHA256(encodedData);
         updateBitmap();
-        updateDBQRCode();
     }
 
     /**
@@ -95,7 +99,6 @@ public class QRCode {
      */
     public void setAssociatedEvent(String associatedEvent) {
         this.associatedEvent = associatedEvent;
-        updateDBQRCode();
     }
 
     /**
@@ -112,7 +115,6 @@ public class QRCode {
      */
     public void setQrCodeType(QRType qrCodeType) {
         this.qrCodeType = qrCodeType;
-        updateDBQRCode();
     }
 
     /**
@@ -128,10 +130,24 @@ public class QRCode {
      */
     public void updateDBQRCode() {
         Map<String, Object> data = new HashMap<>();
+        data.put("hashID", hashId);
         data.put("encodedData", encodedData);
         data.put("event", associatedEvent);
         data.put("type", qrCodeType.toString());
         MainActivity.db.getQrRef().document(hashId).set(data);
+    }
+
+    /**
+     * Updates the QRCode object with a hashmap, likely from the database
+     * @param map map containing data for the QR code
+     */
+    public void updateWithMap(Map<String, Object> map) {
+        this.encodedData = (String) map.get("encodedData");
+        this.hashId = (String) map.get("hashID");
+        this.associatedEvent = (String) map.get("event");
+        String type = (String) map.get("type");
+        this.qrCodeType = type.equals("SIGN_IN") ? QRType.SIGN_IN : QRType.PROMOTIONAL;
+        updateBitmap();
     }
 
     /**

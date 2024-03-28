@@ -25,6 +25,10 @@ public class EventValidator {
 
         // We check fields in opposite order they appear in the UI so that the first missing field
         // gives the error message.
+        if (event.getSignUpLimit() >= 0 && event.getSignUpLimit() < event.getSignUpCount()) {
+            valid = false;
+            errMsg = "Sign-up limit is set below current number of signed-up attendees";
+        }
         if (event.getMilestones() == null) {
             valid = false;
             errMsg = "Milestones is null";
@@ -63,9 +67,13 @@ public class EventValidator {
      * @return Pair where the first element is a boolean indicating validity, and the second is a string
      *         indicating the error message.
      */
-    public static Pair<Boolean, String> validateFromFields(String name, String location, LocalDateTime startDateTime, LocalDateTime endDateTime, String milestonesString) {
+    public static Pair<Boolean, String> validateFromFields(String name, String location, LocalDateTime startDateTime, LocalDateTime endDateTime, String milestonesString, Long signUpLimit, int currentSignUps) {
         boolean valid = true;
         String errMsg = "";
+        if (signUpLimit >= 0 && signUpLimit < currentSignUps) {
+            valid = false;
+            errMsg = "Sign-up limit is set below current number of signed-up attendees";
+        }
         for (char c : milestonesString.toCharArray()) {
             if (!(Character.isDigit(c) || c == ',')) {
                 valid = false;

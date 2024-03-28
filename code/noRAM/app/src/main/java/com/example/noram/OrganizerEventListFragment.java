@@ -95,8 +95,9 @@ public class OrganizerEventListFragment extends Fragment {
 
         // remove old search
         searchEventDataList.clear();
-        // search through events' details, name and location
-        eventRef.get().addOnSuccessListener(querySnapshot -> {
+        // search through events' details, name and location. ONLY get events the current user organized.
+        eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
+                .get().addOnSuccessListener(querySnapshot -> {
             for (QueryDocumentSnapshot doc : querySnapshot) {
 
                 // get event's info
@@ -202,9 +203,8 @@ public class OrganizerEventListFragment extends Fragment {
         });
 
 
-        // TODO: Only show events of the user (instead of all events)
-        //eventRef.where("organizer", "==", MainActivity.attendee).addSnapshotListener...
-        eventRef.addSnapshotListener((querySnapshots, error) -> {
+        eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
+                .addSnapshotListener((querySnapshots, error) -> {
 
             // if error, log it and return
             if(error != null){
