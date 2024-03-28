@@ -39,9 +39,6 @@
             android:name=".OrganizerEventInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileEntryActivity"
-            android:exported="false" />
-        <activity
             android:name=".OrganizerActivity"
             android:exported="false" />
         <activity

@@ -28,7 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The main activity of the application. This activity is the first activity that is launched
@@ -155,17 +154,11 @@ public class MainActivity extends AppCompatActivity {
                                     organizer.syncWithAttendee(attendee);
                                     organizer.updateDBOrganizer();
                                 }
-                                // If the user's information is not complete, show the info activity
-                                if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {
-                                    initializeAttendeeProfile();
-                                } else {
-                                    // Show the buttons after the user is signed in and remove progress bar
-                                    findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
-                                    findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
-                                    updateAdminAccess(user.getUid());
-                                }
+                                // Show the buttons after the user is signed in and remove progress bar
+                                findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
+                                findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                updateAdminAccess(user.getUid());
                                 findViewById(R.id.progressBar).setVisibility(View.GONE);
-
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -176,15 +169,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /**
-     * Initialize the attendee profile by opening the profile activity.
-     * This is called when the user's information is not complete.
-     */
-    private void initializeAttendeeProfile() {
-        startActivity(new Intent(MainActivity.this, ProfileEntryActivity.class));
-        finish();
     }
 
     /**
