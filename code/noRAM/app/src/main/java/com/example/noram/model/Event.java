@@ -6,6 +6,8 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
+import android.location.Location;
+
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
@@ -45,6 +47,7 @@ public class Event {
     private List<String> signedUpAttendees;
     private Long signUpLimit;
 
+    private List<Location> checkedInAttendeesLocations;
     /**
      * Default constructor for Event
      */
@@ -312,6 +315,21 @@ public class Event {
     public void setCheckedInAttendees(List<String> checkedInAttendees) {
         this.checkedInAttendees = checkedInAttendees;
     }
+    /**
+     * Get the list of checked in attendees locations
+     * @return list of attendee locations
+     */
+    public List<Location> getCheckedInAttendeesLocations() {
+        return checkedInAttendeesLocations;
+    }
+
+    /**
+     * Set the list of checked in attendees locations
+     * @param checkedInAttendees new list of checked in attendees locations
+     */
+    public void setCheckedInAttendeesLocations(List<Location> checkedInAttendees) {
+        this.checkedInAttendeesLocations  = checkedInAttendees;
+    }
 
     /**
      * Get the ID of the organizer associated with the event
@@ -411,6 +429,7 @@ public class Event {
         data.put("promoQRID", promoQRID);
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("checkedInAttendeeLocations", checkedInAttendeesLocations);
         data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
@@ -429,6 +448,8 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        this.setCheckedInAttendeesLocations((List<Location>) doc.get("checkedInAttendeesLocations"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQRID(doc.getString("promoQRID"));
         this.setCheckInQRID(doc.getString("checkInQRID"));
