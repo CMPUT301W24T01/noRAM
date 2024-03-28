@@ -7,6 +7,7 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,7 +91,6 @@ public class QrScanFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
         if (activity instanceof GoToEventListener) {
             goToEventListener = (GoToEventListener) activity;
@@ -103,6 +103,7 @@ public class QrScanFragment extends Fragment {
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
 
+        // Reference: https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
             String qrDecoded = result.getText();
@@ -134,21 +135,16 @@ public class QrScanFragment extends Fragment {
 
                 Log.d("DEBUG", "code exists");
                 // Get event id and qr type
-                String eventId = (String) qrDocument.get("event");
-                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
+                String eventId = qrDocument.getString("event");
 
-                // Create an event object that has the same ID as the event we are looking for.
-                // When comparing events, we just check for the same ID, so we only need this
-                // in order to go to the proper event from the event list.
-                Event event = new Event();
-                event.setId(eventId);
+                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
 
                 if (qrType == QRType.SIGN_IN) {
                     EventManager.checkInToEvent(eventId);
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event
-                goToEventListener.goToEvent(event);
+                goToEventListener.goToEvent(eventId);
                 scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });

@@ -18,6 +18,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -73,6 +74,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     TextView editDetails;
     TextView editMilestones;
     CheckBox trackLocationCheck;
+    CheckBox limitSignUpsCheck;
+    TextView editLimitSignUps;
     private ImageView imageView;
     Button nextButton;
 
@@ -143,8 +146,9 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         editDetails = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_details_text);
         editMilestones  = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_milestones_text);
         trackLocationCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_trackLocation_check);
+        limitSignUpsCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_limitSignUps_check);
+        editLimitSignUps = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_signUpLimit_text);
         nextButton = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_next_button);
-
         imageView = view.findViewById(R.id.image_view);
         deletePhoto = view.findViewById(R.id.delete_photo);
         deletePhoto.setVisibility(View.INVISIBLE);
@@ -175,6 +179,22 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
             }
         });
 
+        limitSignUpsCheck.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener to display/hide input box for sign-up limit
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                if (editLimitSignUps.getVisibility() == View.GONE) {
+                    editLimitSignUps.setVisibility(View.VISIBLE);
+                }
+                else {
+                    editLimitSignUps.setVisibility(View.GONE);
+                }
+            }
+        });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for next button
@@ -192,17 +212,16 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
+                Long signUpLimit = -1L;
+                if (limitSignUpsCheck.isChecked()) {
+                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                }
 
                 // Check inputs
-                String errorText = null;
-                if (name.isEmpty()) {errorText = "Name";}
-                else if (location.isEmpty()) {errorText = "Location";}
-                else if (startDateTime == null) {errorText = "Start Time";}
-                else if (endDateTime == null) {errorText = "End Time";}
-                else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, 0);
 
                 // Only continue to next step of event creation if inputs are valid
-                if (errorText == null) {
+                if (validateResult.first) {
 
                     Intent intent = new Intent(getActivity(), AddEventQROptionsActivity.class);
                     Bundle bundle = new Bundle();
@@ -228,12 +247,13 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putSerializable("endTime", endDateTime);
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
+                    bundle.putLong("signUpLimit", signUpLimit);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), validateResult.second, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -406,22 +426,5 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     )
             );
         }
-    }
-
-    // Helper functions
-    /**
-     * Checks whether or not inputted string is valid comma-separated numbers
-     * @param milestones Inputted string to check
-     * @return true if all characters in milestones is digit or comma, false otherwise
-     */
-    private boolean isValidMilestoneList(String milestones) {
-        if (!milestones.isEmpty()) {
-            for (char c : milestones.toCharArray()) {
-                if (!(Character.isDigit(c) || c == ',')) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

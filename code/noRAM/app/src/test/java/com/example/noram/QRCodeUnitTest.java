@@ -1,17 +1,19 @@
 package com.example.noram;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.noram.model.QRCode;
-import com.example.noram.model.QRType;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Tests for the QRCode class.
@@ -35,23 +37,34 @@ public class QRCodeUnitTest {
     }
 
     /**
-     * Tests that setting values updates the database for the QR code
+     * Tests the update with map method in the QR code properly sets fields.
      */
     @Test
-    public void dbUpdateTest() {
-        // Arrange
+    public void updateWithMapTest() {
         QRCode qrCode = mock(QRCode.class);
-        doNothing().when(qrCode).updateDBQRCode();
-        doCallRealMethod().when(qrCode).setQrCodeType(any(QRType.class));
-        doCallRealMethod().when(qrCode).setAssociatedEvent(any(String.class));
-        doCallRealMethod().when(qrCode).setEncodedData(any(String.class));
+        doCallRealMethod().when(qrCode).updateWithMap(any(Map.class));
+        doCallRealMethod().when(qrCode).getHashId();
+        doCallRealMethod().when(qrCode).getAssociatedEvent();
+        doCallRealMethod().when(qrCode).getEncodedData();
+        doCallRealMethod().when(qrCode).getQrCodeType();
+        doNothing().when(qrCode).updateBitmap();
 
-        // Act
-        qrCode.setEncodedData("a");
-        qrCode.setAssociatedEvent("a");
-        qrCode.setQrCodeType(QRType.SIGN_IN);
+        String encodedData = "data!";
+        String hashId = "coolHash";
+        String associatedEvent = "coolEvent!";
+        String type = "PROMOTIONAL";
+        Map<String, Object> data = new HashMap<>();
+        data.put("encodedData", encodedData);
+        data.put("event", associatedEvent);
+        data.put("type", type);
+        data.put("hashID", hashId);
+        qrCode.updateWithMap(data);
 
-        // Assert
-        verify(qrCode, times(3)).updateDBQRCode();
+        assertEquals(encodedData, qrCode.getEncodedData());
+        assertEquals(hashId, qrCode.getHashId());
+        assertEquals(type, qrCode.getQrCodeType().toString());
+        assertEquals(associatedEvent, qrCode.getAssociatedEvent());
+
     }
+
 }

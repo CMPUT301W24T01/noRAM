@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
 import com.example.noram.model.Attendee;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -203,7 +203,8 @@ public class ProfileEntryActivity extends AppCompatActivity {
         Boolean editAllowLocation = allowLocation.isChecked();
 
         // Validate name and email fields
-        if (validateAttendeeFields(editFirstName, editLastName, editEmail)) {
+        Pair<Boolean, String> validateResult = AttendeeValidator.validateFromFields(editFirstName, editLastName, editEmail);
+        if (validateResult.first) {
             // update the attendee's information
             attendee.setFirstName(editFirstName);
             attendee.setLastName(editLastName);
@@ -211,6 +212,8 @@ public class ProfileEntryActivity extends AppCompatActivity {
             attendee.setEmail(editEmail);
             attendee.setAllowLocation(editAllowLocation);
             attendee.generateAndReturnDefaultProfilePhoto(t -> ProfileEntryActivity.this.runOnUiThread(() -> imageView.setImageBitmap(t)));
+            MainActivity.organizer.syncWithAttendee(attendee);
+            MainActivity.organizer.updateDBOrganizer();
 
             // hide the rest of the fields
             firstName.setVisibility(View.INVISIBLE);
@@ -236,34 +239,8 @@ public class ProfileEntryActivity extends AppCompatActivity {
 
             // update the page header
             ((TextView) findViewById(R.id.profile_entry_header)).setText("Add A Profile Picture");
+        } else {
+            Toast.makeText(this, validateResult.second, Toast.LENGTH_LONG).show();
         }
-    }
-
-    /**
-     * Validate the fields of the attendee information, return true if valid, false otherwise.
-     * If it is not valid display a message saying what is wrong
-     * @param editFirstName the first name that was entered in the field
-     * @param editLastName the last name that was entered in the field
-     * @param editEmail the email that was entered in the field
-     * @return true if all fields are valid, false otherwise
-     */
-    public Boolean validateAttendeeFields(String editFirstName, String editLastName, String editEmail) {
-        if (editFirstName.isEmpty()) {
-            Toast.makeText(this, "Please enter your first name", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (editLastName.isEmpty()) {
-            Toast.makeText(this, "Please enter your last name", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (editEmail.isEmpty()) {
-            Toast.makeText(this, "Please enter your email", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(editEmail).matches()) {
-            Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
     }
 }

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -19,13 +21,16 @@
         android:theme="@style/Theme.NoRAM"
         tools:targetApi="31">
         <activity
+            android:name=".CheckInConfettiActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrganizerEventNotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".OrganizerEventMilestonesActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerEventAttendeeActivity"
+            android:name=".OrganizerEventAttendeeListActivity"
             android:exported="false" />
         <activity
             android:name=".OrganizerEventMapActivity"
@@ -76,6 +81,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <service
+            android:name=".PushNotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
