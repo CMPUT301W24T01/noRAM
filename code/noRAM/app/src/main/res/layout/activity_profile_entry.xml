@@ -68,7 +68,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_marginTop="104dp"
-                android:background="@color/button_background_color"
+                android:background="@color/profile_photo_background"
 
                 android:padding="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -149,13 +149,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/profile_entry_continue_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/continue_text"
+                android:background="@drawable/button_background"
+                android:textColor="@color/button_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

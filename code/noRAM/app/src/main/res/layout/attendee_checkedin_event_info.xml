@@ -100,6 +100,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="25dp"
+                android:background="@color/main_color"
                 app:layout_constraintBottom_toTopOf="@+id/eventLocation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/organizerText"
