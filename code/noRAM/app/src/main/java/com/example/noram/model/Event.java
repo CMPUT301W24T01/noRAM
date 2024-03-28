@@ -48,7 +48,6 @@ public class Event {
     private Long signUpLimit;
 
     private List<Location> checkedInAttendeesLocations;
-
     /**
      * Default constructor for Event
      */
@@ -104,11 +103,9 @@ public class Event {
      * @param promoQRID id of QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
-     * @param checkedInAttendeesLocations list is locations of checked-in attendees
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
      */
-
     public Event(
             String id,
             String name,
@@ -121,7 +118,6 @@ public class Event {
             String promoQRID,
             boolean trackLocation,
             List<String> checkedInAttendees,
-            List<Location> checkedInAttendeesLocations,
             String organizerId,
             List<String> signedUpAttendees,
             Long signUpLimit) {
@@ -136,7 +132,6 @@ public class Event {
         this.promoQRID = promoQRID;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
-        this.checkedInAttendeesLocations = checkedInAttendeesLocations;
         this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
