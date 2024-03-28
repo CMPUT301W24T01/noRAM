@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,38 +24,194 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/event_add_p2_gen_QR_button"
-        android:layout_width="175dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="100dp"
-        android:background="@color/light_grey"
-        android:padding="10sp"
-        android:text="@string/organizer_fragment_create_event_p2_gen_QR_button"
-        android:textAllCaps="false"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/event_add_p2_upl_QR_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_add_p2_header"
-        app:layout_constraintVertical_bias="0.75" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/event_add_p2_upl_QR_button"
-        android:layout_width="175dp"
-        android:layout_height="100dp"
-        android:layout_margin="150dp"
-        android:layout_marginTop="468dp"
-        android:layout_marginBottom="100dp"
-        android:background="@color/light_grey"
-        android:padding="10sp"
-        android:text="@string/organizer_fragment_create_event_p2_upl_QR_button"
-        android:textAllCaps="false"
-        android:textSize="20sp"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/event_add_p2_header"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_add_p2_header"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Checkin QR Settings -->
+            <TextView
+                android:id="@+id/checkin_qr_settings_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/check_in_qr_code_settings_header"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/checkin_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkin_qr_settings_header">
+
+                <RadioButton
+                    android:id="@+id/autogenerate_button_checkin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    app:buttonTint="@color/main_color"
+                    android:text="@string/auto_generate" />
+
+                <RadioButton
+                    android:id="@+id/upload_button_checkin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    app:buttonTint="@color/main_color"
+                    android:text="@string/upload" />
+            </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/upload_checkin_qr_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/light_grey"
+                android:padding="5sp"
+                android:text="@string/upload_qr_code_header"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkin_uri_placeholder_text" />
+
+            <TextView
+                android:id="@+id/checkin_uri_placeholder_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/uploadeduriplaceholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkin_radio_group" />
+
+            <ImageView
+                android:id="@+id/checkin_preview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toEndOf="@+id/checkin_uri_placeholder_text"
+                app:layout_constraintTop_toBottomOf="@+id/checkin_radio_group"
+                app:srcCompat="@android:drawable/menuitem_background" />
+
+            <!-- Promo QR Settings -->
+            <TextView
+                android:id="@+id/promo_qr_settings_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/promotional_qr_code_settings_header"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upload_checkin_qr_button" />
+
+            <RadioGroup
+                android:id="@+id/promo_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promo_qr_settings_header">
+
+                <RadioButton
+                    android:id="@+id/autogenerate_button_promo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    app:buttonTint="@color/main_color"
+                    android:text="@string/auto_generate" />
+
+                <RadioButton
+                    android:id="@+id/upload_button_promo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:buttonTint="@color/main_color"
+                    android:textSize="18sp"
+                    android:text="@string/upload" />
+            </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/upload_promo_qr_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@color/light_grey"
+                android:padding="5sp"
+                android:text="@string/upload_qr_code_header"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/organizer_create_event_complete_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promo_uri_placeholder_text" />
+
+            <TextView
+                android:id="@+id/promo_uri_placeholder_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/uploadeduriplaceholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promo_radio_group" />
+
+            <ImageView
+                android:id="@+id/promo_preview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toEndOf="@+id/promo_uri_placeholder_text"
+                app:layout_constraintTop_toBottomOf="@+id/promo_radio_group"
+                app:srcCompat="@android:drawable/menuitem_background" />
+
+
+            <Button
+                android:id="@+id/organizer_create_event_complete_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="end"
+                android:text="@string/organizer_create_event_finish"
+                android:textColor="@color/main_color"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

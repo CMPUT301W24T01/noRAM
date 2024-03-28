@@ -1,24 +1,31 @@
+/* Class containing unit tests for the Event class. */
 package com.example.noram;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockConstruction;
 
+import com.example.noram.model.Attendee;
+import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedConstruction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Unit tests for the Event class
@@ -77,7 +84,8 @@ public class EventUnitTest {
             String details = "details";
             ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
             Boolean trackLocation = true;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation);
+            Long signUpLimit = -1L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -87,6 +95,8 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
+            assertFalse(event.isLimitedSignUps());
+            assertEquals(signUpLimit, event.getSignUpLimit());
             assertNotNull(event.getCheckInQR());
             assertNotNull(event.getPromoQR());
         }
@@ -113,7 +123,9 @@ public class EventUnitTest {
             QRCode checkInQR = new QRCode("checkIn", "id", QRType.SIGN_IN);
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn);
+            List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
+            Long signUpLimit = 1200L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn, signedUp, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -123,9 +135,43 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
+            assertTrue(event.isLimitedSignUps());
+            assertEquals(event.getSignUpLimit(), signUpLimit);
             assertEquals(event.getCheckInQR(), checkInQR);
             assertEquals(event.getPromoQR(), promoQR);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getSignedUpAttendees(), signedUp);
         }
+    }
+
+    /**
+     * Test the countCheckIns method of the event
+     */
+    @ParameterizedTest
+    @MethodSource("provideCountCheckIns")
+    public void countCheckInsTest(ArrayList<String> attendeeIDs, ArrayList<Attendee> attendeeObjects, Integer attendeeNumber, ArrayList<Integer> attendeeCheckInCounts) {
+        Event event = new Event();
+        event.setCheckedInAttendees(attendeeIDs);
+        ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters =  event.countCheckIns(attendeeObjects);
+        assertEquals(attendeeCheckInCounters.size(), attendeeNumber);
+        for (int i = 0; i < attendeeCheckInCounters.size(); i++) {
+            assertEquals(attendeeCheckInCounters.get(i).getCheckInCount(), attendeeCheckInCounts.get(i));
+        }
+
+    }
+
+    /**
+     * Provides parameters for the countCheckInsTest
+     * @return Stream of arguments for the test
+     */
+    private static Stream<Arguments> provideCountCheckIns() {
+        return Stream.of(
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(1, 1, 1, 1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(), 0, new ArrayList<>()),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"))), 1, new ArrayList<>(Arrays.asList(1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "a", "b", "c", "c", "a", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(3, 1, 2, 1))),
+                Arguments.of(new ArrayList<>(Arrays.asList("d", "d", "d", "d", "d", "d", "d", "d", "d", "d")), new ArrayList<>(Arrays.asList(new Attendee("d"))), 1, new ArrayList<>(Arrays.asList(10))),
+                Arguments.of(new ArrayList<>(), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(0, 0, 0, 0)))
+        );
     }
 }

@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -27,13 +29,16 @@
         tools:replace="android:allowBackup">
 
         <activity
+            android:name=".CheckInConfettiActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrganizerEventNotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".OrganizerEventMilestonesActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerEventAttendeeActivity"
+            android:name=".OrganizerEventAttendeeListActivity"
             android:exported="false" />
         <activity
             android:name=".OrganizerEventMapActivity"
@@ -84,6 +89,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <service
+            android:name=".PushNotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

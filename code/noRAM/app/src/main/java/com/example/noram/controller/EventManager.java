@@ -30,6 +30,7 @@ import java.util.List;
  * A class to provide services when interacting with events in the app, such as signing-in events.
  * @maintainer Gabriel
  * @author Gabriel
+ * @author Carlin
  */
 public class EventManager {
     public static final String eventIDLabel = "eventID"; // Identifier for event's ID in bundles
@@ -47,7 +48,7 @@ public class EventManager {
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
 
-        // run a transaction on the event to update attendee list
+        // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
@@ -60,6 +61,25 @@ public class EventManager {
                 checkedInAttendeesLocations.add(userLocation);
                 transaction.update(eventRef, "checkedInAttendeesLocations", checkedInAttendeesLocations);
             }
+            return null;
+        });
+    }
+
+    /**
+     * Sign the current user up for the event given by eventID
+     * @param eventID ID string of the event
+     */
+    public static void signUpForEvent(String eventID) {
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);
+        MainActivity.attendee.getEventsCheckedInto().add(eventID);
+        MainActivity.attendee.updateDBAttendee();
+
+        // run a transaction on the event to update checkedInAttendee list
+        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+            signedUpAttendees.add(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
             return null;
         });
     }

@@ -9,6 +9,7 @@ package com.example.noram;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,8 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
+import com.example.noram.model.QRType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -45,17 +48,32 @@ public class AddEventCompleteActivity extends AppCompatActivity {
 
         // extract event from bundle, add it to database
         Bundle eventBundle = getIntent().getExtras();
+        String promoQRData = eventBundle.getString("promoQRData");
+        String checkinQRData = eventBundle.getString("checkinQRData");
+
         //set unique id for this event
         UUID myRand = UUID.randomUUID();
+        QRCode promoQRCode = promoQRData == null
+            ? new QRCode(myRand + "-promo", myRand.toString(), QRType.PROMOTIONAL)
+            : new QRCode(promoQRData, myRand.toString(), QRType.PROMOTIONAL);
+        QRCode checkInQRCode = checkinQRData == null
+            ? new QRCode(myRand + "-event", myRand.toString(), QRType.SIGN_IN)
+            : new QRCode(checkinQRData, myRand.toString(), QRType.SIGN_IN);
+
         Event event = new Event(
-                myRand.toString(),
-                eventBundle.getString("name"),
-                eventBundle.getString("location"),
-                (LocalDateTime) eventBundle.getSerializable("startTime"),
-                (LocalDateTime) eventBundle.getSerializable("endTime"),
-                eventBundle.getString("details"),
-                eventBundle.getIntegerArrayList("milestones"),
-                eventBundle.getBoolean("trackLocation")
+            myRand.toString(),
+            eventBundle.getString("name"),
+            eventBundle.getString("location"),
+            (LocalDateTime) eventBundle.getSerializable("startTime"),
+            (LocalDateTime) eventBundle.getSerializable("endTime"),
+            eventBundle.getString("details"),
+            eventBundle.getIntegerArrayList("milestones"),
+            checkInQRCode,
+            promoQRCode,
+            eventBundle.getBoolean("trackLocation"),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            eventBundle.getLong("signUpLimit")
         );
         event.updateDBEvent();
 
@@ -100,7 +118,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
      */
     private void shareQRCode(QRCode qrCode) {
         ShareHelper shareHelper = new ShareHelper();
-        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getEncodedData(), getApplicationContext());
+        Intent shareIntent = shareHelper.generateShareIntent(qrCode.getBitmap(), qrCode.getHashId(), getApplicationContext());
         startActivity(Intent.createChooser(shareIntent, null));
     }
 }

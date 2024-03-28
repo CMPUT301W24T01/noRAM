@@ -9,6 +9,7 @@ package com.example.noram;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.location.Location;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.example.noram.model.Event;
+import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -93,7 +95,6 @@ public class QrScanFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         final Activity activity = getActivity();
         if (activity instanceof GoToEventListener) {
             goToEventListener = (GoToEventListener) activity;
@@ -106,6 +107,7 @@ public class QrScanFragment extends Fragment {
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
 
+        // Reference: https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
             String qrDecoded = result.getText();
@@ -124,7 +126,8 @@ public class QrScanFragment extends Fragment {
      */
     @SuppressLint("MissingPermission")
     private void processQRCode(String qrCodeString) {
-        DocumentReference doc = MainActivity.db.getQrRef().document(qrCodeString);
+        String qrDocId = HashHelper.hashSHA256(qrCodeString);
+        DocumentReference doc = MainActivity.db.getQrRef().document(qrDocId);
         scanLoadingSpinBar.setVisibility(View.VISIBLE);
 
         doc.get().addOnCompleteListener(task -> {
@@ -137,14 +140,9 @@ public class QrScanFragment extends Fragment {
 
                 Log.d("DEBUG", "code exists");
                 // Get event id and qr type
-                String eventId = (String) qrDocument.get("event");
-                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
+                String eventId = qrDocument.getString("event");
 
-                // Create an event object that has the same ID as the event we are looking for.
-                // When comparing events, we just check for the same ID, so we only need this
-                // in order to go to the proper event from the event list.
-                Event event = new Event();
-                event.setId(eventId);
+                QRType qrType = QRType.valueOf(qrDocument.getString("type"));
 
                 if (qrType == QRType.SIGN_IN) {
                     Location attendeeLocation = null;
@@ -158,7 +156,7 @@ public class QrScanFragment extends Fragment {
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event
-                goToEventListener.goToEvent(event);
+                goToEventListener.goToEvent(eventId);
                 scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });

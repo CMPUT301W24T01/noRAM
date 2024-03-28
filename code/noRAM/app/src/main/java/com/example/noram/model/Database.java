@@ -9,10 +9,16 @@ package com.example.noram.model;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.example.noram.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,6 +42,7 @@ public class Database {
     private final CollectionReference photoRef = db.collection("Photos");
     private final CollectionReference qrRef = db.collection("QRCodes");
     private final CollectionReference eventsRef = db.collection("Events");
+    private final CollectionReference keyRef = db.collection("Keys");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -93,6 +100,14 @@ public class Database {
      */
     public CollectionReference getEventsRef() {
         return eventsRef;
+    }
+
+    /**
+     * Getter method for the key reference
+     * @return the key reference
+     */
+    public CollectionReference getKeyRef() {
+        return keyRef;
     }
 
     /**

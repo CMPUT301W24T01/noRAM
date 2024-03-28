@@ -7,13 +7,16 @@ Outstanding Issues:
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.example.noram.MainActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -32,6 +35,7 @@ public class Attendee {
     private Boolean allowLocation = false;
     private List<String> eventsCheckedInto = new ArrayList<>();
     private Boolean usingDefaultProfilePhoto = true;
+    private String FCMToken = "";
 
     /**
      * A constructor to create an attendee with just an identifier
@@ -219,6 +223,23 @@ public class Attendee {
     }
 
     /**
+     * Set the FCM token for the attendee
+     * @param FCMToken new token
+     */
+    public void setFCMToken(String FCMToken) {
+        this.FCMToken = FCMToken;
+        updateDBAttendee();
+    }
+
+    /**
+     * Get the FCM token for the attendee
+     * @return the FCM token
+     */
+    public String getFCMToken() {
+        return FCMToken;
+    }
+
+    /**
      * A method to change the color of the default profile picture
      * @param src the source bitmap
      * @param color_1_replacement the color to replace the default color with
@@ -333,5 +354,36 @@ public class Attendee {
             };
             MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
+    }
+
+    /**
+     * A method to generate the FCM token for the attendee
+     */
+    public void generateAttendeeFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                return;
+            }
+            // Get new FCM registration token
+            String token = task.getResult();
+            setFCMToken(token);
+            Log.d("FCM", token);
+        });
+    }
+
+    /**
+     * A method to update the attendee with a Map object
+     * @param map the Map with information about the attendee attributes
+     */
+    public void updateWithMap(Map<String, Object> map) {
+        this.firstName = (String) map.get("firstName");
+        this.lastName = (String) map.get("lastName");
+        this.homePage = (String) map.get("homePage");
+        this.email = (String) map.get("email");
+        this.allowLocation = (Boolean) map.get("allowLocation");
+        this.usingDefaultProfilePhoto = (Boolean) map.get("defaultProfilePhoto");
+        this.eventsCheckedInto = (List<String>) map.get("eventsCheckedInto");
+        this.FCMToken = (String) map.get("FCMToken");
     }
 }

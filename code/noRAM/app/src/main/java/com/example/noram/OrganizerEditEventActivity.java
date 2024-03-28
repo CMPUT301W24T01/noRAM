@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.util.Pair;
 
 import com.example.noram.model.Event;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,6 +69,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private TextView editMilestones;
     private AppCompatButton uploadPosterButton;
     private CheckBox trackLocationCheck;
+    private TextView editLimitSignUps;
+    private CheckBox limitSignUpsCheck;
 
     // Main behaviour
     /**
@@ -136,6 +139,11 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     editDetails.setText(event.getDetails());
                     editMilestones.setText(event.getMilestones().toString().replaceAll("[\\[\\]]", ""));
                     trackLocationCheck.setChecked(event.isTrackLocation());
+                    limitSignUpsCheck.setChecked(event.isLimitedSignUps());
+                    editLimitSignUps.setText(event.isLimitedSignUps() ? Long.toString(event.getSignUpLimit()) : "" );
+                    if (event.isLimitedSignUps()) {
+                        editLimitSignUps.setVisibility(View.VISIBLE);
+                    }
                 }
             });
             task.addOnFailureListener(new OnFailureListener() {
@@ -165,6 +173,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         editMilestones  = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
         uploadPosterButton = findViewById(R.id.organizer_activity_edit_event_edit_upload_poster_button);
         trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
+        limitSignUpsCheck = findViewById(R.id.organizer_activity_edit_event_edit_limitSignUps_check);
+        editLimitSignUps = findViewById(R.id.organizer_activity_edit_event_signUpLimit_text);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +198,22 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             @Override
             public void onClick(View v) {
                 new DatePickerFragment(endYear, endMonth, endDay).show(getSupportFragmentManager(), "end");
+            }
+        });
+
+        limitSignUpsCheck.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener to display/hide input box for sign-up limit
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                if (editLimitSignUps.getVisibility() == View.GONE) {
+                    editLimitSignUps.setVisibility(View.VISIBLE);
+                }
+                else {
+                    editLimitSignUps.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -219,17 +245,15 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
+                Long signUpLimit = -1L;
+                if (limitSignUpsCheck.isChecked()) {
+                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                }
 
-                // Check inputs
-                String errorText = null;
-                if (name.isEmpty()) {errorText = "Name";}
-                else if (location.isEmpty()) {errorText = "Location";}
-                else if (startDateTime == null) {errorText = "Start Time";}
-                else if (endDateTime == null) {errorText = "End Time";}
-                else if (!isValidMilestoneList(milestonesString)) {errorText = "Milestone";}
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, event.getSignUpCount());
 
                 // Only continue to next step of event creation if inputs are valid
-                if (errorText == null) {
+                if (validateResult.first) {
 
                     // Make milestones list
                     List<Integer> milestones;
@@ -252,6 +276,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     event.setDetails(details);
                     event.setMilestones(new ArrayList<>(milestones));
                     event.setTrackLocation(trackLocation);
+                    event.setSignUpLimit(signUpLimit);
 
                     // Update event in database
                     event.updateDBEvent();
@@ -260,7 +285,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
 
                 // Otherwise, show error Toast
                 else {
-                    Toast.makeText(getBaseContext(), String.format("%s is invalid", errorText), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), validateResult.second, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -356,22 +381,4 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             );
         }
     }
-
-    // Helper functions
-    /**
-     * Checks whether or not inputted string is valid comma-separated numbers
-     * @param milestones Inputted string to check
-     * @return true if all characters in milestones is digit or comma, false otherwise
-     */
-    private boolean isValidMilestoneList(String milestones) {
-        if (!milestones.isEmpty()) {
-            for (char c : milestones.toCharArray()) {
-                if (!(Character.isDigit(c) || c == ',')) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 }
