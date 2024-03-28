@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
+import com.example.noram.model.PushNotificationService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
