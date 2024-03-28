@@ -1,3 +1,9 @@
+/*
+This file is used to make it easier to display event-info pages.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
 import static androidx.core.content.ContextCompat.startActivity;
