@@ -79,13 +79,13 @@ public class PushNotificationService extends FirebaseMessagingService {
      * @param title the title of the notification
      * @param data the data of the notification
      * @param event the event to send the notification to
-     * @param isOrganizer a boolean to check if we wish to only send the notification to the organizer
+     * @param sendToOrganizer a boolean to check if we wish to only send the notification to the organizer
      */
-    public void sendNotification(String title, String data, Event event, Boolean isOrganizer) {
+    public void sendNotification(String title, String data, Event event, Boolean sendToOrganizer) {
 
         Set<String> attendeeList;
 
-        if (isOrganizer) {
+        if (sendToOrganizer) {
             attendeeList = Collections.singleton((event.getOrganizerId()));
         } else {
             attendeeList = new HashSet<>(event.getCheckedInAttendees()); // cast to Set<String> so no duplicate attendees
