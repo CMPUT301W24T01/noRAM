@@ -91,9 +91,4 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.18")
     //Location Google Play API
     implementation("com.google.android.gms:play-services-location:21.2.0")
-    //Map osmdroid-geopackage support, I am not ever sure I need this
-    //I am not sure the version number is correct
-    //implementation("org.osmdroid:osmdroid-geopackage:6.1.18")
-    //implementation("org.osmdroid:osmdroid-mapsforge:6.1.18")
-    //implementation("org.osmdroid:osmdroid-wms:6.1.18")
 }
