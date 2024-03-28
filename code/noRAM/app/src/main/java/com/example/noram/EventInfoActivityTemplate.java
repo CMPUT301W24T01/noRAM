@@ -7,13 +7,11 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,16 +79,14 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
             MainActivity.db.downloadPhoto(findImage,
                     t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
         }
-        //Note for when we download organizer photo:
-        //remove purple background, and android icon in xml
-        //if you want image to format nicely.
-        //use android:scaleType="fitCenter"
-        //look at xml fpr eventImage
 
-        //organizerText.setText(); // TODO: update organizer (not implemented in event yet)
-        // TODO: update organizer image
-        //eventLocation.setText(); // TODO: format LocalDateTime with current API lvl
-        // TODO: update event image
+        // use the organizer ID to get organizer information.
+        MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
+            organizerText.setText("Organized by " + documentSnapshot.getString("name"));
+            String organizerPhotoPath = documentSnapshot.getString("photoPath");
+            MainActivity.db.downloadPhoto(organizerPhotoPath,
+                    t -> runOnUiThread(() -> organizerImage.setImageBitmap(t)));
+        });
 
         // connect back button
         backButton.setOnClickListener(v -> {finish();});
