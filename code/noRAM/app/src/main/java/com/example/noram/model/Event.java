@@ -36,10 +36,11 @@ public class Event {
     private LocalDateTime endTime;
     private String details;
     private ArrayList<Integer> milestones;
-    private QRCode checkInQR;
-    private QRCode promoQR;
+    private String checkInQRID;
+    private String promoQRID;
     private boolean trackLocation;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private String organizerId;
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
@@ -70,6 +71,7 @@ public class Event {
             String details,
             ArrayList<Integer> milestones,
             boolean trackLocation,
+            String organizerId,
             Long signUpLimit) {
         this.id = id;
         this.name = name;
@@ -78,10 +80,9 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.checkInQR = new QRCode(this.id + "-event", this.id, QRType.SIGN_IN);
-        this.promoQR = new QRCode(this.id + "-promo", this.id, QRType.PROMOTIONAL);
         this.trackLocation = trackLocation;
         this.checkedInAttendees = new ArrayList<>();
+        this.organizerId = organizerId;
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
     }
@@ -95,8 +96,8 @@ public class Event {
      * @param endTime date and time (year, month, day, hour, minute) of event end
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
-     * @param checkInQR QR code used to check user in to event
-     * @param promoQR QR code used to promote the event
+     * @param checkInQRID ID of QR code used to check user in to event
+     * @param promoQRID id of QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
      * @param signedUpAttendees list of signed up attendees
@@ -110,10 +111,11 @@ public class Event {
             LocalDateTime endTime,
             String details,
             ArrayList<Integer> milestones,
-            QRCode checkInQR,
-            QRCode promoQR,
+            String checkInQRID,
+            String promoQRID,
             boolean trackLocation,
             List<String> checkedInAttendees,
+            String organizerId,
             List<String> signedUpAttendees,
             Long signUpLimit) {
         this.id = id;
@@ -123,10 +125,11 @@ public class Event {
         this.endTime = endTime;
         this.details = details;
         this.milestones = milestones;
-        this.checkInQR = checkInQR;
-        this.promoQR = promoQR;
+        this.checkInQRID = checkInQRID;
+        this.promoQRID = promoQRID;
         this.trackLocation = trackLocation;
         this.checkedInAttendees = checkedInAttendees;
+        this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
     }
@@ -186,22 +189,6 @@ public class Event {
      */
     public ArrayList<Integer> getMilestones() {
         return milestones;
-    }
-
-    /**
-     * Returns photo of check-in QR code
-     * @return checkInQR attribute
-     */
-    public QRCode getCheckInQR() {
-        return checkInQR;
-    }
-
-    /**
-     * Returns photo of promotional QR code
-     * @return promoQR attribute
-     */
-    public QRCode getPromoQR() {
-        return promoQR;
     }
 
     /**
@@ -311,22 +298,6 @@ public class Event {
     }
 
     /**
-     * Set check-in QR code of event
-     * @param checkInQR new checkInQR for event
-     */
-    public void setCheckInQR(QRCode checkInQR) {
-        this.checkInQR = checkInQR;
-    }
-
-    /**
-     * Set promotional QR code of event
-     * @param promoQR new promoQR for event
-     */
-    public void setPromoQR(QRCode promoQR) {
-        this.promoQR = promoQR;
-    }
-
-    /**
      * Set whether or not check-in location is tracked
      * @param trackLocation new trackLocation for event
      */
@@ -340,6 +311,54 @@ public class Event {
      */
     public void setCheckedInAttendees(List<String> checkedInAttendees) {
         this.checkedInAttendees = checkedInAttendees;
+    }
+
+    /**
+     * Get the ID of the organizer associated with the event
+     * @return string id.
+     */
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    /**
+     * Set the organizer ID, the organizer who created the event
+     * @param organizerId new organizer ID
+     */
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
+    /**
+     * Get the id for the checkin QR code for this event
+     * @return string id
+     */
+    public String getCheckInQRID() {
+        return checkInQRID;
+    }
+
+    /**
+     * Set the id for the checkin QR code for this event
+     * @param checkInQRID new id string
+     */
+    public void setCheckInQRID(String checkInQRID) {
+        this.checkInQRID = checkInQRID;
+    }
+
+    /**
+     * Get the id for the promotional qr code for this event
+     * @return string id
+     */
+    public String getPromoQRID() {
+        return promoQRID;
+    }
+
+    /**
+     * Set the id for the promotional qr code for this event
+     * @param promoQRID new id string
+     */
+    public void setPromoQRID(String promoQRID) {
+        this.promoQRID = promoQRID;
     }
 
     /**
@@ -388,23 +407,21 @@ public class Event {
         data.put("endTime", endTime.format(formatter));
         data.put("details", details);
         data.put("milestones", milestones);
-        data.put("checkInQR", checkInQR.getEncodedData());
-        data.put("promoQR", promoQR.getEncodedData());
+        data.put("checkInQRID", checkInQRID);
+        data.put("promoQRID", promoQRID);
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
         MainActivity.db.getEventsRef().document(id).set(data);
-
-        promoQR.updateDBQRCode();
-        checkInQR.updateDBQRCode();
     }
 
     /**
      * Updates the event given a database 'event' document
      * @param doc The database document containing the fields used to update the event instance
      */
-    public void updateWithDocument(DocumentSnapshot doc){
+    public void updateWithDocument(DocumentSnapshot doc) {
         this.setId(doc.getId());
         this.setName(doc.getString("name"));
         this.setDetails(doc.getString("details"));
@@ -413,11 +430,12 @@ public class Event {
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
+        this.setPromoQRID(doc.getString("promoQRID"));
+        this.setCheckInQRID(doc.getString("checkInQRID"));
+        this.setOrganizerId(doc.getString("organizerID"));
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
-        this.setPromoQR(new QRCode(doc.getString("promoQR"), this.getId(), QRType.PROMOTIONAL));
-        this.setCheckInQR(new QRCode(doc.getString("checkInQR"), this.getId(), QRType.SIGN_IN));
     }
 
     /**
@@ -433,6 +451,10 @@ public class Event {
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        if (checkedInAttendees.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
         MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                 Map<String, Object> data = document.getData();

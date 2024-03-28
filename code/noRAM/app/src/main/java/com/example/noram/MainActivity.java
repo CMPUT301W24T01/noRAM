@@ -141,10 +141,19 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
+
+                                    // get the organizer object from the database
+                                    db.getOrganizerRef().document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> organizer = documentSnapshot.toObject(Organizer.class));
                                 } else {
+                                    // create new attendee
                                     attendee = new Attendee(user.getUid());
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
+
+                                    // create new organizer, and sync it with the new attendee for now.
+                                    organizer = new Organizer();
+                                    organizer.syncWithAttendee(attendee);
+                                    organizer.updateDBOrganizer();
                                 }
                                 // If the user's information is not complete, show the info activity
                                 if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {

@@ -11,7 +11,7 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#AD96FF"
+        android:background="@color/main_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -100,12 +100,11 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="25dp"
-                android:background="#B68FFE"
                 app:layout_constraintBottom_toTopOf="@+id/eventLocation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/organizerText"
                 app:layout_constraintTop_toBottomOf="@+id/eventTitle"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/eventLocation"
@@ -148,11 +147,10 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="#B790FF"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/checkedInText"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/eventDescription"
