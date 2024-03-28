@@ -128,8 +128,8 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
         // retrieve corresponding event in database, then load page
         String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
-
         assert eventID != null;
+
         initializePage(eventID);
     }
 

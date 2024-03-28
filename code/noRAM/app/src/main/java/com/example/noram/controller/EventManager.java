@@ -115,7 +115,6 @@ public class EventManager {
         if(reset){
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
             ((Activity) context).finish();
-            Log.e("EVENT RESET", "EVENT RESETTED");
         }
         context.startActivity(intent);
     }
