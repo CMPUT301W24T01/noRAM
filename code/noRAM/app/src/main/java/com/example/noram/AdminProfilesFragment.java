@@ -29,6 +29,7 @@ import java.util.List;
 
 /**
  * Fragment of the Admin page, listing all the profiles of the app's database
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AdminProfilesFragment extends Fragment {

@@ -28,6 +28,8 @@ import java.time.format.DateTimeFormatter;
  * The OrganizerEventInfoActivity class displays the information about an event for the organizer.
  * It contains a menu to navigate to different pages for the event.
  * A {@link AppCompatActivity} subclass.
+ * @maintainer Gabriel
+ * @author Gabriel
  */
 public class OrganizerEventInfoActivity extends AppCompatActivity {
 

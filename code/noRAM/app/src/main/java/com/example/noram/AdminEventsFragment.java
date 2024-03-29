@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 /**
  * Fragment of the Admin page, listing all of the events of the app's database
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AdminEventsFragment extends Fragment {

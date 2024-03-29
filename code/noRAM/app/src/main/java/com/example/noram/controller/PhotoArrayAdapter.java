@@ -25,6 +25,7 @@ import java.util.ArrayList;
 /**
  * An adapter that connects a GridView of Photos with an ArrayList of Photos.
  * A {@link PhotoArrayAdapter} object is used to display a list of Photos  in a Gridview.
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class PhotoArrayAdapter extends ArrayAdapter<AdminPhoto>{
