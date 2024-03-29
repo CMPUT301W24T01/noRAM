@@ -78,6 +78,17 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     }
 
     /**
+     * Hook from EventListFragmentTemplate that hides the searchList view on the screen and
+     * show by default the allEvents list view
+     */
+    @Override
+    protected void hideSearchList(){
+        searchEventList.setVisibility(View.INVISIBLE);
+        allEventList.setVisibility(View.VISIBLE);
+        userEventList.setVisibility(View.INVISIBLE);
+    }
+
+    /**
      * Hook from AttendeeEventListFragment that is called when a view in the searchList view is
      * clicked on
      * @param event The event that was clicked on (in the searchList)
