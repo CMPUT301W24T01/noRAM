@@ -2,8 +2,6 @@
 This file is used to provide a template for displaying list of events, that other fragments can use.
 Outstanding Issues:
 - Searchbar shows static searches (the list is not updated in real-time)
-- After a search, to get back a real-time list of all events, you need to manually click on the
-"ALL EVENTS" button (leaving the empty search bar will still keep the searchList visible)
  */
 
 package com.example.noram;
@@ -38,6 +36,16 @@ public abstract class EventListFragmentTemplate extends Fragment {
     protected final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
     protected ArrayList<Event> eventListRef; // all the events in the database
     protected ListView searchEventList; // view showing all the searched events
+
+    /**
+     * This method is called when the fragment is resumed.
+     * It hides the search ListView by default.
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        hideSearchList();
+    }
 
     /**
      * Creates the ArrayList that will contain all of the database's events. This will be used to
