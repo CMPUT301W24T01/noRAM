@@ -8,6 +8,7 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,10 +88,15 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
                 event.getLocation()
         ));
 
-        //download the event image from db and populate the screen
+        //download the event image from db and populate the screen. Hide it if it doesn't exist
+        eventImage.setVisibility(View.GONE);
         String eventImagePath = "event_banners/"+event.getId()+"-upload";
         MainActivity.db.downloadPhoto(eventImagePath,
-                t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                t -> runOnUiThread(() -> {
+                    eventImage.setVisibility(View.VISIBLE);
+                    eventImage.setImageBitmap(t);
+                })
+        );
 
         // use the organizer ID to get organizer information.
         MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
