@@ -39,25 +39,25 @@ import java.util.List;
 public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
     private Button signupButton; // button that allows user to sign up for event
-    private ImageView signedInImage; // image showing user is signed in
-    private TextView signedInText; // text showing that user is signed in
+    private ImageView signupImage; // image showing user is signed in
+    private TextView signupText; // text showing that user is signed in
 
     /**
-     * Shows all the signed-in features of the page (if it's not checked-in)
+     * Shows all the signed-up features of the page (if it's not checked-in)
      */
     private void displaySignedIn(){
         signupButton.setVisibility(View.GONE);
-        signedInText.setVisibility(View.VISIBLE);
-        signedInImage.setVisibility(View.VISIBLE);
+        signupText.setVisibility(View.VISIBLE);
+        signupImage.setVisibility(View.VISIBLE);
     }
 
     /**
-     * Hides all the signed-in features of the page (if it's not checked-in)
+     * Hides all the signed-up features of the page (if it's not checked-in)
      */
     private void hideSignedIn(){
         signupButton.setVisibility(View.VISIBLE);
-        signedInText.setVisibility(View.GONE);
-        signedInImage.setVisibility(View.GONE);
+        signupText.setVisibility(View.GONE);
+        signupImage.setVisibility(View.GONE);
     }
 
     /**
@@ -116,8 +116,8 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
         // get extra views
         signupButton = findViewById(R.id.signupButton);
-        signedInImage = findViewById(R.id.signedInImage);
-        signedInText = findViewById(R.id.signedInText);
+        signupImage = findViewById(R.id.signedInImage);
+        signupText = findViewById(R.id.signedInText);
 
         // connect signup button
         signupButton.setOnClickListener(v -> signup());
