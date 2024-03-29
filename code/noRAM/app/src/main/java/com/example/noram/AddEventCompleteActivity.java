@@ -110,18 +110,9 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         goToEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: remove commented code
                 boolean reset = true;
                 EventManager.displayOrganizerEvent(
                     context, event, reset);
-                /*
-                Intent intent = new Intent(AddEventCompleteActivity.this, OrganizerActivity.class);
-
-                // this goes back to the OrganizerActivity and clears all Activities above it in the stack
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                */
-
             }
         });
     }

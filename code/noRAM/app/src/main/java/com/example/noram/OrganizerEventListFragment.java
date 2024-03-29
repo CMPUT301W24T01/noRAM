@@ -194,19 +194,11 @@ public class OrganizerEventListFragment extends Fragment {
         // connect the two lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            // TODO: remove commented code
-            /*
-            Intent intent = new Intent(getContext(), OrganizerEventInfoActivity.class);
-            intent.putExtra("event", event.getId());
-            startActivity(intent);
-
-             */
             EventManager.displayOrganizerEvent(getContext(), event);
         });
         searchEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = searchEventDataList.get(position);
             EventManager.displayOrganizerEvent(getContext(), event);
-            // TODO: display event information with organizer page
         });
 
 

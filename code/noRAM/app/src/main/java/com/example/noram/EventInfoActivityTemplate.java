@@ -88,12 +88,9 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
         ));
 
         //download the event image from db and populate the screen
-        String findImage = "event_banners/"+event.getId()+"-upload";
-        // set imageview and update organizer image preview
-        if (FirebaseStorage.getInstance().getReference().child(findImage) != null) {
-            MainActivity.db.downloadPhoto(findImage,
-                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
-        }
+        String eventImagePath = "event_banners/"+event.getId()+"-upload";
+        MainActivity.db.downloadPhoto(eventImagePath,
+                t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
 
         // use the organizer ID to get organizer information.
         MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
