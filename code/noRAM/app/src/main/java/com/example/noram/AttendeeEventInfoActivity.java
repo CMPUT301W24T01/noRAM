@@ -38,9 +38,9 @@ import java.util.List;
  */
 public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
-    Button signupButton; // button that allows user to sign up for event
-    ImageView signedInImage; // image showing user is signed in
-    TextView signedInText; // text showing that user is signed in
+    private Button signupButton; // button that allows user to sign up for event
+    private ImageView signedInImage; // image showing user is signed in
+    private TextView signedInText; // text showing that user is signed in
 
     /**
      * Shows all the signed-in features of the page (if it's not checked-in)
