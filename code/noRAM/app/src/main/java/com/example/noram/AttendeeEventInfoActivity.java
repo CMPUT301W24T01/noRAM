@@ -37,6 +37,9 @@ import java.util.List;
  * @author Gabriel
  */
 public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
+
+    Button signupButton; // button that allows user to sign up for event
+
     /**
      * Signup the user to current event in the database and display a message through a new activity
      */
@@ -51,6 +54,8 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
             event.addSignedUpAttendee(MainActivity.attendee.getIdentifier());
             // Update sign ups display
             updateSignUpText();
+            // hide button
+            signupButton.setVisibility(View.INVISIBLE);
         }
         else {
             Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
@@ -90,8 +95,14 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         setContentView(R.layout.attendee_event_info);
 
         // connect signup button
-        Button signupButton = findViewById(R.id.signupButton);
+        signupButton = findViewById(R.id.signupButton);
         signupButton.setOnClickListener(v -> signup());
+
+        // hide signup if already signed-in
+        List<String> attendees = event.getSignedUpAttendees();
+        if(attendees != null && attendees.contains(MainActivity.attendee.getIdentifier())){
+            signupButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
