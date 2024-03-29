@@ -39,6 +39,26 @@ import java.util.List;
 public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
     Button signupButton; // button that allows user to sign up for event
+    ImageView signedInImage; // image showing user is signed in
+    TextView signedInText; // text showing that user is signed in
+
+    /**
+     * Shows all the signed-in features of the page (if it's not checked-in)
+     */
+    private void displaySignedIn(){
+        signupButton.setVisibility(View.GONE);
+        signedInText.setVisibility(View.VISIBLE);
+        signedInImage.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides all the signed-in features of the page (if it's not checked-in)
+     */
+    private void hideSignedIn(){
+        signupButton.setVisibility(View.VISIBLE);
+        signedInText.setVisibility(View.GONE);
+        signedInImage.setVisibility(View.GONE);
+    }
 
     /**
      * Signup the user to current event in the database and display a message through a new activity
@@ -54,8 +74,8 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
             event.addSignedUpAttendee(MainActivity.attendee.getIdentifier());
             // Update sign ups display
             updateSignUpText();
-            // hide button
-            signupButton.setVisibility(View.INVISIBLE);
+            // display signed-in features
+            displaySignedIn();
         }
         else {
             Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
@@ -94,14 +114,21 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         // unchecked event page
         setContentView(R.layout.attendee_event_info);
 
-        // connect signup button
+        // get extra views
         signupButton = findViewById(R.id.signupButton);
+        signedInImage = findViewById(R.id.signedInImage);
+        signedInText = findViewById(R.id.signedInText);
+
+        // connect signup button
         signupButton.setOnClickListener(v -> signup());
 
-        // hide signup if already signed-in
+        // show or hide signup features if already signed-in or not
         List<String> attendees = event.getSignedUpAttendees();
         if(attendees != null && attendees.contains(MainActivity.attendee.getIdentifier())){
-            signupButton.setVisibility(View.INVISIBLE);
+            displaySignedIn();
+        }
+        else{
+            hideSignedIn();
         }
     }
 
