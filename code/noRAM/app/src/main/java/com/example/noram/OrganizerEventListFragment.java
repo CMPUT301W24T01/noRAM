@@ -220,8 +220,8 @@ public class OrganizerEventListFragment extends Fragment {
                     Event event = new Event();
                     event.updateWithDocument(doc);
                     allEventDataList.add(event);
-                    allEventAdapter.notifyDataSetChanged();
                 }
+                allEventAdapter.notifyDataSetChanged();
             }
         });
 
