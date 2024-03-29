@@ -20,6 +20,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -193,13 +194,11 @@ public class OrganizerEventListFragment extends Fragment {
         // connect the two lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            Intent intent = new Intent(getContext(), OrganizerEventInfoActivity.class);
-            intent.putExtra("event", event.getId());
-            startActivity(intent);
+            EventManager.displayOrganizerEvent(getContext(), event);
         });
         searchEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = searchEventDataList.get(position);
-            // TODO: display event information with organizer page
+            EventManager.displayOrganizerEvent(getContext(), event);
         });
 
 

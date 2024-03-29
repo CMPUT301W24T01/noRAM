@@ -7,6 +7,8 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,10 +32,21 @@ import java.time.format.DateTimeFormatter;
  */
 public abstract class EventInfoActivityTemplate extends AppCompatActivity {
 
-    // events in the database
+    // utility attribute
     protected final CollectionReference eventsRef = MainActivity.db.getEventsRef();
     protected Event event; // current event being displayed
-    protected TextView eventSignUps; // number of people signed up in the events
+    // indicates if we're using the page's default IDs (we assume IDs later on)
+    protected Boolean usingDefaultViewIDs = true;
+
+    // recurrent views
+    protected ImageButton backButton;
+    protected TextView eventTitle;
+    protected TextView organizerText;
+    protected ImageView organizerImage;
+    protected TextView eventLocation;
+    protected ImageView eventImage;
+    protected TextView eventDescription;
+    protected TextView eventSignUps;
 
     /**
      * Hook that is called before updating the base page, used to do additional setup before
@@ -49,14 +62,17 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
         preSetup();
 
         // get all variables from page
-        ImageButton backButton = findViewById(R.id.backButton);
-        TextView eventTitle = findViewById(R.id.eventTitle);
-        TextView organizerText = findViewById(R.id.organizerText);
-        ImageView organizerImage = findViewById(R.id.organizerImage);
-        TextView eventLocation = findViewById(R.id.eventLocation);
-        ImageView eventImage = findViewById(R.id.eventImage);
-        TextView eventDescription = findViewById(R.id.eventDescription);
-        eventSignUps = findViewById(R.id.eventSignUps);
+        if(usingDefaultViewIDs){
+             backButton = findViewById(R.id.backButton);
+             eventTitle = findViewById(R.id.eventTitle);
+             organizerText = findViewById(R.id.organizerText);
+             organizerImage = findViewById(R.id.organizerImage);
+             eventLocation = findViewById(R.id.eventLocation);
+             eventImage = findViewById(R.id.eventImage);
+             eventDescription = findViewById(R.id.eventDescription);
+             eventSignUps = findViewById(R.id.eventSignUps);
+        }
+
 
         // update signup count
         updateSignUpText();
@@ -72,13 +88,15 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
                 event.getLocation()
         ));
 
-        //download the event image from db and populate the screen
-        String findImage = "event_banners/"+event.getId()+"-upload";
-        // set imageview and update organizer image preview
-        if (FirebaseStorage.getInstance().getReference().child(findImage) != null) {
-            MainActivity.db.downloadPhoto(findImage,
-                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
-        }
+        //download the event image from db and populate the screen. Hide it if it doesn't exist
+        eventImage.setVisibility(View.GONE);
+        String eventImagePath = "event_banners/"+event.getId()+"-upload";
+        MainActivity.db.downloadPhoto(eventImagePath,
+                t -> runOnUiThread(() -> {
+                    eventImage.setVisibility(View.VISIBLE);
+                    eventImage.setImageBitmap(t);
+                })
+        );
 
         // use the organizer ID to get organizer information.
         MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {
