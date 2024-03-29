@@ -34,7 +34,7 @@ import java.util.UUID;
  */
 public class AddEventCompleteActivity extends AppCompatActivity {
 
-    Event event; // new event that is being created
+    private Event event; // new event that is being created
 
     /**
      * Create the Activity and setup listeners
