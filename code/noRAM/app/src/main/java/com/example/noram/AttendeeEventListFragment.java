@@ -6,16 +6,12 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -178,8 +174,9 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                     allEventDataList.add(event);
 
                     // if user correspond, add event to myEvents list
-                    ArrayList<String> attendees = (ArrayList<String>) doc.get("checkedInAttendees");
-                    if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
+                    ArrayList<String> attendees = (ArrayList<String>) doc.get("signedUpAttendees");
+                    Log.d("DEBUG", MainActivity.attendee.getIdentifier());
+                    if(attendees != null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                         userEventDataList.add(event);
                     }
                 }

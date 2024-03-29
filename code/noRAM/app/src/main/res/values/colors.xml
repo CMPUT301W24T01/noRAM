@@ -8,6 +8,11 @@
     <color name="darker_blue">#2BA5AF</color>
     <color name="delete_photo_draw_background">#F42E2E</color>
     <color name="main_color">#90B2F4</color>
+    <color name="variant_main_color">#90e2f4</color>
+    <color name="translucent_main_color">#4090B2F4</color>
     <color name="light_grey">#D9D9D9</color>
+    <color name="very_light_grey">#f8f8f8</color>
+    <color name="navbar_background">#f2f2f2</color>
     <color name="button_text_color">#FFFFFF</color>
+    <color name="green">#274F0C</color>
 </resources>

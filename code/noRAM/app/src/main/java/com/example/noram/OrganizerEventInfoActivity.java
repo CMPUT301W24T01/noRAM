@@ -9,6 +9,7 @@ package com.example.noram;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -70,7 +71,13 @@ public class OrganizerEventInfoActivity extends AppCompatActivity {
             // Get event image
             String eventImagePath = "event_banners/"+event.getId()+"-upload";
             MainActivity.db.downloadPhoto(eventImagePath,
-                    t -> runOnUiThread(() -> eventImage.setImageBitmap(t)));
+                    t -> runOnUiThread(() -> {
+                        eventImage.setImageBitmap(t);
+                        eventImage.setVisibility(View.VISIBLE);
+            }));
+            if (eventImage.getDrawable() == null) {
+                eventImage.setVisibility(View.INVISIBLE);
+            }
 
             updateSignUpText();
 
