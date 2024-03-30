@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static PushNotificationService pushService = new PushNotificationService();
     public static MainActivity mn;
     private BottomNavigationView navBar;
+    private TextView eventPosterTitle;
 
 
     /**
@@ -87,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
         // hide menu until user is fully signed in and remove focus from its items
         navBar.setVisibility(View.INVISIBLE);
         navBar.setItemActiveIndicatorEnabled(false);
+
+        // hide eventPoster's title until page is loaded
+        eventPosterTitle = findViewById(R.id.eventPoster_title);
+        eventPosterTitle.setVisibility(View.INVISIBLE);
 
         // Start admin via button.
         adminButton.setOnClickListener((v ->
@@ -181,7 +186,8 @@ public class MainActivity extends AppCompatActivity {
                                 // update admin access
                                 updateAdminAccess(user.getUid());
 
-                                // show the poster event
+                                // show the poster event and related title
+                                eventPosterTitle.setVisibility(View.VISIBLE);
                                 db.getEventsRef().get().addOnSuccessListener(query -> {
                                     // get random event
                                     Random random = new Random();
@@ -292,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         LocalDateTime current = LocalDateTime.now();
         happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
 
+        // show signups count
         eventLocation.setText(event.getLocation());
         if (event.isLimitedSignUps()) {
             eventSignUpCapacity.setText(String.format(
@@ -307,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
             );
         }
 
+        // show if user is already checked-in or signed-in
         if (event.getCheckedInAttendees().contains(MainActivity.attendee.getIdentifier())) {
             checkedInText.setVisibility(View.VISIBLE);
         } else {

@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -81,7 +81,9 @@
         android:layout_marginVertical="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_text"
         app:layout_constraintBottom_toTopOf="@id/poster_event"
+        app:layout_constraintVertical_bias="1"
         />
 
     <FrameLayout
@@ -90,7 +92,9 @@
         android:layout_height="175dp"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="15dp"
+        app:layout_constraintTop_toTopOf="@id/eventPoster_title"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        app:layout_constraintVertical_bias="0.5"
     />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
