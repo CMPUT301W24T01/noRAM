@@ -8,22 +8,26 @@ Outstanding Issues:
 package com.example.noram.controller;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.noram.R;
+import com.example.noram.model.AdminPhoto;
 import com.example.noram.model.Attendee;
 import java.util.ArrayList;
 
 /**
  * An adapter that connects a ListView of Attendees with an ArrayList of Attendees.
  * A {@link AttendeeArrayAdapter} object is used to display a list of Attendees  in a ListView.
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
@@ -60,16 +64,25 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         // get attendee data
         Attendee attendee = attendees.get(position);
 
+        // create attendee's photo
+        AdminPhoto photo = new AdminPhoto();
+        photo.setPhotoPath(attendee.getProfilePhotoString());
+        photo.setBitmapFromDB(context);
+
         // get item's fields (UI)
         TextView attendeeName = view.findViewById(R.id.attendee_name);
+        TextView attendeeID = view.findViewById(R.id.attendee_id);
         TextView attendeeHomepage = view.findViewById(R.id.attendee_homepage);
         TextView attendeeEmail = view.findViewById(R.id.attendee_email);
+        ImageView attendeePhoto = view.findViewById(R.id.attendee_photo);
 
         // update fields and return view
         String attendeeNameString = attendee.getFirstName() + " " + attendee.getLastName();
+        attendeeID.setText(attendee.getIdentifier());
         attendeeName.setText(attendeeNameString);
         attendeeHomepage.setText(attendee.getHomePage());
         attendeeEmail.setText(attendee.getEmail());
+        photo.updateWithBitmap(attendeePhoto);
 
         return view;
     }

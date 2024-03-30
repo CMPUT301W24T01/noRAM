@@ -118,4 +118,23 @@ public class OrganizerActivity extends AppCompatActivity {
 
         ((ImageButton) findViewById(R.id.organizer_home_button)).setOnClickListener(v -> finish());
     }
+
+    /**
+     * Function to programmatically move back the OrganizerActivity on the myEvents fragment
+     */
+    public void displayMyEventsFragment(){
+        Fragment selectedFragment = myEventsFragment;
+        int headerText = R.string.organizer_fragment_event_list_header;
+
+        // update the fragment container to show the myEvents fragment .
+        fragmentManager.beginTransaction()
+                .hide(activeFragment)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .show(selectedFragment)
+                .commitNow();
+        activeFragment = selectedFragment;
+
+        // set header and return
+        header.setText(headerText);
+    }
 }
