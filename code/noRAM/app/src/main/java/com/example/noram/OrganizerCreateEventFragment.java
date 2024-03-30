@@ -74,6 +74,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     TextView editDetails;
     TextView editMilestones;
     CheckBox trackLocationCheck;
+    CheckBox limitSignUpsCheck;
+    TextView editLimitSignUps;
     private ImageView imageView;
     Button nextButton;
 
@@ -144,8 +146,9 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         editDetails = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_details_text);
         editMilestones  = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_milestones_text);
         trackLocationCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_trackLocation_check);
+        limitSignUpsCheck = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_limitSignUps_check);
+        editLimitSignUps = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_signUpLimit_text);
         nextButton = view.findViewById(R.id.organizer_fragment_create_event_p1_edit_next_button);
-
         imageView = view.findViewById(R.id.image_view);
         deletePhoto = view.findViewById(R.id.delete_photo);
         deletePhoto.setVisibility(View.INVISIBLE);
@@ -176,6 +179,22 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
             }
         });
 
+        limitSignUpsCheck.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener to display/hide input box for sign-up limit
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                if (editLimitSignUps.getVisibility() == View.GONE) {
+                    editLimitSignUps.setVisibility(View.VISIBLE);
+                }
+                else {
+                    editLimitSignUps.setVisibility(View.GONE);
+                }
+            }
+        });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for next button
@@ -193,9 +212,13 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 String details = editDetails.getText().toString();
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
+                Long signUpLimit = -1L;
+                if (limitSignUpsCheck.isChecked()) {
+                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                }
 
                 // Check inputs
-                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString);
+                Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, 0);
 
                 // Only continue to next step of event creation if inputs are valid
                 if (validateResult.first) {
@@ -224,8 +247,13 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putSerializable("endTime", endDateTime);
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
+                    bundle.putLong("signUpLimit", signUpLimit);
                     intent.putExtras(bundle);
+
+                    // move back organizer activity to my_events fragment before launching the
+                    // new activity
                     startActivity(intent);
+                    ((OrganizerActivity) getActivity()).displayMyEventsFragment();
                 }
                 // Otherwise, show error Toast
                 else {

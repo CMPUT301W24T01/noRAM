@@ -1,6 +1,5 @@
 /*
-* The OrganizerEventAttendeeActivity class displays the list of attendees for an event
-* and the number of times they have checked in.
+* This file displays the list of attendees for an event and the number of times they have checked in.
 * Outstanding Issues:
 * - None
  */
@@ -26,8 +25,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Locale;
 /**
- * The OrganizerEventAttendeeActivity class displays the list of attendees for an event.
+ * The OrganizerEventAttendeeListActivity class displays the list of attendees for an event.
  * A {@link AppCompatActivity} subclass.
+ * @Maintainer Ethan
+ * @Author Ethan
  */
 public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private Event event;
@@ -128,7 +129,7 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
 
     /**
      * Show search results on the searchList if the search is non-empty. Otherwise, show all events.
-     * @param search The input of the user in the search, used in the database's query
+     * @param search The input of the user in the search, used to populate the search list
      */
     public void searchAttendees(String search) {
         // if search is empty, show back all events and return. Otherwise, show searched events

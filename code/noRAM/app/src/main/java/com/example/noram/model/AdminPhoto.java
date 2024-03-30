@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.noram.MainActivity;
+import com.example.noram.R;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -173,6 +174,8 @@ public class AdminPhoto {
             view.setImageBitmap(photoBitmap);
         }
         else{
+            // set default picture and place imageView in waiting list
+            view.setImageResource(R.drawable.add_photo_24px);
             viewsToUpdate.add(view);
         }
     }

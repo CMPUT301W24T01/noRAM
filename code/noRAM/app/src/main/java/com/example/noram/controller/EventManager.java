@@ -1,7 +1,12 @@
+/*
+This file is used to make it easier to display event-info pages.
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +14,7 @@ import android.util.Log;
 
 import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
+import com.example.noram.OrganizerEventInfoActivity;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,6 +26,7 @@ import java.util.List;
  * A class to provide services when interacting with events in the app, such as signing-in events.
  * @maintainer Gabriel
  * @author Gabriel
+ * @author Carlin
  */
 public class EventManager {
     public static final String eventIDLabel = "eventID"; // Identifier for event's ID in bundles
@@ -36,7 +43,7 @@ public class EventManager {
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
 
-        // run a transaction on the event to update attendee list
+        // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
@@ -46,19 +53,78 @@ public class EventManager {
         });
     }
 
+
     /**
-     * An event's information is displayed by calling a new activity with all of its information
+     * Sign the current user up for the event given by eventID
+     * @param eventID ID string of the event
+     */
+    public static void signUpForEvent(String eventID) {
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);
+        MainActivity.attendee.getEventsCheckedInto().add(eventID);
+        MainActivity.attendee.updateDBAttendee();
+
+        // run a transaction on the event to update checkedInAttendee list
+        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+            signedUpAttendees.add(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
+            return null;
+        });
+    }
+
+    /**
+     * An event's information is displayed on the attendee side, showing all the attendee-event info
      * @param context The context of the activity calling this function, from where the new activity
      *                is started
      * @param event The event whose information need to be displayed
      */
-    public static void displayEvent(Context context, Event event){
+    public static void displayAttendeeEvent(Context context, Event event){
         Intent intent = new Intent(context, AttendeeEventInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(eventIDLabel, event.getId());
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
+    /**
+     * An event's information is displayed on the organizer side, showing all the organizer-event
+     * info
+     * @param context The context of the activity calling this function, from where the new activity
+     *                is started
+     * @param event The event whose information need to be displayed
+     */
+    public static void displayOrganizerEvent(Context context, Event event){
+        Intent intent = new Intent(context, OrganizerEventInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(eventIDLabel, event.getId());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Overloads displayOrganizerEvent() with extra 'reset' parameter to optionally let the user
+     * clear the current activity stack when launching a new activity
+     * launching the new activity
+     * @param context The context of the activity calling this function, from where the new activity
+     *                is started
+     * @param event The event whose information need to be displayed
+     * @param reset If true, all the activities on the stack are removed when the new
+     *              activity is launched
+     */
+    public static void displayOrganizerEvent(Context context, Event event, boolean reset){
+        Intent intent = new Intent(context, OrganizerEventInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(eventIDLabel, event.getId());
+        intent.putExtras(bundle);
+        // optionally remove all other stack activities
+        if(reset){
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
+            ((Activity) context).finish();
+        }
+        context.startActivity(intent);
+    }
+
 
     /**
      * An event's information is displayed by calling a new activity with all of its information.

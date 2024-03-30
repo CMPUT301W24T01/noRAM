@@ -6,23 +6,22 @@ Outstanding Issues:
 
 package com.example.noram.controller;
 
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.noram.MainActivity;
 import com.example.noram.R;
 import com.example.noram.model.Event;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -69,16 +68,60 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         TextView eventTitle = view.findViewById(R.id.event_title);
         TextView eventTime = view.findViewById(R.id.event_time);
         TextView eventLocation = view.findViewById(R.id.event_location);
+        TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
+        TextView signedUpText = view.findViewById(R.id.event_signed_up_indicator);
+        TextView checkedInText = view.findViewById(R.id.event_checked_in_indicator);
+        TextView happeningNowText = view.findViewById(R.id.event_happening_now);
 
         // update fields and return view
         eventTitle.setText(event.getName());
         LocalDateTime startTime = event.getStartTime();
-        eventTime.setText(String.format("%s from %s - %s",
-                startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma"))
-        ));
+        LocalDateTime endTime = event.getEndTime();
+        if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
+            eventTime.setText(String.format("%s \n%s to %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma"))
+            ));
+        } else {
+            // not the same date: need to include both dates
+            eventTime.setText(String.format("%s at %s to \n%s at %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mm a")),
+                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+            ));
+        }
+
+        // if event is currently happening, display "happening now!"
+        LocalDateTime current = LocalDateTime.now();
+        happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
+
         eventLocation.setText(event.getLocation());
+        if (event.isLimitedSignUps()) {
+            eventSignUpCapacity.setText(String.format(
+                    getContext().getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUpCapacity.setText(String.format(
+                    getContext().getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
+
+        if (event.getCheckedInAttendees().contains(MainActivity.attendee.getIdentifier())) {
+            checkedInText.setVisibility(View.VISIBLE);
+        } else {
+            checkedInText.setVisibility(View.INVISIBLE);
+        }
+        if (event.getSignedUpAttendees().contains(MainActivity.attendee.getIdentifier())) {
+            signedUpText.setVisibility(View.VISIBLE);
+        } else {
+            signedUpText.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }

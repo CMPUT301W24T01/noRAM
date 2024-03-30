@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,20 +11,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:text="Attendee Name"
         android:textSize="30sp"
-        android:text="Attendee Name" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/attendee_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@drawable/qr_background_gradient"
+        app:layout_constraintStart_toEndOf="@id/attendee_name"
+        app:layout_constraintTop_toTopOf="@+id/attendee_name"/>
+
+    <TextView
+        android:id="@+id/attendee_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Attendee ID"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/attendee_name"
+        app:layout_constraintTop_toBottomOf="@+id/attendee_photo" />
+
     <TextView
         android:id="@+id/attendee_homepage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:text="Attendee Homepage"
         android:textSize="15sp"
-        android:text="Attendee Homepage" />
+        app:layout_constraintStart_toStartOf="@+id/attendee_id"
+        app:layout_constraintTop_toBottomOf="@+id/attendee_id" />
+
     <TextView
         android:id="@+id/attendee_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:text="Attendee Email Address"
         android:textSize="15sp"
-        android:text="Attendee Email Address" />
-</LinearLayout>
+        app:layout_constraintStart_toStartOf="@+id/attendee_homepage"
+        app:layout_constraintTop_toBottomOf="@+id/attendee_homepage" />
+</androidx.constraintlayout.widget.ConstraintLayout>

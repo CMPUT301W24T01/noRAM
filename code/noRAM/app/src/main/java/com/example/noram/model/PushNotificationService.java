@@ -4,16 +4,16 @@ Outstanding Issues:
 - Currently only sends notifications in app to the main activity
  */
 
-package com.example.noram;
-
-import android.app.AlertDialog;
-import android.util.Log;
-import android.widget.Toast;
+package com.example.noram.model;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.example.noram.MainActivity;
 import com.example.noram.model.Event;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,7 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -78,15 +79,16 @@ public class PushNotificationService extends FirebaseMessagingService {
      * @param title the title of the notification
      * @param data the data of the notification
      * @param event the event to send the notification to
+     * @param sendToOrganizer a boolean to check if we wish to only send the notification to the organizer
      */
-    public void sendNotification(String title, String data, Event event) {
+    public void sendNotification(String title, String data, Event event, Boolean sendToOrganizer) {
 
-        // Get the list of attendees
+        Set<String> attendeeList;
 
-        Set<String> attendeeList = (Set<String>) event.getCheckedInAttendees(); // cast to Set<String> so no duplicate attendees
-
-        if (attendeeList == null) {
-            throw new IllegalArgumentException("Attendee list is null");
+        if (sendToOrganizer) {
+            attendeeList = Collections.singleton((event.getOrganizerId()));
+        } else {
+            attendeeList = new HashSet<>(event.getCheckedInAttendees()); // cast to Set<String> so no duplicate attendees
         }
 
         // Send a notification to each attendee

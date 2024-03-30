@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentReference;
 /**
  * DialogFragment that shows a popup to confirm the user wants to delete a specific document from
  * the firestore database
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class ConfirmDeleteFragment extends DialogFragment {

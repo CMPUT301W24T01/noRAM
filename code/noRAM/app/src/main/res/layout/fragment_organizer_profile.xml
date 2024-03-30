@@ -1,16 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OrganizerProfileFragment"
     android:id="@+id/fragment_organizer_profile">
 
-    <!-- TODO: Update blank fragment layout -->
-    <!-- TODO: do we want to re-use the attendee one? -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/editOrganizerProfileLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Organizer Profile" />
+        android:layout_height="wrap_content"
+        tools:context=".OrganizerProfileFragment">
 
-</FrameLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/add_photo_draw_background"
+            android:foreground="@drawable/add_photo_draw_foreground"
+
+            app:layout_constraintBottom_toBottomOf="@+id/image_view"
+            app:layout_constraintEnd_toEndOf="@+id/image_view" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/delete_photo_draw_foreground"
+            app:backgroundTint="@color/delete_photo_draw_background"
+
+            app:layout_constraintEnd_toEndOf="@+id/image_view"
+            app:layout_constraintTop_toTopOf="@+id/image_view" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_view"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/button_background_color"
+
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circle"
+            app:strokeColor="@android:color/darker_gray"
+            app:strokeWidth="5dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_organizer_display_name_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/hint_color"
+            android:minEms="15"
+            android:maxEms="15"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_view">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_organizer_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/display_name"
+                android:inputType="text"
+                android:maxLength="100"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_info_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_background"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            android:text="@android:string/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/organizer_info_save_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_organizer_display_name_layout"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_info_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_background"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            android:text="@string/save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/organizer_info_cancel_button"
+            app:layout_constraintTop_toBottomOf="@+id/edit_organizer_display_name_layout"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

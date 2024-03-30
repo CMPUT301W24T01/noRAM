@@ -29,6 +29,7 @@ import java.util.List;
 
 /**
  * Fragment of the Admin page, listing all the profiles of the app's database
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AdminProfilesFragment extends Fragment {
@@ -93,7 +94,7 @@ public class AdminProfilesFragment extends Fragment {
                             doc.getString("homePage"),
                             doc.getString("email"),
                             doc.getBoolean("allowLocation"),
-                            doc.getBoolean("defaultsProfilePhoto"),
+                            doc.getBoolean("defaultProfilePhoto"),
                             (List<String>) doc.get("eventsCheckedInto")
                     );
                     profilesDataList.add(attendee);

@@ -1,28 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/event_list_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/event_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:padding="5dp"
+        android:text="Event Title"
         android:textSize="30sp"
-        android:text="Event Title" />
+        app:layout_constraintEnd_toStartOf="@+id/event_signUp_capacity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/event_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:layout_marginStart="8dp"
+        android:text="Event Time"
         android:textSize="15sp"
-        android:text="Event Time" />
+        android:drawablePadding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_title"
+        app:drawableStartCompat="@drawable/event_24px" />
+
+    <TextView
+        android:id="@+id/event_happening_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawablePadding="5dp"
+        android:padding="5dp"
+        android:text="Happening Now!"
+        android:textColor="@color/green"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/exclamation_24px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_time" />
+
     <TextView
         android:id="@+id/event_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="15dp"
+        android:text="Event Location"
+        android:drawablePadding="5dp"
         android:textSize="15sp"
-        android:text="Event Location" />
-</LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_happening_now"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:drawableStartCompat="@drawable/location_on_24px" />
+
+    <TextView
+        android:id="@+id/event_signUp_capacity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="10dp"
+        android:text="0/0 Signed Up"
+        android:textAlignment="textEnd"
+        android:textSize="15sp"
+        android:visibility="visible"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.07" />
+
+    <TextView
+        android:id="@+id/event_signed_up_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginEnd="18dp"
+        android:text="Signed Up!"
+        android:textAlignment="textEnd"
+        android:textSize="15sp"
+        android:visibility="visible"
+        android:gravity="end"
+        android:drawableEnd="@drawable/check_circle_24px"
+        android:drawablePadding="3dp"
+        android:textColor="@color/green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintTop_toBottomOf="@+id/event_title"
+        app:layout_constraintVertical_bias="0.07" />
+
+    <TextView
+        android:id="@+id/event_checked_in_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:drawableEnd="@drawable/checked_in_icon_24px"
+        android:drawablePadding="3dp"
+        android:gravity="end"
+        android:padding="5dp"
+        android:text="Checked In!"
+        android:textAlignment="textEnd"
+        android:textColor="@color/green"
+        android:textSize="15sp"
+        android:visibility="visible"
+        app:layout_constraintVertical_bias="0.07"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_time"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

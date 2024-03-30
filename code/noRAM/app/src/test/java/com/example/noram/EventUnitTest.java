@@ -3,7 +3,6 @@ package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -62,8 +61,8 @@ public class EventUnitTest {
         assertNull(event.getEndTime());
         assertNull(event.getDetails());
         assertNull(event.getMilestones());
-        assertNull(event.getCheckInQR());
-        assertNull(event.getPromoQR());
+        assertNull(event.getCheckInQRID());
+        assertNull(event.getPromoQRID());
     }
 
     /**
@@ -84,7 +83,9 @@ public class EventUnitTest {
             String details = "details";
             ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
             Boolean trackLocation = true;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation);
+            String organizerId = "orgId";
+            Long signUpLimit = -1L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -94,8 +95,11 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
-            assertNotNull(event.getCheckInQR());
-            assertNotNull(event.getPromoQR());
+            assertNull(event.getCheckInQRID());
+            assertNull(event.getPromoQRID());
+            assertEquals(event.getOrganizerId(), organizerId);
+            assertFalse(event.isLimitedSignUps());
+            assertEquals(signUpLimit, event.getSignUpLimit());
         }
     }
 
@@ -120,7 +124,10 @@ public class EventUnitTest {
             QRCode checkInQR = new QRCode("checkIn", "id", QRType.SIGN_IN);
             QRCode promoQR = new QRCode("promo", "id", QRType.PROMOTIONAL);
             List<String> checkedIn = new ArrayList<>(Arrays.asList("a", "b", "c"));
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR, promoQR, trackLocation, checkedIn);
+            List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
+            Long signUpLimit = 1200L;
+            String organizerId = "organizerId";
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -130,9 +137,14 @@ public class EventUnitTest {
             assertEquals(event.getDetails(), details);
             assertEquals(event.getMilestones(), milestones);
             assertEquals(event.isTrackLocation(), trackLocation);
-            assertEquals(event.getCheckInQR(), checkInQR);
-            assertEquals(event.getPromoQR(), promoQR);
+            assertEquals(event.getCheckInQRID(), checkInQR.getHashId());
+            assertEquals(event.getPromoQRID(), promoQR.getHashId());
             assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getOrganizerId(), organizerId);
+            assertTrue(event.isLimitedSignUps());
+            assertEquals(event.getSignUpLimit(), signUpLimit);
+            assertEquals(event.getCheckedInAttendees(), checkedIn);
+            assertEquals(event.getSignedUpAttendees(), signedUp);
         }
     }
 

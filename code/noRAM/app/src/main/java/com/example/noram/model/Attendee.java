@@ -288,8 +288,10 @@ public class Attendee {
         if (usingDefaultProfilePhoto) {
 
             // Generate a color based on the attendee's name
+
+            String colorIdentifier = identifier.toString() + firstName;
             StringBuilder builder = new StringBuilder();
-            for (char c : firstName.toCharArray()) {
+            for (char c : colorIdentifier.toCharArray()) {
                 builder.append((int)c);
             }
             int numIdentifier = new BigInteger(builder.toString()).intValue();
@@ -330,10 +332,12 @@ public class Attendee {
         // Ensure we are using the default photo
         if (usingDefaultProfilePhoto) {
 
+            String colorIdentifier = identifier.toString() + firstName;
             StringBuilder builder = new StringBuilder();
-            for (char c : firstName.toCharArray()) {
+            for (char c : colorIdentifier.toCharArray()) {
                 builder.append((int)c);
             }
+
             int numIdentifier = new BigInteger(builder.toString()).intValue();
             int R = (numIdentifier) % 256;
             int G = (numIdentifier * 10) % 256;
@@ -373,8 +377,8 @@ public class Attendee {
     }
 
     /**
-     * A method to update the attendee with a document snapshot
-     * @param map the map with information about the attendee attributes
+     * A method to update the attendee with a Map object
+     * @param map the Map with information about the attendee attributes
      */
     public void updateWithMap(Map<String, Object> map) {
         this.firstName = (String) map.get("firstName");

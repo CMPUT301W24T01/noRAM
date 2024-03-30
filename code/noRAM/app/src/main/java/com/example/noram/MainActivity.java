@@ -23,12 +23,12 @@ import androidx.core.app.ActivityCompat;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
+import com.example.noram.model.PushNotificationService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The main activity of the application. This activity is the first activity that is launched
@@ -141,22 +141,25 @@ public class MainActivity extends AppCompatActivity {
                                     attendee = new Attendee(user.getUid(), firstname, lastname, homepage, email, allowLocation, defaultPhoto, eventsCheckedInto);
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
+
+                                    // get the organizer object from the database
+                                    db.getOrganizerRef().document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> organizer = documentSnapshot.toObject(Organizer.class));
                                 } else {
+                                    // create new attendee
                                     attendee = new Attendee(user.getUid());
                                     attendee.generateAttendeeFCMToken();
                                     attendee.updateDBAttendee();
-                                }
-                                // If the user's information is not complete, show the info activity
-                                if (Objects.equals(attendee.getFirstName(), "") || Objects.equals(attendee.getLastName(), "") || Objects.equals(attendee.getEmail(), "")) {
-                                    initializeAttendeeProfile();
-                                } else {
-                                    // Show the buttons after the user is signed in and remove progress bar
-                                    findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
-                                    findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
-                                    updateAdminAccess(user.getUid());
-                                }
-                                findViewById(R.id.progressBar).setVisibility(View.GONE);
 
+                                    // create new organizer, and sync it with the new attendee for now.
+                                    organizer = new Organizer();
+                                    organizer.syncWithAttendee(attendee);
+                                    organizer.updateDBOrganizer();
+                                }
+                                // Show the buttons after the user is signed in and remove progress bar
+                                findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
+                                findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                updateAdminAccess(user.getUid());
+                                findViewById(R.id.progressBar).setVisibility(View.GONE);
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -167,15 +170,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /**
-     * Initialize the attendee profile by opening the profile activity.
-     * This is called when the user's information is not complete.
-     */
-    private void initializeAttendeeProfile() {
-        startActivity(new Intent(MainActivity.this, ProfileEntryActivity.class));
-        finish();
     }
 
     /**

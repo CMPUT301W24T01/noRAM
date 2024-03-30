@@ -8,41 +8,66 @@
     tools:context=".AttendeeEventListFragment"
     android:id="@+id/fragment_attendee_event_list">
 
-       <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/allEventsButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_background"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="10dp"
+        android:layout_margin="10dp"
         android:text="@string/all_events_button"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_color"
         app:layout_constraintBottom_toTopOf="@+id/allEventsList"
         app:layout_constraintEnd_toStartOf="@+id/myEventsButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchInput" />
+        app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/myEventsButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="10dp"
         android:text="@string/my_events_button"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_color"
         app:layout_constraintBottom_toTopOf="@+id/allEventsList"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/allEventsButton"
-        app:layout_constraintTop_toBottomOf="@+id/searchInput" />
+        app:layout_constraintStart_toEndOf="@+id/allEventsButton" />
 
-    <EditText
-        android:id="@+id/searchInput"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="@string/event_search_hint"
-        android:inputType="text"
-        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toTopOf="@+id/myEventsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/searchLabel"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:hint="@string/event_search_hint"
+            android:textSize="16sp"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/search_24px"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ListView
         android:id="@+id/allEventsList"
@@ -73,19 +98,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/allEventsButton"
-        tools:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/searchLabel"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:background="#00FFFFFF"
-        android:gravity="center_vertical"
-        android:text="Search:"
-        android:textAlignment="gravity"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/allEventsButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        tools:visibility="invisible"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
