@@ -6,6 +6,7 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
@@ -31,6 +33,8 @@ import java.util.UUID;
  * @author Sandra
  */
 public class AddEventCompleteActivity extends AppCompatActivity {
+
+    private Event event; // new event that is being created
 
     /**
      * Create the Activity and setup listeners
@@ -59,7 +63,7 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             ? new QRCode(eventID + "-event", eventID.toString(), QRType.SIGN_IN)
             : new QRCode(checkinQRData, eventID.toString(), QRType.SIGN_IN);
 
-        Event event = new Event(
+        event = new Event(
             eventID.toString(),
             eventBundle.getString("name"),
             eventBundle.getString("location"),
@@ -100,16 +104,15 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         shareCheckInButton.setOnClickListener(v -> shareQRCode(checkInQRCode));
         sharePromoButton.setOnClickListener(v -> shareQRCode(promoQRCode));
 
+        // goToEvent button
+        Context context = this;
         Button goToEventButton = findViewById(R.id.event_details_button);
         goToEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: this should bring you to the event's page, once its viewable+integrated
-                Intent intent = new Intent(AddEventCompleteActivity.this, OrganizerActivity.class);
-
-                // this goes back to the OrganizerActivity and clears all Activities above it in the stack
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                boolean reset = true;
+                EventManager.displayOrganizerEvent(
+                    context, event, reset);
             }
         });
     }

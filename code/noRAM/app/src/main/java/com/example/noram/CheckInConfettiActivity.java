@@ -70,7 +70,7 @@ public class CheckInConfettiActivity extends AppCompatActivity {
         // setup continue button to go to the event page
         Button continueButton = findViewById(R.id.checkin_continue_button);
         continueButton.setOnClickListener(v -> {
-            EventManager.displayEvent(CheckInConfettiActivity.this, event);
+            EventManager.displayAttendeeEvent(CheckInConfettiActivity.this, event);
             finish();
         });
     }

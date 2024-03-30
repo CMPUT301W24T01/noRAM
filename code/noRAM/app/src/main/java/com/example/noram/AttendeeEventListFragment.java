@@ -6,16 +6,12 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -96,7 +92,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     @Override
     protected void searchElementsClick(Event event){
         // display event that has been clicked on
-        EventManager.displayEvent(getActivity(),event);
+        EventManager.displayAttendeeEvent(getActivity(),event);
     }
 
     /**
@@ -167,11 +163,11 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // connect the three lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            EventManager.displayEvent(getActivity(),event);
+            EventManager.displayAttendeeEvent(getActivity(),event);
         });
         userEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = userEventDataList.get(position);
-            EventManager.displayEvent(getActivity(),event);
+            EventManager.displayAttendeeEvent(getActivity(),event);
         });
 
         eventRef.addSnapshotListener((querySnapshots, error) -> {
