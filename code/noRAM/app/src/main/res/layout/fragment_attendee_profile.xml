@@ -40,7 +40,6 @@
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
             android:background="@color/profile_photo_background"
-
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
@@ -50,53 +49,89 @@
             app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="5dp" />
 
-        <EditText
-            android:id="@+id/edit_attendee_first_name"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_attendee_first_name_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/first_name"
-            android:inputType="text"
-            android:maxLength="100"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/hint_color"
+            android:minEms="15"
+            android:maxEms="15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attendee_first_name_label" />
+            app:layout_constraintTop_toBottomOf="@+id/image_view">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_attendee_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/first_name"
+                android:inputType="text"
+                android:maxLength="100"
+                 />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edit_attendee_last_name"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_attendee_last_name_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/last_name"
-            android:inputType="text"
-            android:maxLength="100"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/hint_color"
+            android:minEms="15"
+            android:maxEms="15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attendee_last_name_label" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_first_name_layout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_attendee_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/last_name"
+                android:inputType="text"
+                android:maxLength="100"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edit_attendee_email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_attendee_email_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:maxLength="100"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/hint_color"
+            android:minEms="15"
+            android:maxEms="15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attendee_email_label" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_home_page_layout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_attendee_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/email"
+                android:inputType="text"
+                android:maxLength="100"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edit_attendee_home_page"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_attendee_home_page_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/home_page"
-            android:inputType="text"
-            android:maxLength="100"
+            android:layout_marginTop="10dp"
+            android:minEms="15"
+            android:maxEms="15"
+            android:textColorHint="@color/hint_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attendee_home_page_label" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_last_name_layout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_attendee_home_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/home_page"
+                android:inputType="text"
+                android:maxLength="100"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
             android:id="@+id/edit_attendee_location_box"
@@ -106,7 +141,7 @@
             android:text="@string/access_location"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_email" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_email_layout" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/attendee_info_cancel_button"
@@ -114,14 +149,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/button_background"
             android:text="@android:string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/attendee_info_save_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
-            app:layout_constraintVertical_bias="0.0"
-            android:background="@drawable/button_background"
-            android:textColor="@color/button_text_color"/>
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/attendee_info_save_button"
@@ -130,58 +166,15 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
+            android:background="@drawable/button_background"
             android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/attendee_info_cancel_button"
             app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
-            app:layout_constraintVertical_bias="0.0"
-            android:background="@drawable/button_background"
-            android:textColor="@color/button_text_color"/>
-
-        <TextView
-            android:id="@+id/attendee_first_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/first_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.295"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_view" />
-
-        <TextView
-            android:id="@+id/attendee_last_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/last_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.294"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_first_name" />
-
-        <TextView
-            android:id="@+id/attendee_home_page_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/home_page"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.298"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_last_name" />
-
-        <TextView
-            android:id="@+id/attendee_email_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.268"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_home_page" />
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
