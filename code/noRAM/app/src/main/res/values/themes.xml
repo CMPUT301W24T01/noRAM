@@ -8,6 +8,12 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/main_color</item>
+        <item name="colorPrimaryVariant">@color/variant_main_color</item>
+        <item name="colorSecondary">@color/main_color</item>
+        <item name="colorSecondaryContainer">@color/translucent_main_color</item>
+        <item name="android:windowBackground">@color/very_light_grey</item>
+
     </style>
 
     <style name="Theme.NoRAM" parent="Base.Theme.NoRAM" />
