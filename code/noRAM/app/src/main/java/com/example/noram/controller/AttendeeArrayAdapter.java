@@ -27,6 +27,7 @@ import java.util.ArrayList;
 /**
  * An adapter that connects a ListView of Attendees with an ArrayList of Attendees.
  * A {@link AttendeeArrayAdapter} object is used to display a list of Attendees  in a ListView.
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {

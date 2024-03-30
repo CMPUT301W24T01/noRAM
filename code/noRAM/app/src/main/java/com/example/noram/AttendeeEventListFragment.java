@@ -74,6 +74,17 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     }
 
     /**
+     * Hook from EventListFragmentTemplate that hides the searchList view on the screen and
+     * show by default the allEvents list view
+     */
+    @Override
+    protected void hideSearchList(){
+        searchEventList.setVisibility(View.INVISIBLE);
+        allEventList.setVisibility(View.VISIBLE);
+        userEventList.setVisibility(View.INVISIBLE);
+    }
+
+    /**
      * Hook from AttendeeEventListFragment that is called when a view in the searchList view is
      * clicked on
      * @param event The event that was clicked on (in the searchList)
@@ -81,7 +92,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     @Override
     protected void searchElementsClick(Event event){
         // display event that has been clicked on
-        EventManager.displayEvent(getActivity(),event);
+        EventManager.displayAttendeeEvent(getActivity(),event);
     }
 
     /**
@@ -152,11 +163,11 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // connect the three lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
-            EventManager.displayEvent(getActivity(),event);
+            EventManager.displayAttendeeEvent(getActivity(),event);
         });
         userEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = userEventDataList.get(position);
-            EventManager.displayEvent(getActivity(),event);
+            EventManager.displayAttendeeEvent(getActivity(),event);
         });
 
         eventRef.addSnapshotListener((querySnapshots, error) -> {
@@ -175,8 +186,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
 
                     // if user correspond, add event to myEvents list
                     ArrayList<String> attendees = (ArrayList<String>) doc.get("signedUpAttendees");
-                    Log.d("DEBUG", MainActivity.attendee.getIdentifier());
-                    if(attendees != null && attendees.contains(MainActivity.attendee.getIdentifier())) {
+                    if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
                         userEventDataList.add(event);
                     }
                 }

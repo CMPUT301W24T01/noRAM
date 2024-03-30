@@ -1,6 +1,7 @@
 /*
 This file is used to provide a template for displaying list of events, that other fragments can use.
 Outstanding Issues:
+- Searchbar shows static searches (the list is not updated in real-time)
  */
 
 package com.example.noram;
@@ -32,7 +33,39 @@ import java.util.ArrayList;
 public abstract class EventListFragmentTemplate extends Fragment {
     private ArrayList<Event> searchEventDataList; // data list of events' search results
     EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
-    private final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
+    protected final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
+    protected ArrayList<Event> eventListRef; // all the events in the database
+    protected ListView searchEventList; // view showing all the searched events
+
+    /**
+     * This method is called when the fragment is resumed.
+     * It hides the search ListView by default.
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        hideSearchList();
+    }
+
+    /**
+     * Creates the ArrayList that will contain all of the database's events. This will be used to
+     * make static searches (locally)
+     * @return An Event arrayList containing all of the events on which the search will be performed
+     */
+    protected ArrayList<Event> generateEventList(){
+        ArrayList<Event> entireList = new ArrayList<>();
+
+        // fill list with all events
+        eventRef.get().addOnSuccessListener(querySnapshot -> {
+            for(QueryDocumentSnapshot doc: querySnapshot){
+                Event event = new Event();
+                event.updateWithDocument(doc);
+                entireList.add(event);
+            }
+        });
+
+        return entireList;
+    }
 
     /**
      * Setup the ListView and EditText passed so that any text entered in the EditText will show the
@@ -41,7 +74,11 @@ public abstract class EventListFragmentTemplate extends Fragment {
      * @param searchInput The EditText that will take user input for searches
      */
     protected void setupSearch(ListView searchList, EditText searchInput){
+        // keep local version of all events (for static searches)
+        eventListRef = generateEventList();
+
         // basic connections between lists and adapters
+        searchEventList = searchList;
         searchEventDataList = new ArrayList<>();
         searchEventAdapter = new EventArrayAdapter(this.getContext(), searchEventDataList);
         searchList.setAdapter(searchEventAdapter);
@@ -91,10 +128,20 @@ public abstract class EventListFragmentTemplate extends Fragment {
     }
 
     /**
-     * Hook that shows the searchList view on the screen and hide other views that could be blocking
-     * the list from being visible
+     * Hook that shows the searchList view on the screen. Override to hide other views that could be
+     * blocking the list from being visible
      */
-    protected abstract void showSearchList();
+    protected void showSearchList(){
+        searchEventList.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hook that hides the searchList view on the screen. Override to show the other views that need
+     * to be visible
+     */
+    protected void hideSearchList(){
+        searchEventList.setVisibility(View.INVISIBLE);
+    }
 
     /**
      * Hook that is called when a view in the searchList view is clicked on
@@ -108,31 +155,34 @@ public abstract class EventListFragmentTemplate extends Fragment {
      * @param search The input of the user in the search, used in the database's query
      */
     private void searchEvents(String search){
+        // hide search list if query is empty
+        if(search.isEmpty()){
+            hideSearchList();
+            return;
+        }
+
         // show search list
         showSearchList();
 
         // remove old search
         searchEventDataList.clear();
+
         // search through events' details, name and location
-        eventRef.get().addOnSuccessListener(querySnapshot -> {
-            Log.d("EventList", Integer.toString(querySnapshot.size()));
-            for(QueryDocumentSnapshot doc: querySnapshot){
+        for(Event event: eventListRef){
+            String name = event.getName();
+            String details = event.getDetails();
+            String location = event.getLocation();
 
-                String name = doc.getString("name");
-                String details = doc.getString("details");
-                String location = doc.getString("location");
-
-                if((name != null && name.toLowerCase().contains(search.toLowerCase()))||
-                        (details != null && details.toLowerCase().contains(search.toLowerCase())) ||
-                        (location != null && location.toLowerCase().contains(search.toLowerCase())) )
-                {
-                    // add valid events to result
-                    Event event = new Event();
-                    event.updateWithDocument(doc);
-                    searchEventDataList.add(event);
-                }
+            if((name != null && name.toLowerCase().contains(search.toLowerCase()))||
+                    (details != null && details.toLowerCase().contains(search.toLowerCase())) ||
+                    (location != null && location.toLowerCase().contains(search.toLowerCase())) )
+            {
+                // add valid events to result
+                searchEventDataList.add(event);
             }
-            searchEventAdapter.notifyDataSetChanged();
-        });
+        }
+
+        // notify
+        searchEventAdapter.notifyDataSetChanged();
     }
 }

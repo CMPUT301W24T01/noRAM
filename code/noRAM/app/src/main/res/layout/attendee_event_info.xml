@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Hotdog Eating Contest"
+                android:text="Event Title"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Organized by Robert Smith"
+                android:text="Organized by Organizer"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toStartOf="@id/organizerImage"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="March 9 from 12:00pm - 2:00pm @ Main Quad"
+                android:text="Time/Location"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,8 +111,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Here are some details about this event. This is a very improtant event,
-        and without this event, there is no point of having any events."
+                android:text="Event Details"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,8 +141,31 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="@string/signup_count_format"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/eventLocation" />
+
+            <TextView
+                android:id="@+id/signedInText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/signedin_text"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/signedInImage"
+                app:layout_constraintTop_toBottomOf="@+id/eventLocation" />
+
+            <ImageView
+                android:id="@+id/signedInImage"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/eventLocation"
+                app:srcCompat="@drawable/baseline_check_circle_24" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
