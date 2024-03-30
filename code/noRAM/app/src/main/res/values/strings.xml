@@ -92,4 +92,6 @@
     <string name="display_name">Display Name</string>
     <string name="signedin_text">Signed Up</string>
     <string name="nothing_to_show_text">Nothing to show...</string>
+    <string name="main_menu_attend">Attend Event</string>
+    <string name="main_menu_organize">Organize Event</string>
 </resources>

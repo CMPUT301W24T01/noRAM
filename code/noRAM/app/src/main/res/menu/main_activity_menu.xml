@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <item android:id="@+id/attend_events"
+        android:title="@string/main_menu_attend"
+        android:icon="@drawable/main_activity_attend_24" />
+    <item android:id="@+id/organize_events"
+        android:title="@string/main_menu_organize"
+        android:icon="@drawable/main_activity_organize_24" />
+</menu>

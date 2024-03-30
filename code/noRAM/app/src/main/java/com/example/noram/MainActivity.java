@@ -13,17 +13,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
 import com.example.noram.model.PushNotificationService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button adminButton;
     public static PushNotificationService pushService = new PushNotificationService();
     public static MainActivity mn;
+    private BottomNavigationView navBar;
 
 
     /**
@@ -67,25 +73,29 @@ public class MainActivity extends AppCompatActivity {
         // for now, this will give us a base to start work without clashing against each other.
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.INVISIBLE);
-        Button organizerButton = findViewById(R.id.organizerButton);
-        Button attendeeButton = findViewById(R.id.attendeeButton);
+        navBar = findViewById(R.id.bottom_nav);
 
-        // Start each activity via an intent.
+        // hide menu until user is fully signed in and remove focus from its items
+        navBar.setVisibility(View.INVISIBLE);
+        navBar.setItemActiveIndicatorEnabled(false);
+
+        // Start admin via button.
         adminButton.setOnClickListener((v ->
                 startActivity(new Intent(MainActivity.this, AdminActivity.class))
                 ));
 
-        organizerButton.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, OrganizerActivity.class))
-        );
-
-        attendeeButton.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, AttendeeActivity.class))
-        );
-
-        // hide buttons until the user is fully signed in
-        organizerButton.setVisibility(View.INVISIBLE);
-        attendeeButton.setVisibility(View.INVISIBLE);
+        // connect navigation bar to other pages
+        navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+             /**
+              * Change to an activity when a navbar item is selected.
+              * @param item The selected item on the navbar
+              * @return true if navigation succeeds, false otherwise
+              */
+             @Override
+             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                 return navigateTo(item);
+             }
+        });
 
         // ask for camera permission
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
@@ -156,8 +166,7 @@ public class MainActivity extends AppCompatActivity {
                                     organizer.updateDBOrganizer();
                                 }
                                 // Show the buttons after the user is signed in and remove progress bar
-                                findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
-                                findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
+                                navBar.setVisibility(View.VISIBLE);
                                 updateAdminAccess(user.getUid());
                                 findViewById(R.id.progressBar).setVisibility(View.GONE);
                             } else {
@@ -191,5 +200,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Navigate to the corresponding menu item
+     * @param item menuItem to navigate to
+     * @return true if navigation succeeded, else false
+     */
+    private boolean navigateTo(MenuItem item) {
+        int itemID = item.getItemId();
+        if(itemID == R.id.attend_events ){
+            startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
+        } else if(itemID == R.id.organize_events){
+            startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
+        } else{
+            return false;
+        }
+
+        // if valid item, show focus and return true
+        navBar.setItemActiveIndicatorEnabled(false);
+        return true;
     }
 }
