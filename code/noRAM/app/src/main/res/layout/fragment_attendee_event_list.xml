@@ -98,21 +98,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/allEventsButton"
-        tools:visibility="invisible" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/searchLabel"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:background="#00FFFFFF"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:text="Search:"-->
-<!--        android:textAlignment="gravity"-->
-<!--        android:textSize="20sp"-->
-<!--        android:drawableRight="@drawable/search_24px"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/allEventsButton"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
+        tools:visibility="invisible"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -83,22 +83,21 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
 
         // the events are the same date
         if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
-            eventLocation.setText(String.format("%s from %s to %s at %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                    endTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+            eventLocation.setText(String.format("%s from %s to %s @ %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma")),
                     event.getLocation()
             ));
         } else {
             // not the same date: need to include both dates
-            eventLocation.setText(String.format("%s at %s to %s at %s at %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                    endTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                    endTime.format(DateTimeFormatter.ofPattern("HH:mma")),
+            eventLocation.setText(String.format("%s at %s to %s at %s\n@ %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma")),
                     event.getLocation()));
         }
-
 
         //download the event image from db and populate the screen. Hide it if it doesn't exist
         eventImage.setVisibility(View.INVISIBLE);

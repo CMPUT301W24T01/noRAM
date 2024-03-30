@@ -43,6 +43,21 @@
         app:drawableStartCompat="@drawable/event_24px" />
 
     <TextView
+        android:id="@+id/event_happening_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawablePadding="5dp"
+        android:padding="5dp"
+        android:text="Happening Now!"
+        android:textColor="@color/green"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/exclamation_24px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_time" />
+
+    <TextView
         android:id="@+id/event_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +68,7 @@
         android:drawablePadding="5dp"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_time"
+        app:layout_constraintTop_toBottomOf="@+id/event_happening_now"
         app:layout_constraintBottom_toBottomOf="parent"
         app:drawableStartCompat="@drawable/location_on_24px" />
 

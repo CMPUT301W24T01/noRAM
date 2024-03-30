@@ -71,6 +71,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
         TextView signedUpText = view.findViewById(R.id.event_signed_up_indicator);
         TextView checkedInText = view.findViewById(R.id.event_checked_in_indicator);
+        TextView happeningNowText = view.findViewById(R.id.event_happening_now);
 
         // update fields and return view
         eventTitle.setText(event.getName());
@@ -91,6 +92,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                     endTime.format(DateTimeFormatter.ofPattern("h:mm a"))
             ));
         }
+
+        // if event is currently happening, display "happening now!"
+        LocalDateTime current = LocalDateTime.now();
+        happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
 
         eventLocation.setText(event.getLocation());
         if (event.isLimitedSignUps()) {

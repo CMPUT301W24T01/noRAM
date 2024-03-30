@@ -71,12 +71,15 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/organizer_info_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/button_background"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             android:text="@android:string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/organizer_info_save_button"
@@ -84,13 +87,16 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_organizer_display_name_layout"
             app:layout_constraintVertical_bias="0.0" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/organizer_info_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
+            android:background="@drawable/button_background"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
