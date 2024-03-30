@@ -94,4 +94,5 @@
     <string name="main_menu_attend">Attend Event</string>
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below is an event you might enjoy:</string>
+    <string name="unsign_button">Unsign</string>
 </resources>
