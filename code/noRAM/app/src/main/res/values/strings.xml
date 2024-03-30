@@ -91,5 +91,4 @@
     <string name="thanks_for_checking_in_header">Thanks For Checking In!</string>
     <string name="display_name">Display Name</string>
     <string name="signedin_text">Signed Up</string>
-    <string name="nothing_to_show_text">Nothing to show...</string>
 </resources>
