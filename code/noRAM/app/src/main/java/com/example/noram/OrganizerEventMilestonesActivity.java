@@ -8,7 +8,6 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.EventMilestoneArrayAdapter;
 import com.example.noram.model.Event;
+import com.example.noram.model.Milestone;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import nl.dionsegijn.konfetti.core.Party;
@@ -40,7 +39,7 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
     private Party party;
     private Event event;
     private ListView milestoneList; // list of all milestones in UI
-    private ArrayList<Pair<Integer, Integer>> milestoneDataList; // data list of all milestones
+    private ArrayList<Milestone> milestoneDataList; // data list of all milestones
     private EventMilestoneArrayAdapter milestoneAdapter; // adapter for milestone list
 
     /**
@@ -70,12 +69,7 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
                 event = new Event();
                 event.updateWithDocument(documentSnapshot);
 
-                // Get the milestones with the total number of attendees
-                // Remove duplicates
-                HashSet<Pair<Integer, Integer>> milestoneSet = new HashSet<>(event.getMilestoneCounts());
-                ArrayList<Pair<Integer, Integer>> milestoneCounts = new ArrayList<>(milestoneSet);
-                // Sort by milestone number
-                milestoneCounts.sort((o1, o2) -> o1.first - o2.first);
+                ArrayList<Milestone> milestoneCounts = event.getMilestoneCounts();
                 // Update the list
                 milestoneDataList.clear();
                 milestoneDataList.addAll(milestoneCounts);
@@ -91,8 +85,8 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
 
                         // Get an array of sorted milestones from the milestoneCounts
                         ArrayList<Long> milestones = new ArrayList<>();
-                        for (Pair<Integer, Integer> milestone : milestoneCounts) {
-                            milestones.add(Long.valueOf(milestone.first));
+                        for (Milestone milestone : milestoneCounts) {
+                            milestones.add(Long.valueOf(milestone.getMilestone()));
                         }
 
                         // Check if a new milestone has been reached

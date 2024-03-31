@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mockConstruction;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
+import com.example.noram.model.Milestone;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
@@ -85,7 +86,8 @@ public class EventUnitTest {
             Boolean trackLocation = true;
             String organizerId = "orgId";
             Long signUpLimit = -1L;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit);
+            Long lastMilestone = 0L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -100,6 +102,7 @@ public class EventUnitTest {
             assertEquals(event.getOrganizerId(), organizerId);
             assertFalse(event.isLimitedSignUps());
             assertEquals(signUpLimit, event.getSignUpLimit());
+            assertEquals(lastMilestone, event.getLastMilestone());
         }
     }
 
@@ -127,7 +130,8 @@ public class EventUnitTest {
             List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
             Long signUpLimit = 1200L;
             String organizerId = "organizerId";
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit);
+            Long lastMilestone = 0L;
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, lastMilestone);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -145,6 +149,7 @@ public class EventUnitTest {
             assertEquals(event.getSignUpLimit(), signUpLimit);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
             assertEquals(event.getSignedUpAttendees(), signedUp);
+            assertEquals(event.getLastMilestone(), lastMilestone);
         }
     }
 
@@ -176,6 +181,60 @@ public class EventUnitTest {
                 Arguments.of(new ArrayList<>(Arrays.asList("a", "a", "b", "c", "c", "a", "d")), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(3, 1, 2, 1))),
                 Arguments.of(new ArrayList<>(Arrays.asList("d", "d", "d", "d", "d", "d", "d", "d", "d", "d")), new ArrayList<>(Arrays.asList(new Attendee("d"))), 1, new ArrayList<>(Arrays.asList(10))),
                 Arguments.of(new ArrayList<>(), new ArrayList<>(Arrays.asList(new Attendee("a"), new Attendee("b"), new Attendee("c"), new Attendee("d"))), 4, new ArrayList<>(Arrays.asList(0, 0, 0, 0)))
+        );
+    }
+
+    /**
+     * Test the getMilestoneCounts method of the event
+     */
+    @ParameterizedTest
+    @MethodSource("provideMilestoneCounts")
+    public void getMilestoneCountsTest(ArrayList<String> attendees, ArrayList<Integer> milestones, ArrayList<Integer> expected, Integer expectedProgress) {
+
+        Event event = new Event();
+        event.setCheckedInAttendees(attendees);
+        event.setMilestones(milestones);
+        ArrayList<Milestone> result = event.getMilestoneCounts();
+        assertEquals(expected.size(), result.size());
+        for (int i = 0; i < expected.size(); i++) {
+            assertEquals(expected.get(i), result.get(i).getMilestone());
+            assertEquals(expectedProgress, result.get(i).getProgress());
+        }
+    }
+
+    /**
+     * Provides parameters for the getMilestoneCountsTest
+     * @return Stream of arguments for the test
+     */
+    private static Stream<Arguments> provideMilestoneCounts() {
+        return Stream.of(
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(Arrays.asList(1, 2, 3)), new ArrayList<>(Arrays.asList(1, 2, 3)), 4),
+                Arguments.of(new ArrayList<>(), new ArrayList<>(Arrays.asList(1, 2, 3)), new ArrayList<>(Arrays.asList(1, 2, 3)), 0),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "a", "b", "c", "c", "a", "d")), new ArrayList<>(Arrays.asList(1, 3, 3, 2, 2, 3, 1)), new ArrayList<>(Arrays.asList(1, 2, 3)), 4),
+                Arguments.of(new ArrayList<>(Arrays.asList("d", "d", "d", "d", "d", "d", "d", "d", "d", "d")), new ArrayList<>(Arrays.asList(10, 6, 3, 7)), new ArrayList<>(Arrays.asList(3, 6, 7, 10)), 1),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), new ArrayList<>(), new ArrayList<>(), 0),
+                Arguments.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 0),
+                Arguments.of(new ArrayList<>(Arrays.asList("d", "b", "c", "d")), new ArrayList<>(Arrays.asList(4304)), new ArrayList<>(Arrays.asList(4304)), 3)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideGetUniqueAttendeeCount")
+    public void getUniqueAttendeeCountTest(ArrayList<String> attendees, Integer expected) {
+        Event event = new Event();
+        event.setCheckedInAttendees(attendees);
+        assertEquals(expected, event.getUniqueAttendeeCount());
+    }
+
+    private static Stream<Arguments> provideGetUniqueAttendeeCount() {
+        return Stream.of(
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), 4),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "a", "b", "c", "c", "a", "d")), 4),
+                Arguments.of(new ArrayList<>(Arrays.asList("d", "d", "d", "d", "d", "d", "d", "d", "d", "d")), 1),
+                Arguments.of(new ArrayList<>(), 0),
+                Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d", "a", "b", "c", "d")), 4),
+                Arguments.of(new ArrayList<>(Arrays.asList("e", "b", "c", "d", "a", "f", "c", "d", "a", "j", "c", "d")), 7),
+                Arguments.of(new ArrayList<>(Arrays.asList("a")), 1)
         );
     }
 }
