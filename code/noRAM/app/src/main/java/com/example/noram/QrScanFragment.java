@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -28,12 +29,16 @@ import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.noram.controller.EventManager;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -137,22 +142,18 @@ public class QrScanFragment extends Fragment {
                     showCheckInFailure("Event not found for the QR code.");
                     return;
                 }
-
                 Log.d("DEBUG", "code exists");
                 // Get event id and qr type
                 String eventId = qrDocument.getString("event");
 
                 QRType qrType = QRType.valueOf(qrDocument.getString("type"));
-
                 if (qrType == QRType.SIGN_IN) {
-                    Location attendeeLocation = null;
                     if (MainActivity.attendee.getAllowLocation()) {
-                        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-                        //TODO add a onsuccess and onfail listener
-                        //grabbing current loaction of the phone
-                        attendeeLocation = fusedLocationClient.getLastLocation().getResult();
+                        getLocationQREntry(eventId);
                     }
-                    EventManager.checkInToEvent(eventId, attendeeLocation);
+                    else{
+                        EventManager.checkInToEvent(eventId, null);
+                    }
                     showCheckInSuccess();
                 }
                 // tell the activity to go to the event
@@ -161,7 +162,39 @@ public class QrScanFragment extends Fragment {
             }
         });
     }
-
+    /**
+     * Get the location of the user from the phone. Suppress permission checks as we already checked for them
+     */
+    @SuppressLint("MissingPermission")
+    private void getLocationQREntry(String ID) {
+        //grab the FusedLocationProviderClient builder
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        //attempt to get the location
+        fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+            // if the API can get a location
+            @Override
+            public void onSuccess(Location location) {
+                //and the location is not null
+                if (location != null) {
+                    EventManager.checkInToEvent(ID, null);
+                } else {
+                    //TODO: exit maps. User provided permission to use location but the location was not properly received.
+                    //TODO: create an internal error message
+                    Toast.makeText(getContext(), "Unable to retrieve location, signing in without location", Toast.LENGTH_SHORT).show();
+                    EventManager.checkInToEvent(ID, null);
+                }
+            }
+        }).addOnFailureListener(requireActivity(), new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // exit map
+                //TODO: create an internal error message
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Failed to load location, sign-in without location", Toast.LENGTH_SHORT).show();
+                EventManager.checkInToEvent(ID, null);
+            }
+        });
+    };
     /**
      * Shows a toast when check in succeeds
      */

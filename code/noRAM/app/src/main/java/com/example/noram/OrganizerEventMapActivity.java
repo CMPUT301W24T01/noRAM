@@ -59,7 +59,9 @@ import java.util.Objects;
  *         https://github.com/osmdroid
  *         CHATGPT for adding onSuccesListener and onFailureListner when acessing user location
  *         this video for help on how to use googlePlay API https://www.youtube.com/watch?v=M0kUd2dpxo4&t=854s
+ * @maintainer Sandra Taskovic
  */
+
 public class OrganizerEventMapActivity extends AppCompatActivity {
     /**
      * Setup the map activity.
@@ -111,7 +113,6 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
             //exit maps activity somehow
             finish();
             }
-
     }
     /**
      * get the last location of the user for use in the map activity.

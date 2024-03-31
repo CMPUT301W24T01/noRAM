@@ -66,6 +66,7 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
                     // Make event
                     event.updateWithDocument(documentSnapshot);
 
+                    return null;
                 }
             });
         }

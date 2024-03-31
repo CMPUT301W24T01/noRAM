@@ -217,6 +217,7 @@ public class AttendeeEventInfoActivity extends AppCompatActivity {
                     // doesn't exist
                     Log.e("AttendeeEventInfo", "Couldn't find the event in the database");
                 }
+                return null;
             }
         });
     }
