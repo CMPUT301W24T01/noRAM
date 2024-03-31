@@ -76,10 +76,13 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
 
                 // Get the attendees and their check-in counts
                 event.getCheckedInAttendeesAndCounts(attendeeCallback -> {
-                    attendeeAdapter.clear();
-                    attendeeAdapter.addAll(attendeeCallback);
+                    attendeeDataList.clear();
+                    attendeeDataList.addAll(attendeeCallback);
                     attendeeAdapter.notifyDataSetChanged();
                     findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
+                    if (attendeeDataList.isEmpty()) {
+                        findViewById(R.id.organizer_event_attendee_empty).setVisibility(View.VISIBLE);
+                    }
                 });
             });
 

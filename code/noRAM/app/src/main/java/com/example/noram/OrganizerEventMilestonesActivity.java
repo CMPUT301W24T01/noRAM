@@ -59,11 +59,14 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
                 event.updateWithDocument(documentSnapshot);
 
                 // Get the attendees and their check-in counts
-                milestoneAdapter.clear();
-                // TODO: add the total number of attendees to the milestone list
-                milestoneAdapter.addAll(event.getMilestoneCounts());
+                milestoneDataList.clear();
+                milestoneDataList.addAll(event.getMilestoneCounts());
                 milestoneAdapter.notifyDataSetChanged();
                 findViewById(R.id.organizer_event_milestone_loading).setVisibility(View.GONE);
+
+                if (milestoneDataList.isEmpty()) {
+                    findViewById(R.id.organizer_event_milestones_empty).setVisibility(View.VISIBLE);
+                }
             });
 
         } else {
