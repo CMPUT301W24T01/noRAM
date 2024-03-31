@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     public static Organizer organizer = null;
     private Button adminButton;
     public static PushNotificationService pushService = new PushNotificationService();
-    public static MainActivity mn;
 
 
     /**
@@ -58,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Set the main activity to this instance for use in other classes
-        mn = this;
 
         // NOTE: temporary buttons to move to each activity
         // In the future, we should evaluate whether there is a better method of navigation;

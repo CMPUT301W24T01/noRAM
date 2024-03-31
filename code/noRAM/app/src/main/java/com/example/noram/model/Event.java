@@ -44,6 +44,7 @@ public class Event {
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
+    private List<Notification> notifications;
 
     /**
      * Default constructor for Event
@@ -240,6 +241,14 @@ public class Event {
         return signedUpAttendees.size();
     }
 
+    /**
+     * Returns the number of checked-in attendees
+     * @return size of checkedInAttendees ArrayList
+     */
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
     // Setters
     /**
      * Set id of event
@@ -375,6 +384,14 @@ public class Event {
      */
     public void setSignUpLimit(Long signUpLimit) {
         this.signUpLimit = signUpLimit;
+    }
+
+    /**
+     * Adds a notification to the event
+     * @param notification the notification to add
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
     }
 
     // Functions

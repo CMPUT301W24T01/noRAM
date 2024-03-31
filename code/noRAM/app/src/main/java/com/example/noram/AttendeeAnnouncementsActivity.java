@@ -10,6 +10,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noram.controller.NotificationArrayAdapter;
+import com.example.noram.model.Event;
+import com.example.noram.model.Notification;
+
+import java.util.ArrayList;
+
 /**
  * This class represents the activity for the attendee announcements page.
  * It displays the announcements for a specific event.
@@ -19,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
+    private ArrayList<Notification> NotificationList;
+    private NotificationArrayAdapter NotificationAdapter;
 
     /**
      * This method is called when the activity is created.
@@ -32,6 +40,19 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
         // retrieve corresponding event in database
         int eventID = getIntent().getIntExtra(eventIDLabel,0);
-        // TODO: Actually query database to get corresponding event
+
+        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                // displayAnnouncements(event);
+            }
+        });
+
+        NotificationList = new ArrayList<>(); // TODO: get notifications from database
+        
+        NotificationAdapter = new NotificationArrayAdapter(this, NotificationList);
+
+        NotificationList.add(new Notification("Announcement 1", "This is the first announcement"));
+
     }
 }
