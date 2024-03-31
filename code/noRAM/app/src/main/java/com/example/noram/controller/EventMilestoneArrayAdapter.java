@@ -7,6 +7,7 @@ Outstanding Issues:
 package com.example.noram.controller;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,8 @@ import java.util.ArrayList;
  * @maintainer Ethan
  * @author Ethan
  */
-public class EventMilestoneArrayAdapter extends ArrayAdapter<Integer> {
-    private ArrayList<Integer> milestones;
+public class EventMilestoneArrayAdapter extends ArrayAdapter<Pair<Integer, Integer>> {
+    private ArrayList<Pair<Integer, Integer>> milestones;
     private Context context;
 
     /**
@@ -35,7 +36,7 @@ public class EventMilestoneArrayAdapter extends ArrayAdapter<Integer> {
      * @param context the context of the adapter
      * @param milestones the milestones to be displayed
      */
-    public EventMilestoneArrayAdapter(Context context, ArrayList<Integer> milestones) {
+    public EventMilestoneArrayAdapter(Context context, ArrayList<Pair<Integer, Integer>> milestones) {
         super(context, 0, milestones);
         this.context = context;
         this.milestones = milestones;
@@ -58,20 +59,35 @@ public class EventMilestoneArrayAdapter extends ArrayAdapter<Integer> {
         }
 
         // get the milestone
-        String milestone = String.valueOf(milestones.get(position));
+        Integer milestone = Integer.valueOf(String.valueOf(milestones.get(position).first));
+        Integer attendeeCount = milestones.get(position).second;
 
         // get item's fields (UI)
         TextView milestoneField = view.findViewById(R.id.event_milestone_list_item_title);
+        TextView attendeeCountField = view.findViewById(R.id.event_milestone_progress_text);
+        TextView milestoneAchievedField = view.findViewById(R.id.event_milestone_achieved_text);
 
         // set the milestone string
         String milestoneString;
-        if (milestone.equals("1")) {
+        if (milestone == 1) {
             milestoneString = milestone + " Attendee";
         } else {
             milestoneString = milestone + " Attendees";
         }
         milestoneField.setText(milestoneString);
 
+        if (attendeeCount >= milestone) {
+            attendeeCountField.setVisibility(View.INVISIBLE);
+            milestoneAchievedField.setVisibility(View.VISIBLE);
+        } else {
+            String attendeeCountString = "";
+            if (attendeeCount == 1) {
+                attendeeCountString = attendeeCount + "/" + milestone + " Attendee";
+            } else {
+                attendeeCountString = attendeeCount + "/" + milestone + " Attendees";
+            }
+            attendeeCountField.setText(attendeeCountString);
+        }
         return view;
     }
 }

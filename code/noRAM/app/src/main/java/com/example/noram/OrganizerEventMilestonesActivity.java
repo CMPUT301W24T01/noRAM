@@ -8,6 +8,7 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ListView;
 
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 public class OrganizerEventMilestonesActivity extends AppCompatActivity {
     private Event event;
     private ListView milestoneList; // list of all milestones in UI
-    private ArrayList<Integer> milestoneDataList; // data list of all milestones
+    private ArrayList<Pair<Integer, Integer>> milestoneDataList; // data list of all milestones
     private EventMilestoneArrayAdapter milestoneAdapter; // adapter for milestone list
 
     /**
@@ -59,7 +60,8 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
 
                 // Get the attendees and their check-in counts
                 milestoneAdapter.clear();
-                milestoneAdapter.addAll(event.getMilestones());
+                // TODO: add the total number of attendees to the milestone list
+                milestoneAdapter.addAll(event.getMilestoneCounts());
                 milestoneAdapter.notifyDataSetChanged();
                 findViewById(R.id.organizer_event_milestone_loading).setVisibility(View.GONE);
             });

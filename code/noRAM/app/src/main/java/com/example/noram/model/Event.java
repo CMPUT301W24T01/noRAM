@@ -6,6 +6,8 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
+import android.util.Pair;
+
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
@@ -16,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -481,5 +484,22 @@ public class Event {
             attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
         }
         return attendeeCheckInCounters;
+    }
+
+    /**
+     * Get an arraylist of pairs of milestones and the current number of attendees
+     * @return ArrayList of pairs of milestone and number of attendees
+     */
+    public ArrayList<Pair<Integer, Integer>> getMilestoneCounts() {
+        HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+        ArrayList<String> uniqueAttendeesList = new ArrayList<>(uniqueAttendees);
+        int total = uniqueAttendeesList.size();
+
+        ArrayList<Pair<Integer, Integer>> milestoneCounts = new ArrayList<>();
+        for (int i = 0; i < milestones.size(); i++) {
+            Integer milestone = Integer.valueOf(String.valueOf(milestones.get(i)));
+            milestoneCounts.add(new Pair<>(milestone, total));
+        }
+        return milestoneCounts;
     }
 }
