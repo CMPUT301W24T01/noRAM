@@ -47,6 +47,7 @@ public class Event {
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
+    private Long lastMilestone;
 
     /**
      * Default constructor for Event
@@ -63,7 +64,9 @@ public class Event {
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
      * @param trackLocation is location tracking of check-ins enabled
+     * @param organizerId the id of the organizer who created the event
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param lastMilestone the last milestone that was achieved
      */
     public Event(
             String id,
@@ -75,7 +78,8 @@ public class Event {
             ArrayList<Integer> milestones,
             boolean trackLocation,
             String organizerId,
-            Long signUpLimit) {
+            Long signUpLimit,
+            Long lastMilestone) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -88,6 +92,7 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
+        this.lastMilestone = lastMilestone;
     }
 
     /**
@@ -103,8 +108,10 @@ public class Event {
      * @param promoQRID id of QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param organizerId the id of the organizer who created the event
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param lastMilestone the last milestone that was achieved
      */
     public Event(
             String id,
@@ -120,7 +127,8 @@ public class Event {
             List<String> checkedInAttendees,
             String organizerId,
             List<String> signedUpAttendees,
-            Long signUpLimit) {
+            Long signUpLimit,
+            Long lastMilestone) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -135,6 +143,7 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
+        this.lastMilestone = lastMilestone;
     }
 
     // Getters
@@ -241,6 +250,14 @@ public class Event {
             return 0;
         }
         return signedUpAttendees.size();
+    }
+
+    /**
+     * Returns the last milestone that was achieved
+     * @return lastMilestone attribute
+     */
+    public Long getLastMilestone() {
+        return lastMilestone;
     }
 
     // Setters
@@ -380,6 +397,14 @@ public class Event {
         this.signUpLimit = signUpLimit;
     }
 
+    /**
+     * Sets the last milestone that was achieved
+     * @param lastMilestone new last milestone
+     */
+    public void setLastMilestone(Long lastMilestone) {
+        this.lastMilestone = lastMilestone;
+    }
+
     // Functions
     /**
      * Check for equality between an event and another object
@@ -417,6 +442,7 @@ public class Event {
         data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
+        data.put("lastMilestone", lastMilestone);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -439,6 +465,7 @@ public class Event {
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
+        this.setLastMilestone(doc.getLong("lastMilestone"));
     }
 
     /**
@@ -501,5 +528,14 @@ public class Event {
             milestoneCounts.add(new Pair<>(milestone, total));
         }
         return milestoneCounts;
+    }
+
+    /**
+     * Get the number of unique attendees that have checked in to the event
+     * @return the number of attendees that have checked in
+     */
+    public int getUniqueAttendeeCount() {
+        HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+        return uniqueAttendees.size();
     }
 }

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,12 +21,23 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 /**
  * The OrganizerEventMilestonesActivity class displays the milestones for an event for the organizer.
  * A {@link AppCompatActivity} subclass.
  */
 public class OrganizerEventMilestonesActivity extends AppCompatActivity {
+    private KonfettiView confetti;
+    private Party party;
     private Event event;
     private ListView milestoneList; // list of all milestones in UI
     private ArrayList<Pair<Integer, Integer>> milestoneDataList; // data list of all milestones
@@ -58,15 +70,64 @@ public class OrganizerEventMilestonesActivity extends AppCompatActivity {
                 event = new Event();
                 event.updateWithDocument(documentSnapshot);
 
-                // Get the attendees and their check-in counts
+                // Get the milestones with the total number of attendees
+                // Remove duplicates
+                HashSet<Pair<Integer, Integer>> milestoneSet = new HashSet<>(event.getMilestoneCounts());
+                ArrayList<Pair<Integer, Integer>> milestoneCounts = new ArrayList<>(milestoneSet);
+                // Sort by milestone number
+                milestoneCounts.sort((o1, o2) -> o1.first - o2.first);
+                // Update the list
                 milestoneDataList.clear();
-                milestoneDataList.addAll(event.getMilestoneCounts());
+                milestoneDataList.addAll(milestoneCounts);
                 milestoneAdapter.notifyDataSetChanged();
-                findViewById(R.id.organizer_event_milestone_loading).setVisibility(View.GONE);
+                findViewById(R.id.organizer_event_milestones_loading).setVisibility(View.GONE);
 
+                // Show empty message if no milestones
                 if (milestoneDataList.isEmpty()) {
                     findViewById(R.id.organizer_event_milestones_empty).setVisibility(View.VISIBLE);
+                } else {
+                    // If a new milestone is reached, show confetti
+                    if (event.getUniqueAttendeeCount() > event.getLastMilestone()) {
+
+                        // Get an array of sorted milestones from the milestoneCounts
+                        ArrayList<Long> milestones = new ArrayList<>();
+                        for (Pair<Integer, Integer> milestone : milestoneCounts) {
+                            milestones.add(Long.valueOf(milestone.first));
+                        }
+
+                        // Check if a new milestone has been reached
+                        int milestoneIndex = milestones.indexOf(event.getLastMilestone());
+                        if (milestoneIndex < milestones.size() - 1 && milestones.get(milestoneIndex + 1) <= event.getUniqueAttendeeCount()) {
+                            // Go to the largest milestone reached to avoid repeats
+                            while (milestoneIndex < milestones.size() - 1 && milestones.get(milestoneIndex + 1) <= event.getUniqueAttendeeCount()) {
+                                event.setLastMilestone(milestones.get(milestoneIndex + 1));
+                                milestoneIndex++;
+                            }
+                            event.updateDBEvent();
+
+                            // Show confetti
+                            confetti = findViewById(R.id.organizer_event_milestones_confetti);
+                            EmitterConfig config = new Emitter(10, TimeUnit.SECONDS).perSecond(50);
+                            party = new PartyFactory(config)
+                                    .angle(270)
+                                    .spread(90)
+                                    .setSpeedBetween(1f, 5f)
+                                    .sizes(new Size(12, 5f, 0.2f))
+                                    .position(0.0, 0.0, 1.0, 0.0)
+                                    .build();
+                            confetti.start(party);
+
+                            // Show milestone message
+                            if (milestones.get(milestoneIndex) == 1) {
+                                Toast.makeText(this, "Congratulations! You have reached the " + milestones.get(milestoneIndex) + " attendee milestone!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, "Congratulations! You have reached the " + milestones.get(milestoneIndex) + " attendees milestone!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
                 }
+
             });
 
         } else {

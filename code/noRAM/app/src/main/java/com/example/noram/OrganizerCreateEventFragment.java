@@ -9,18 +9,10 @@ package com.example.noram;
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +22,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -248,6 +246,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
                     bundle.putLong("signUpLimit", signUpLimit);
+                    bundle.putLong("lastMilestone", 0L);
                     intent.putExtras(bundle);
 
                     // move back organizer activity to my_events fragment before launching the
