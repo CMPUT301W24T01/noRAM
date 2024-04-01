@@ -86,6 +86,7 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
+        this.notifications = new ArrayList<>();
     }
 
     /**
@@ -118,7 +119,8 @@ public class Event {
             List<String> checkedInAttendees,
             String organizerId,
             List<String> signedUpAttendees,
-            Long signUpLimit) {
+            Long signUpLimit,
+            List<Notification> notifications) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -133,6 +135,7 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
+        this.notifications = notifications;
     }
 
     // Getters

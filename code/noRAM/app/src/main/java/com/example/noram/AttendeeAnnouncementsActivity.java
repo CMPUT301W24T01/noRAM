@@ -7,6 +7,7 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.os.Bundle;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,8 +26,9 @@ import java.util.ArrayList;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-    private ArrayList<Notification> NotificationList;
+    private ArrayList<Notification> NotificationDataList;
     private NotificationArrayAdapter NotificationAdapter;
+    private ListView NotificationList;
 
     /**
      * This method is called when the activity is created.
@@ -48,11 +50,23 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
             }
         });
 
-        NotificationList = new ArrayList<>(); // TODO: get notifications from database
+        NotificationList = findViewById(R.id.notification_list);
+
+        NotificationDataList = new ArrayList<>();
         
-        NotificationAdapter = new NotificationArrayAdapter(this, NotificationList);
+        NotificationAdapter = new NotificationArrayAdapter(this, NotificationDataList);
 
-        NotificationList.add(new Notification("Announcement 1", "This is the first announcement"));
+        NotificationList.setAdapter(NotificationAdapter);
 
+
+        // get notifications from database for the given event by decomposing the event from the db and then calling get notifications on it
+        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                assert event != null;
+                NotificationDataList.addAll(event.getNotifications());
+                NotificationAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
