@@ -20,8 +20,8 @@ import java.util.ArrayList;
  * This class represents the activity for the attendee announcements page.
  * It displays the announcements for a specific event.
  * A {@link AppCompatActivity} subclass.
- * @maintainer Gabriel
- * @author Gabriel
+ * @maintainer Christiaan
+ * @author Christiaan
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
