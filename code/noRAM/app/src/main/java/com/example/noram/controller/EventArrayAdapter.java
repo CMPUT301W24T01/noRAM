@@ -64,64 +64,15 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         // get event data
         Event event = events.get(position);
 
-        // get item's fields (UI)
-        TextView eventTitle = view.findViewById(R.id.event_title);
-        TextView eventTime = view.findViewById(R.id.event_time);
-        TextView eventLocation = view.findViewById(R.id.event_location);
-        TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
-        TextView signedUpText = view.findViewById(R.id.event_signed_up_indicator);
-        TextView checkedInText = view.findViewById(R.id.event_checked_in_indicator);
-        TextView happeningNowText = view.findViewById(R.id.event_happening_now);
-
         // update fields and return view
-        eventTitle.setText(event.getName());
-        LocalDateTime startTime = event.getStartTime();
-        LocalDateTime endTime = event.getEndTime();
-        if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
-            eventTime.setText(String.format("%s \n%s to %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
-                    endTime.format(DateTimeFormatter.ofPattern("h:mma"))
-            ));
-        } else {
-            // not the same date: need to include both dates
-            eventTime.setText(String.format("%s at %s to \n%s at %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("h:mm a")),
-                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    endTime.format(DateTimeFormatter.ofPattern("h:mm a"))
-            ));
-        }
+        EventItemManager manager = new EventItemManager(context, event, view);
 
-        // if event is currently happening, display "happening now!"
-        LocalDateTime current = LocalDateTime.now();
-        happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
-
-        eventLocation.setText(event.getLocation());
-        if (event.isLimitedSignUps()) {
-            eventSignUpCapacity.setText(String.format(
-                    getContext().getString(R.string.signup_limit_format),
-                    event.getSignUpCount(),
-                    event.getSignUpLimit())
-            );
-        }
-        else {
-            eventSignUpCapacity.setText(String.format(
-                    getContext().getString(R.string.signup_count_format),
-                    event.getSignUpCount())
-            );
-        }
-
-        if (event.getCheckedInAttendees().contains(MainActivity.attendee.getIdentifier())) {
-            checkedInText.setVisibility(View.VISIBLE);
-        } else {
-            checkedInText.setVisibility(View.INVISIBLE);
-        }
-        if (event.getSignedUpAttendees().contains(MainActivity.attendee.getIdentifier())) {
-            signedUpText.setVisibility(View.VISIBLE);
-        } else {
-            signedUpText.setVisibility(View.INVISIBLE);
-        }
+        manager.setTitle();
+        manager.setTime();
+        manager.setLocation();
+        manager.setSignedUpCount();
+        manager.setSignedUpStatus();
+        manager.setCheckedInStatus();
 
         return view;
     }
