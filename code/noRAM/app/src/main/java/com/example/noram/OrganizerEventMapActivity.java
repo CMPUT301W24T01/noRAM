@@ -173,7 +173,7 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
     }
     /**
      * Once the location is acessed, draw it on the map
-     * another version of this function but instead uses the default market icon provided by the map
+     * another version of this function but instead uses the default marker icon provided by the map
      * @param location the location of the user
      */
     private void handleLocation(Location location) {

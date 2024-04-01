@@ -164,7 +164,11 @@ public class QrScanFragment extends Fragment {
         });
     }
     /**
-     * Get the location of the user from the phone. Suppress permission checks as we already checked for them
+     * Get the location of the user from the phone.
+     * uses the FusedLocationProviderClient provided by Google API to access location.
+     * If location is accessed, goto eventManager.checkInEvent() to update db
+     * If location access fails, exit map.
+     * @suppress the permission check because I check it in onCreate()
      */
     @SuppressLint("MissingPermission")
     private void getLocationQREntry(String ID) {

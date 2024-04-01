@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,8 +47,7 @@ public class Event {
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
-
-    private List<Location> checkedInAttendeesLocations;
+    private List<GeoPoint> checkedInAttendeesLocations;
     /**
      * Default constructor for Event
      */
@@ -106,6 +106,7 @@ public class Event {
      * @param checkedInAttendees list of checked in attendees
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param checkedInAttendeesLocations list of attendee locations
      */
     public Event(
             String id,
@@ -122,7 +123,7 @@ public class Event {
             String organizerId,
             List<String> signedUpAttendees,
             Long signUpLimit,
-            List<Location> checkedInAttendeesLocations) {
+            List<GeoPoint> checkedInAttendeesLocations) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -322,16 +323,16 @@ public class Event {
      * Get the list of checked in attendees locations
      * @return list of attendee locations
      */
-    public List<Location> getCheckedInAttendeesLocations() {
+    public List<GeoPoint> getCheckedInAttendeesLocations() {
         return checkedInAttendeesLocations;
     }
 
     /**
      * Set the list of checked in attendees locations
-     * @param checkedInAttendees new list of checked in attendees locations
+     * @param checkedInAttendeesLocations new list of checked in attendees locations
      */
-    public void setCheckedInAttendeesLocations(List<Location> checkedInAttendees) {
-        this.checkedInAttendeesLocations  = checkedInAttendees;
+    public void setCheckedInAttendeesLocations(List<GeoPoint> checkedInAttendeesLocations) {
+        this.checkedInAttendeesLocations  = checkedInAttendeesLocations;
     }
 
     /**
@@ -432,7 +433,7 @@ public class Event {
         data.put("promoQRID", promoQRID);
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
-        data.put("checkedInAttendeeLocations", checkedInAttendeesLocations);
+        data.put("checkedInAttendeesLocations", checkedInAttendeesLocations);
         data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
@@ -452,7 +453,7 @@ public class Event {
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
-        this.setCheckedInAttendeesLocations((List<Location>) doc.get("checkedInAttendeesLocations"));
+        this.setCheckedInAttendeesLocations((List<GeoPoint>) doc.get("checkedInAttendeesLocations"));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQRID(doc.getString("promoQRID"));
         this.setCheckInQRID(doc.getString("checkInQRID"));

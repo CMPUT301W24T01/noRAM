@@ -30,6 +30,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.List;
 
 /**
@@ -63,8 +65,11 @@ public class EventManager {
 
             //add to checkedInAttendeeLocations
             if (userLocation != null) {
-                List<Location> checkedInAttendeesLocations = (List<Location>) snapshot.get("checkedInAttendeesLocations");
-                checkedInAttendeesLocations.add(userLocation);
+                Double latitude = userLocation.getLatitude();
+                Double longitude = userLocation.getLongitude();
+                GeoPoint point = new GeoPoint(latitude, longitude);
+                List<GeoPoint> checkedInAttendeesLocations = (List<GeoPoint>) snapshot.get("checkedInAttendeesLocations");
+                checkedInAttendeesLocations.add(point);
                 transaction.update(eventRef, "checkedInAttendeesLocations", checkedInAttendeesLocations);
             }
             return null;
