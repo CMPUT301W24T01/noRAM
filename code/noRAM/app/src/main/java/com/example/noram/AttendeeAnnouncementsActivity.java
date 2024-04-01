@@ -58,8 +58,8 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
         NotificationList.setAdapter(NotificationAdapter);
 
-
         // get notifications from database for the given event by decomposing the event from the db and then calling get notifications on it
+
         MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Event event = documentSnapshot.toObject(Event.class);
