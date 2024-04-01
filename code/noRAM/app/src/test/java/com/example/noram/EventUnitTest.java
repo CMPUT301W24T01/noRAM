@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mockConstruction;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
+import com.example.noram.model.Notification;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
@@ -127,7 +128,8 @@ public class EventUnitTest {
             List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
             Long signUpLimit = 1200L;
             String organizerId = "organizerId";
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit);
+            List<Notification> notificationList = new ArrayList<>();
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, notificationList);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -145,6 +147,7 @@ public class EventUnitTest {
             assertEquals(event.getSignUpLimit(), signUpLimit);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
             assertEquals(event.getSignedUpAttendees(), signedUp);
+            assertEquals(event.getNotifications(), notificationList);
         }
     }
 
