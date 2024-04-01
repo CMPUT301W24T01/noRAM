@@ -47,9 +47,6 @@
             android:name=".OrganizerEventInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileEntryActivity"
-            android:exported="false" />
-        <activity
             android:name=".OrganizerActivity"
             android:exported="false" />
         <activity
@@ -90,7 +87,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <service
-            android:name=".PushNotificationService"
+            android:name=".model.PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

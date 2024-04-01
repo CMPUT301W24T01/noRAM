@@ -25,6 +25,7 @@ import java.util.ArrayList;
 /**
  * An adapter that connects a GridView of Photos with an ArrayList of Photos.
  * A {@link PhotoArrayAdapter} object is used to display a list of Photos  in a Gridview.
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class PhotoArrayAdapter extends ArrayAdapter<AdminPhoto>{
@@ -67,7 +68,6 @@ public class PhotoArrayAdapter extends ArrayAdapter<AdminPhoto>{
         ImageView photoView = view.findViewById(R.id.photoView);
 
         // set default bitmap then update with photo's real bitmap (asynchronous)
-        photoView.setImageResource(R.drawable.add_photo_24px);
         photo.updateWithBitmap(photoView);
 
         return view;

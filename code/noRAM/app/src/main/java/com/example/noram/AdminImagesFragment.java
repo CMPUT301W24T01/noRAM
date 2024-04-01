@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 /**
  * Fragment of the Admin page, displaying all the images of the app's database
+ * @maintainer Gabriel
  * @author Gabriel
  */
 public class AdminImagesFragment extends Fragment {

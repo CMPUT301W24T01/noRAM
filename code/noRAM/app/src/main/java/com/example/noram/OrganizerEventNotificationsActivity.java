@@ -86,7 +86,7 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
             // Send notification
             String title = editTitle.getText().toString();
             String content = editContent.getText().toString();
-            MainActivity.pushService.sendNotification(title, content, event);
+            MainActivity.pushService.sendNotification(title, content, event, false);
             finish();
         });
 

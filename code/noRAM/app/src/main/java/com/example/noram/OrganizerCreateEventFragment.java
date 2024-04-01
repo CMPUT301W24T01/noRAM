@@ -249,7 +249,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putParcelable("imageUri", imageUri);
                     bundle.putLong("signUpLimit", signUpLimit);
                     intent.putExtras(bundle);
+
+                    // move back organizer activity to my_events fragment before launching the
+                    // new activity
                     startActivity(intent);
+                    ((OrganizerActivity) getActivity()).displayMyEventsFragment();
                 }
                 // Otherwise, show error Toast
                 else {
