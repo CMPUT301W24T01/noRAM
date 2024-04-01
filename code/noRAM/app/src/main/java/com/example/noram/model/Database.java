@@ -6,19 +6,13 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
-import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
-import android.widget.Toast;
+import android.net.Uri;
 
-import com.example.noram.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -138,7 +132,7 @@ public class Database {
                 completeFunction.accept(image);
             };
             executor.execute(decodeRunnable);
-        });
+        }).addOnFailureListener(e -> completeFunction.accept(null));
     }
 
     /**

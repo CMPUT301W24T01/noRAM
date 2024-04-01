@@ -7,7 +7,6 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,7 +18,6 @@ import com.example.noram.model.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -81,15 +79,28 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
         eventTitle.setText(event.getName());
         eventDescription.setText(event.getDetails());
         LocalDateTime startTime = event.getStartTime();
-        eventLocation.setText(String.format("%s from %s - %s @ %s",
-                startTime.format(DateTimeFormatter.ofPattern("MMMM dd")),
-                startTime.format(DateTimeFormatter.ofPattern("HH:mma")),
-                event.getEndTime().format(DateTimeFormatter.ofPattern("HH:mma")),
-                event.getLocation()
-        ));
+        LocalDateTime endTime = event.getEndTime();
+
+        // the events are the same date
+        if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
+            eventLocation.setText(String.format("%s from %s to %s @ %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    event.getLocation()
+            ));
+        } else {
+            // not the same date: need to include both dates
+            eventLocation.setText(String.format("%s at %s to %s at %s\n@ %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    event.getLocation()));
+        }
 
         //download the event image from db and populate the screen. Hide it if it doesn't exist
-        eventImage.setVisibility(View.GONE);
+        eventImage.setVisibility(View.INVISIBLE);
         String eventImagePath = "event_banners/"+event.getId()+"-upload";
         MainActivity.db.downloadPhoto(eventImagePath,
                 t -> runOnUiThread(() -> {
@@ -97,6 +108,7 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
                     eventImage.setImageBitmap(t);
                 })
         );
+
 
         // use the organizer ID to get organizer information.
         MainActivity.db.getOrganizerRef().document(event.getOrganizerId()).get().addOnSuccessListener(documentSnapshot -> {

@@ -12,18 +12,11 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.EventManager;
-import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * The OrganizerEventInfoActivity class displays the information about an event for the organizer.

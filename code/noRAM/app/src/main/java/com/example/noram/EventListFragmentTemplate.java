@@ -8,7 +8,6 @@ package com.example.noram;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,8 +15,6 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
-import com.example.noram.controller.EventManager;
-import com.example.noram.model.Attendee;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;

@@ -55,8 +55,10 @@
         android:id="@+id/organizer_activity_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/navbar_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/organizer_navigation_items" />
+        app:menu="@menu/organizer_navigation_items"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
