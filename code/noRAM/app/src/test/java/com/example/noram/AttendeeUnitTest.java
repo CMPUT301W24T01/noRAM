@@ -20,6 +20,9 @@ import java.util.Map;
 
 /**
  * Tests for the Attendee class
+ * @maintainer Cole
+ * @author Cole
+ * @author Ethan
  */
 public class AttendeeUnitTest {
     /**

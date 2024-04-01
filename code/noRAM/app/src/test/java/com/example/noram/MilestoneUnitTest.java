@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the Milestone class.
+ * @maintainer Ethan
+ * @author Ethan
  */
 public class MilestoneUnitTest {
     /**

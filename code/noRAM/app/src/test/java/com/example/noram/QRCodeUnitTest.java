@@ -17,6 +17,8 @@ import java.util.Map;
 
 /**
  * Tests for the QRCode class.
+ * @maintainer Cole
+ * @author Cole
  */
 public class QRCodeUnitTest {
     /**

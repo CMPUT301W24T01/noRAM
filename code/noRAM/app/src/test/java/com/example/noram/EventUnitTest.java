@@ -30,6 +30,9 @@ import java.util.stream.Stream;
 
 /**
  * Unit tests for the Event class
+ * @maintainer Ethan
+ * @author Ethan
+ * @author Cole
  */
 public class EventUnitTest {
     /**
