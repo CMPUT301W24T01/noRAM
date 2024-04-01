@@ -13,9 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.noram.AttendeeActivity;
 import com.example.noram.MainActivity;
-import com.example.noram.model.Event;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -85,7 +83,9 @@ public class PushNotificationService extends FirebaseMessagingService {
     public void sendNotification(String title, String data, Event event, Boolean sendToOrganizer) {
 
         // Send the notification to the database
-        sendNotificationToDB(title, data, event);
+        if (!sendToOrganizer) {
+            sendNotificationToDB(title, data, event);
+        }
 
         Set<String> attendeeList;
 
@@ -148,14 +148,18 @@ public class PushNotificationService extends FirebaseMessagingService {
                             Log.d("Body", body.toString());
 
                             // Send the message
+                            // https://stackoverflow.com/a/14443056, Dr.Luiji, "How can I fix 'android.os.NetworkOnMainThreadException'?", accessed April 1 2024
+                            Thread thread = new Thread(() -> {
+                                try {
+                                    Response response = client.newCall(request).execute();
+                                    Log.d("Response", response.toString());
+                                    response.close();
+                                } catch (IOException e) {
+                                    Log.d("Error", e.toString());
+                                }
+                            });
 
-                            try {
-                                Response response = client.newCall(request).execute();
-                                Log.d("Response", response.toString());
-                                response.close();
-                            } catch (IOException e) {
-                                Log.d("Error", e.toString());
-                            }
+                            thread.start();
                         }
                     });
                 }

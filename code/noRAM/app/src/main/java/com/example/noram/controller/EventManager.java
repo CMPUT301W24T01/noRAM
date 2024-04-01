@@ -19,6 +19,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -47,11 +49,31 @@ public class EventManager {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+
+
+            // get all unique checked-in attendees
+            HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+            Long numAttendees = Long.valueOf(uniqueAttendees.size());
+
+            // Get the milestones for the event
+            List<Long> milestones = (List<Long>) snapshot.get("milestones");
+
+            // Check if the event reaches a milestone from the attendee check-in
+            if (milestones.contains(numAttendees) && Collections.frequency(checkedInAttendees, MainActivity.attendee.getIdentifier()) == 1){
+                Event eventObject = new Event();
+                eventObject.updateWithDocument(snapshot);
+
+                if (numAttendees == 1) {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendee!", eventObject, true);
+                } else {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendees!", eventObject, true);
+                }
+            }
+
             transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
             return null;
         });
     }
-
 
     /**
      * Sign the current user up for the event given by eventID

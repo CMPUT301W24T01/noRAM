@@ -415,6 +415,14 @@ public class Event {
     public void setLastMilestone(Long lastMilestone) {
         this.lastMilestone = lastMilestone;
     }
+
+    /**
+     * Sets the list of notifications
+     * @param notifications new list of notifications
+     */
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
     
     /**
      * Adds a notification to the event
@@ -462,6 +470,7 @@ public class Event {
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
         data.put("lastMilestone", lastMilestone);
+        data.put("notifications", notifications);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -485,6 +494,7 @@ public class Event {
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
         this.setLastMilestone(doc.getLong("lastMilestone"));
+        this.setNotifications((List<Notification>) doc.get("notifications"));
     }
 
     /**
