@@ -38,14 +38,14 @@
             android:id="@+id/image_view"
             android:layout_width="200dp"
             android:layout_height="200dp"
+
             android:layout_marginTop="16dp"
             android:background="@color/button_background_color"
-
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_appearance_header"
             app:shapeAppearanceOverlay="@style/circle"
             app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="5dp" />
@@ -103,6 +103,92 @@
             app:layout_constraintStart_toEndOf="@+id/organizer_info_cancel_button"
             app:layout_constraintTop_toBottomOf="@+id/edit_organizer_display_name_layout"
             app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/organizer_upcoming_events_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Your upcoming events:"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_current_attendees" />
+
+        <TextView
+            android:id="@+id/organizer_dashboard_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Your Dashboard:"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/organizer_appearance_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Edit Organizer Appearance:"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_brief_event_list" />
+
+        <TextView
+            android:id="@+id/organizer_current_signups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Total Current \n Signups:\n0"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/organizer_current_attendees"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
+
+        <TextView
+            android:id="@+id/organizer_current_attendees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Total Current \nAttendees:\n0"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
+
+        <TextView
+            android:id="@+id/organizer_all_time_attendees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="All Time \nAttendees:\n0"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/organizer_current_attendees"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
+
+        <ListView
+            android:id="@+id/organizer_brief_event_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_upcoming_events_header" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
