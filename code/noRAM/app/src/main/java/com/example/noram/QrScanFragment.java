@@ -147,6 +147,7 @@ public class QrScanFragment extends Fragment {
                 String eventId = qrDocument.getString("event");
 
                 QRType qrType = QRType.valueOf(qrDocument.getString("type"));
+
                 if (qrType == QRType.SIGN_IN) {
                     if (MainActivity.attendee.getAllowLocation()) {
                         getLocationQREntry(eventId);
@@ -170,7 +171,7 @@ public class QrScanFragment extends Fragment {
         //grab the FusedLocationProviderClient builder
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         //attempt to get the location
-        fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+        fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
             // if the API can get a location
             @Override
             public void onSuccess(Location location) {
@@ -184,7 +185,7 @@ public class QrScanFragment extends Fragment {
                     EventManager.checkInToEvent(ID, null);
                 }
             }
-        }).addOnFailureListener(requireActivity(), new OnFailureListener() {
+        }).addOnFailureListener(getActivity(), new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 // exit map
