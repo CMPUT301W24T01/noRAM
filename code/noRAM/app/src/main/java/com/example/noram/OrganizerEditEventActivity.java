@@ -144,7 +144,6 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     if (event.isLimitedSignUps()) {
                         editLimitSignUps.setVisibility(View.VISIBLE);
                     }
-                    return null;
                 }
             });
             task.addOnFailureListener(new OnFailureListener() {

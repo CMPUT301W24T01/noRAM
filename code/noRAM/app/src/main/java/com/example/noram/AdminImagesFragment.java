@@ -107,7 +107,6 @@ public class AdminImagesFragment extends Fragment {
                                 addPhotoToGrid(item, true);
                             }
                         }
-                        return null;
                     }
                 });
         MainActivity.db.getStorage().getReference("event_banners/").listAll()
@@ -118,7 +117,6 @@ public class AdminImagesFragment extends Fragment {
                         for(StorageReference item : listResult.getItems()){
                             addPhotoToGrid(item, false);
                         }
-                        return null;
                     }
                 });
 

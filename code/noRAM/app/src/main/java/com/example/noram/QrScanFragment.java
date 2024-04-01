@@ -176,7 +176,7 @@ public class QrScanFragment extends Fragment {
             public void onSuccess(Location location) {
                 //and the location is not null
                 if (location != null) {
-                    EventManager.checkInToEvent(ID, null);
+                    EventManager.checkInToEvent(ID, location);
                 } else {
                     //TODO: exit maps. User provided permission to use location but the location was not properly received.
                     //TODO: create an internal error message
