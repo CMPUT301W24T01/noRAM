@@ -246,7 +246,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
                     bundle.putLong("signUpLimit", signUpLimit);
-                    bundle.putLong("lastMilestone", 0L);
+                    bundle.putLong("lastMilestone", -1L);
                     intent.putExtras(bundle);
 
                     // move back organizer activity to my_events fragment before launching the

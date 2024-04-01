@@ -86,7 +86,7 @@ public class EventUnitTest {
             Boolean trackLocation = true;
             String organizerId = "orgId";
             Long signUpLimit = -1L;
-            Long lastMilestone = 0L;
+            Long lastMilestone = -1L;
             Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone);
 
             assertEquals(event.getId(), id);
@@ -130,7 +130,7 @@ public class EventUnitTest {
             List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
             Long signUpLimit = 1200L;
             String organizerId = "organizerId";
-            Long lastMilestone = 0L;
+            Long lastMilestone = -1L;
             Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, lastMilestone);
 
             assertEquals(event.getId(), id);
