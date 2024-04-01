@@ -189,6 +189,10 @@ public class EventUnitTest {
 
     /**
      * Test the getMilestoneCounts method of the event
+     * @param attendees List of attendees to check
+     * @param milestones List of milestones to check
+     * @param expected List of expected milestones
+     * @param expectedProgress Expected progress
      */
     @ParameterizedTest
     @MethodSource("provideMilestoneCounts")
@@ -221,6 +225,11 @@ public class EventUnitTest {
         );
     }
 
+    /**
+     * Test the getUniqueAttendeeCount method of the event
+     * @param attendees List of attendees to check
+     * @param expected Expected number of unique attendees
+     */
     @ParameterizedTest
     @MethodSource("provideGetUniqueAttendeeCount")
     public void getUniqueAttendeeCountTest(ArrayList<String> attendees, Integer expected) {
@@ -229,6 +238,10 @@ public class EventUnitTest {
         assertEquals(expected, event.getUniqueAttendeeCount());
     }
 
+    /**
+     * Provides parameters for the getUniqueAttendeeCountTest
+     * @return Stream of arguments for the test
+     */
     private static Stream<Arguments> provideGetUniqueAttendeeCount() {
         return Stream.of(
                 Arguments.of(new ArrayList<>(Arrays.asList("a", "b", "c", "d")), 4),

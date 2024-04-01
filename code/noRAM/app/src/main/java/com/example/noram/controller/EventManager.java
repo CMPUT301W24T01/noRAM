@@ -28,6 +28,7 @@ import java.util.List;
  * @maintainer Gabriel
  * @author Gabriel
  * @author Carlin
+ * @author Ethan
  */
 public class EventManager {
     public static final String eventIDLabel = "eventID"; // Identifier for event's ID in bundles
@@ -63,6 +64,7 @@ public class EventManager {
                 Event eventObject = new Event();
                 eventObject.updateWithDocument(snapshot);
 
+                // Send a notification to the organizer about the milestone
                 if (numAttendees == 1) {
                     MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendee!", eventObject, true);
                 } else {

@@ -76,6 +76,7 @@ public class EventMilestoneArrayAdapter extends ArrayAdapter<Milestone> {
         }
         milestoneField.setText(milestoneString);
 
+        // set the attendee progress count string
         if (attendeeCount >= milestone) {
             attendeeCountField.setVisibility(View.INVISIBLE);
             milestoneAchievedField.setVisibility(View.VISIBLE);

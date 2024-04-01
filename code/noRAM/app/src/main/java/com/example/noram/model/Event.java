@@ -113,6 +113,7 @@ public class Event {
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
      * @param lastMilestone the last milestone that was achieved
+     * @param notifications list of notifications
      */
     public Event(
             String id,
@@ -423,14 +424,6 @@ public class Event {
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
-    
-    /**
-     * Adds a notification to the event
-     * @param notification the notification to add
-     */
-    public void addNotification(Notification notification) {
-        notifications.add(notification);
-    }
 
     // Functions
     /**
@@ -498,6 +491,14 @@ public class Event {
     }
 
     /**
+     * Adds a notification to the event
+     * @param notification the notification to add
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    /**
      * Adds string representation of attendee into signedUpAttendees list
      * @param attendee string representation of attendee
      */
@@ -510,10 +511,13 @@ public class Event {
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        // If no attendees have checked in, return an empty list
         if (checkedInAttendees.isEmpty()) {
             callback.accept(new ArrayList<>());
             return;
         }
+
+        // Get the attendee objects for each checked in attendee
         MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                 Map<String, Object> data = document.getData();
@@ -522,6 +526,7 @@ public class Event {
                 checkedInAttendeeObjects.add(attendee);
             }
 
+            // Count the number of times each attendee has checked in and return the list
             ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
             callback.accept(attendeeCheckInCounters);
         });
@@ -535,6 +540,7 @@ public class Event {
     public ArrayList<AttendeeCheckInCounter> countCheckIns(ArrayList<Attendee> attendees) {
         ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();
 
+        // Count the number of times each attendee has checked in
         for (Attendee attendee : attendees) {
             int count = Collections.frequency(checkedInAttendees, attendee.getIdentifier());
             attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
@@ -549,17 +555,20 @@ public class Event {
     public ArrayList<Milestone> getMilestoneCounts() {
         HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
         ArrayList<String> uniqueAttendeesList = new ArrayList<>(uniqueAttendees);
+
+        // Get the total number of unique attendees
         int total = uniqueAttendeesList.size();
 
+        // Create a set of milestone objects to remove duplicates automatically
         Set<Milestone> milestoneCounts = new HashSet<>();
         for (int i = 0; i < milestones.size(); i++) {
             Integer milestone = Integer.valueOf(String.valueOf(milestones.get(i)));
             milestoneCounts.add(new Milestone(milestone, total));
         }
-
+        // Convert the set to a list and sort it
         ArrayList<Milestone> milestoneCountsList = new ArrayList<>(milestoneCounts);
-        // Sort by milestone number
         milestoneCountsList.sort(Milestone::compareTo);
+
         return milestoneCountsList;
     }
 

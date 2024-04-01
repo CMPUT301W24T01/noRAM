@@ -37,6 +37,7 @@ import okhttp3.Response;
  * A {@link FirebaseMessagingService} subclass.
  * @maintainer Christiaan
  * @author Christiaan
+ * @author Ethan
  */
 public class PushNotificationService extends FirebaseMessagingService {
 
