@@ -471,6 +471,12 @@ public class Event {
         signedUpAttendees.add(attendee);
     }
 
+    /**
+     * Remove the string representation of an attendee from the signedUpAttendees list
+     * @param attendee string representation of the attendee being removed
+     */
+    public void removeSignedUpAttendee(String attendee){ signedUpAttendees.remove(attendee);}
+
     /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
      * * @param callback the callback to provide the list of attendees and their check-in counts to
      */

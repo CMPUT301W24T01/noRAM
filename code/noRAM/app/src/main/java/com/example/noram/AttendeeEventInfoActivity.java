@@ -39,6 +39,7 @@ import java.util.List;
 public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
 
     private Button signupButton; // button that allows user to sign up for event
+    private Button unsignButton;
     private ImageView signupImage; // image showing user is signed in
     private TextView signupText; // text showing that user is signed in
 
@@ -47,6 +48,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
      */
     private void displaySignedIn(){
         signupButton.setVisibility(View.GONE);
+        unsignButton.setVisibility(View.VISIBLE);
         signupText.setVisibility(View.VISIBLE);
         signupImage.setVisibility(View.VISIBLE);
     }
@@ -56,6 +58,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
      */
     private void hideSignedIn(){
         signupButton.setVisibility(View.VISIBLE);
+        unsignButton.setVisibility(View.GONE);
         signupText.setVisibility(View.GONE);
         signupImage.setVisibility(View.GONE);
     }
@@ -87,6 +90,20 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         else {
             Toast.makeText(this, "Sign-ups are currently full for this event", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Unsign the user from the current event in the database
+     */
+    private void unsign(){
+        // update database and page's event
+        EventManager.unsignFromEvent(event.getId());
+        event.removeSignedUpAttendee(MainActivity.attendee.getIdentifier());
+        // update signed-in count and don't show as signed in anymore
+        updateSignUpText();
+        hideSignedIn();
+        // show feedback message
+        Toast.makeText(this, "Successfully unsigned!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -122,12 +139,14 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         setContentView(R.layout.attendee_event_info);
 
         // get extra views
+        unsignButton = findViewById(R.id.unsignButton);
         signupButton = findViewById(R.id.signupButton);
         signupImage = findViewById(R.id.signedInImage);
         signupText = findViewById(R.id.signedInText);
 
-        // connect signup button
+        // connect signup and unsign button
         signupButton.setOnClickListener(v -> signup());
+        unsignButton.setOnClickListener(v -> unsign());
 
         // show or hide signup features if already signed-in or not
         List<String> attendees = event.getSignedUpAttendees();
