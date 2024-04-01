@@ -5,22 +5,17 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import android.Manifest;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import com.example.noram.model.Attendee;
@@ -32,6 +27,8 @@ import org.junit.Test;
 
 /**
  * Espresso tests for the attendee activity
+ * @maintainer Cole
+ * @author Cole
  */
 public class AttendeeActivityTest {
     public ActivityScenario<AttendeeActivity> scenario;

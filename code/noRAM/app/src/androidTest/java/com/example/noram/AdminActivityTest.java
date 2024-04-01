@@ -19,6 +19,9 @@ import org.junit.Test;
 
 /**
  * Espresso Tests for the admin activity
+ * @maintainer Cole
+ * @author Cole
+ * @author Gabriel
  */
 public class AdminActivityTest {
     public ActivityScenario<AdminActivity> scenario;
