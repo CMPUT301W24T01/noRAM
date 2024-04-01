@@ -64,9 +64,9 @@ public class PushNotificationService extends FirebaseMessagingService {
         Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
         // Change to the UI Thread
-        AttendeeActivity.mn.runOnUiThread(() -> {
+        MainActivity.mn.runOnUiThread(() -> {
             // Display the notification with an alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(AttendeeActivity.mn);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
             builder.setTitle(remoteMessage.getNotification().getTitle());
             builder.setMessage(remoteMessage.getNotification().getBody());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
