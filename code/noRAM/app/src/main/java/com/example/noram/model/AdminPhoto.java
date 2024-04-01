@@ -175,7 +175,7 @@ public class AdminPhoto {
         }
         else{
             // set default picture and place imageView in waiting list
-            view.setImageResource(R.drawable.add_photo_24px);
+            view.setImageResource(R.drawable.outline_insert_photo_24);
             viewsToUpdate.add(view);
         }
     }
