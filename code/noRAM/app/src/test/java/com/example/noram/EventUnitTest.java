@@ -12,6 +12,7 @@ import com.example.noram.model.Attendee;
 import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
 import com.example.noram.model.Milestone;
+import com.example.noram.model.Notification;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
@@ -131,7 +132,8 @@ public class EventUnitTest {
             Long signUpLimit = 1200L;
             String organizerId = "organizerId";
             Long lastMilestone = -1L;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, lastMilestone);
+            List<Notification> notificationList = new ArrayList<>();
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, lastMilestone, notificationList);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -150,6 +152,7 @@ public class EventUnitTest {
             assertEquals(event.getCheckedInAttendees(), checkedIn);
             assertEquals(event.getSignedUpAttendees(), signedUp);
             assertEquals(event.getLastMilestone(), lastMilestone);
+            assertEquals(event.getNotifications(), notificationList);
         }
     }
 

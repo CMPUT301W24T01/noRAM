@@ -17,6 +17,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        android:id="@+id/notificationButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#00FF0808"
+        android:backgroundTint="#00473434"
+        android:outlineProvider="none"
+        android:src="@drawable/baseline_circle_notifications_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
+
+    <ImageButton
         android:id="@+id/backButton"
         android:layout_width="50dp"
         android:layout_height="50dp"

@@ -78,7 +78,8 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             MainActivity.organizer.getIdentifier(),
             new ArrayList<>(),
             eventBundle.getLong("signUpLimit"),
-            eventBundle.getLong("lastMilestone")
+            eventBundle.getLong("lastMilestone"),
+            new ArrayList<>()
         );
         event.updateDBEvent();
         promoQRCode.updateDBQRCode();

@@ -47,6 +47,7 @@ public class Event {
     private List<String> signedUpAttendees;
     private Long signUpLimit;
     private Long lastMilestone;
+    private List<Notification> notifications;
 
     /**
      * Default constructor for Event
@@ -92,6 +93,7 @@ public class Event {
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
         this.lastMilestone = lastMilestone;
+        this.notifications = new ArrayList<>();
     }
 
     /**
@@ -127,7 +129,8 @@ public class Event {
             String organizerId,
             List<String> signedUpAttendees,
             Long signUpLimit,
-            Long lastMilestone) {
+            Long lastMilestone,
+            List<Notification> notifications) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -143,6 +146,7 @@ public class Event {
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
         this.lastMilestone = lastMilestone;
+        this.notifications = notifications;
     }
 
     // Getters
@@ -257,6 +261,14 @@ public class Event {
      */
     public Long getLastMilestone() {
         return lastMilestone;
+    }
+
+    /**
+     * Returns the number of checked-in attendees
+     * @return size of checkedInAttendees ArrayList
+     */
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
     // Setters
@@ -402,6 +414,14 @@ public class Event {
      */
     public void setLastMilestone(Long lastMilestone) {
         this.lastMilestone = lastMilestone;
+    }
+    
+    /**
+     * Adds a notification to the event
+     * @param notification the notification to add
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
     }
 
     // Functions

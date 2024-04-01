@@ -1,24 +1,34 @@
 /*
 This file is used to display the announcements for a specific event.
 Outstanding Issues:
-- Has no functionality yet
+-
  */
 
 package com.example.noram;
 
 import android.os.Bundle;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.noram.controller.NotificationArrayAdapter;
+import com.example.noram.model.Event;
+import com.example.noram.model.Notification;
+
+import java.util.ArrayList;
 
 /**
  * This class represents the activity for the attendee announcements page.
  * It displays the announcements for a specific event.
  * A {@link AppCompatActivity} subclass.
- * @maintainer Gabriel
- * @author Gabriel
+ * @maintainer Christiaan
+ * @author Christiaan
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
+    private ArrayList<Notification> NotificationDataList;
+    private NotificationArrayAdapter NotificationAdapter;
+    private ListView NotificationList;
 
     /**
      * This method is called when the activity is created.
@@ -32,6 +42,31 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
         // retrieve corresponding event in database
         int eventID = getIntent().getIntExtra(eventIDLabel,0);
-        // TODO: Actually query database to get corresponding event
+
+        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                // displayAnnouncements(event);
+            }
+        });
+
+        NotificationList = findViewById(R.id.notification_list);
+
+        NotificationDataList = new ArrayList<>();
+        
+        NotificationAdapter = new NotificationArrayAdapter(this, NotificationDataList);
+
+        NotificationList.setAdapter(NotificationAdapter);
+
+        // get notifications from database for the given event by decomposing the event from the db and then calling get notifications on it
+
+        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                assert event != null;
+                NotificationDataList.addAll(event.getNotifications());
+                NotificationAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }

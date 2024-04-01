@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.noram.AttendeeActivity;
 import com.example.noram.MainActivity;
 import com.example.noram.model.Event;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -36,8 +37,8 @@ import okhttp3.Response;
 /**
  * The PushNotificationService class is used to send notifications to attendees of an event.
  * A {@link FirebaseMessagingService} subclass.
- * @Maintainer Christiaan
- * @Author Christiaan
+ * @maintainer Christiaan
+ * @author Christiaan
  */
 public class PushNotificationService extends FirebaseMessagingService {
 
@@ -82,6 +83,9 @@ public class PushNotificationService extends FirebaseMessagingService {
      * @param sendToOrganizer a boolean to check if we wish to only send the notification to the organizer
      */
     public void sendNotification(String title, String data, Event event, Boolean sendToOrganizer) {
+
+        // Send the notification to the database
+        sendNotificationToDB(title, data, event);
 
         Set<String> attendeeList;
 
@@ -158,5 +162,17 @@ public class PushNotificationService extends FirebaseMessagingService {
             });
         }
     }
+
+    /**
+     * A method to send a notification to the attendees of an event
+     * @param title the title of the notification
+     * @param data the data of the notification
+     * @param event the event to send the notification to
+     */
+    private void sendNotificationToDB(String title, String data, Event event) {
+        event.addNotification(new Notification(title, data));
+        event.updateDBEvent(); // update the event in the database
+    }
+
 }
 
