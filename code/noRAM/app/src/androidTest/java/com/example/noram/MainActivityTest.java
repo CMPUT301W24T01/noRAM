@@ -15,8 +15,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import com.example.noram.model.Attendee;
@@ -29,6 +27,8 @@ import org.junit.Test;
 
 /**
  * Espresso tests for the main activity
+ * @maintainer Cole
+ * @author Cole
  */
 public class MainActivityTest {
     public ActivityScenario<MainActivity> scenario;

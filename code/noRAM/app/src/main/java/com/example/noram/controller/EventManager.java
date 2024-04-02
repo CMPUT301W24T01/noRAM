@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
@@ -20,6 +19,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ import java.util.List;
  * @maintainer Gabriel
  * @author Gabriel
  * @author Carlin
+ * @author Ethan
  */
 public class EventManager {
     public static final String eventIDLabel = "eventID"; // Identifier for event's ID in bundles
@@ -48,11 +50,32 @@ public class EventManager {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+
+
+            // get all unique checked-in attendees
+            HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+            Long numAttendees = Long.valueOf(uniqueAttendees.size());
+
+            // Get the milestones for the event
+            List<Long> milestones = (List<Long>) snapshot.get("milestones");
+
+            // Check if the event reaches a milestone from the attendee check-in
+            if (milestones.contains(numAttendees) && Collections.frequency(checkedInAttendees, MainActivity.attendee.getIdentifier()) == 1){
+                Event eventObject = new Event();
+                eventObject.updateWithDocument(snapshot);
+
+                // Send a notification to the organizer about the milestone
+                if (numAttendees == 1) {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendee!", eventObject, true);
+                } else {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendees!", eventObject, true);
+                }
+            }
+
             transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
             return null;
         });
     }
-
 
     /**
      * Sign the current user up for the event given by eventID

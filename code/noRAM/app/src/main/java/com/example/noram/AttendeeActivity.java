@@ -45,6 +45,7 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
     private Fragment activeFragment;
     private BottomNavigationView navBar;
     private TextView headerText;
+    public static AttendeeActivity sn;
 
     /**
      * Setup the activity when it is created.
@@ -63,6 +64,9 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
         navBar.setSelectedItemId(NAV_SCAN);
         activeFragment = qrFragment;
+
+        // Set the attendee activity to this instance for use in other classes
+        sn = this;
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()

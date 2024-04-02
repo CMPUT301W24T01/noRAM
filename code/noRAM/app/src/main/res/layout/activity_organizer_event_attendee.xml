@@ -67,14 +67,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
 
+    <TextView
+        android:id="@+id/organizer_event_attendee_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There are no attendees yet"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_event_attendee_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
     <ListView
         android:id="@+id/organizer_event_attendee_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:listSelector="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_search" >
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_search">
 
     </ListView>
 
@@ -82,6 +96,7 @@
         android:id="@+id/organizer_event_attendee_search_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:listSelector="@android:color/transparent"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

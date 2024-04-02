@@ -46,6 +46,8 @@ import org.mockito.Mockito;
 
 /**
  * Espresso Tests for the Organizer Activity
+ * @maintainer Cole
+ * @author Cole
  */
 public class OrganizerActivityTest {
     public ActivityScenario<OrganizerActivity> scenario;
