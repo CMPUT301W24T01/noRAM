@@ -13,22 +13,36 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
 import com.example.noram.model.PushNotificationService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 /**
  * The main activity of the application. This activity is the first activity that is launched
@@ -46,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private Button adminButton;
     public static PushNotificationService pushService = new PushNotificationService();
     public static MainActivity mn;
+    private BottomNavigationView navBar;
+    private TextView eventPosterTitle;
 
 
     /**
@@ -66,25 +82,33 @@ public class MainActivity extends AppCompatActivity {
         // for now, this will give us a base to start work without clashing against each other.
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.INVISIBLE);
-        Button organizerButton = findViewById(R.id.organizerButton);
-        Button attendeeButton = findViewById(R.id.attendeeButton);
+        navBar = findViewById(R.id.bottom_nav);
 
-        // Start each activity via an intent.
+        // hide menu until user is fully signed in and remove focus from its items
+        navBar.setVisibility(View.INVISIBLE);
+        navBar.setItemActiveIndicatorEnabled(false);
+
+        // hide eventPoster's title until page is loaded
+        eventPosterTitle = findViewById(R.id.eventPoster_title);
+        eventPosterTitle.setVisibility(View.INVISIBLE);
+
+        // Start admin via button.
         adminButton.setOnClickListener((v ->
                 startActivity(new Intent(MainActivity.this, AdminActivity.class))
                 ));
 
-        organizerButton.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, OrganizerActivity.class))
-        );
-
-        attendeeButton.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, AttendeeActivity.class))
-        );
-
-        // hide buttons until the user is fully signed in
-        organizerButton.setVisibility(View.INVISIBLE);
-        attendeeButton.setVisibility(View.INVISIBLE);
+        // connect navigation bar to other pages
+        navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+             /**
+              * Change to an activity when a navbar item is selected.
+              * @param item The selected item on the navbar
+              * @return true if navigation succeeds, false otherwise
+              */
+             @Override
+             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                 return navigateTo(item);
+             }
+        });
 
         // ask for camera permission
         // Reference: https://stackoverflow.com/a/66751594, Kfir Ram, "How to get camera permission on android", accessed feb 19 2024
@@ -155,10 +179,25 @@ public class MainActivity extends AppCompatActivity {
                                     organizer.updateDBOrganizer();
                                 }
                                 // Show the buttons after the user is signed in and remove progress bar
-                                findViewById(R.id.organizerButton).setVisibility(View.VISIBLE);
-                                findViewById(R.id.attendeeButton).setVisibility(View.VISIBLE);
-                                updateAdminAccess(user.getUid());
+                                navBar.setVisibility(View.VISIBLE);
                                 findViewById(R.id.progressBar).setVisibility(View.GONE);
+
+                                // update admin access
+                                updateAdminAccess(user.getUid());
+
+                                // show the poster event and related title
+                                eventPosterTitle.setVisibility(View.VISIBLE);
+                                db.getEventsRef().get().addOnSuccessListener(query -> {
+                                    // get random event
+                                    Random random = new Random();
+                                    int randIndex = random.nextInt(query.size());
+                                    DocumentSnapshot randDoc = query.getDocuments().get(randIndex);
+
+                                    // random event is set as poster
+                                    Event event = new Event();
+                                    event.updateWithDocument(randDoc);
+                                    displayPosterEvent(event);
+                                });
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -188,6 +227,109 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Log.d("AdminAccess", "User does not have admin privileges");
                 }
+            }
+        });
+    }
+
+    /**
+     * Navigate to the corresponding menu item
+     * @param item menuItem to navigate to
+     * @return true if navigation succeeded, else false
+     */
+    private boolean navigateTo(MenuItem item) {
+        int itemID = item.getItemId();
+        if(itemID == R.id.attend_events ){
+            startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
+        } else if(itemID == R.id.organize_events){
+            startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
+        } else{
+            return false;
+        }
+
+        // if valid item, show focus and return true
+        navBar.setItemActiveIndicatorEnabled(true);
+        return true;
+    }
+
+    /**
+     * Promotes a random event to the main page of the app, that the user can consult.
+     * The main logic is the same as with EventArrayAdapter
+     * @param event The event being promoted to the main page
+     */
+    private void displayPosterEvent(Event event){
+        // inflate layout
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.event_list_item, null);
+
+        FrameLayout container = findViewById(R.id.poster_event);
+        container.addView(view);
+
+        // get item's fields (UI)
+        TextView eventTitle = view.findViewById(R.id.event_title);
+        TextView eventTime = view.findViewById(R.id.event_time);
+        TextView eventLocation = view.findViewById(R.id.event_location);
+        TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
+        TextView signedUpText = view.findViewById(R.id.event_signed_up_indicator);
+        TextView checkedInText = view.findViewById(R.id.event_checked_in_indicator);
+        TextView happeningNowText = view.findViewById(R.id.event_happening_now);
+
+        // update fields and return view
+        eventTitle.setText(event.getName());
+        LocalDateTime startTime = event.getStartTime();
+        LocalDateTime endTime = event.getEndTime();
+        if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
+            eventTime.setText(String.format("%s \n%s to %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mma"))
+            ));
+        } else {
+            // not the same date: need to include both dates
+            eventTime.setText(String.format("%s at %s to \n%s at %s",
+                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    startTime.format(DateTimeFormatter.ofPattern("h:mm a")),
+                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
+                    endTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+            ));
+        }
+
+        // if event is currently happening, display "happening now!"
+        LocalDateTime current = LocalDateTime.now();
+        happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
+
+        // show signups count
+        eventLocation.setText(event.getLocation());
+        if (event.isLimitedSignUps()) {
+            eventSignUpCapacity.setText(String.format(
+                    this.getString(R.string.signup_limit_format),
+                    event.getSignUpCount(),
+                    event.getSignUpLimit())
+            );
+        }
+        else {
+            eventSignUpCapacity.setText(String.format(
+                    this.getString(R.string.signup_count_format),
+                    event.getSignUpCount())
+            );
+        }
+
+        // show if user is already checked-in or signed-in
+        if (event.getCheckedInAttendees().contains(MainActivity.attendee.getIdentifier())) {
+            checkedInText.setVisibility(View.VISIBLE);
+        } else {
+            checkedInText.setVisibility(View.INVISIBLE);
+        }
+        if (event.getSignedUpAttendees().contains(MainActivity.attendee.getIdentifier())) {
+            signedUpText.setVisibility(View.VISIBLE);
+        } else {
+            signedUpText.setVisibility(View.INVISIBLE);
+        }
+
+        // user can go to the event by clicking on it
+        container.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                EventManager.displayAttendeeEvent(MainActivity.this,event);
             }
         });
     }

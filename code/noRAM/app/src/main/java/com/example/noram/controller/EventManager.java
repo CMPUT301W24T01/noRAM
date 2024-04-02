@@ -97,6 +97,25 @@ public class EventManager {
     }
 
     /**
+     * Unsign the current user from the event given by eventID
+     * @param eventID ID string of the event
+     */
+    public static void unsignFromEvent(String eventID){
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);
+        MainActivity.attendee.getEventsCheckedInto().remove(eventID);
+        MainActivity.attendee.updateDBAttendee();
+
+        // run a transaction on the event to update checkedInAttendee list
+        MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+            signedUpAttendees.remove(MainActivity.attendee.getIdentifier());
+            transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
+            return null;
+        });
+    }
+
+    /**
      * An event's information is displayed on the attendee side, showing all the attendee-event info
      * @param context The context of the activity calling this function, from where the new activity
      *                is started
