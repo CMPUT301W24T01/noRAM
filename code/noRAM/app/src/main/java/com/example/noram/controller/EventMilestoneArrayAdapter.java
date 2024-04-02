@@ -81,6 +81,8 @@ public class EventMilestoneArrayAdapter extends ArrayAdapter<Milestone> {
             attendeeCountField.setVisibility(View.INVISIBLE);
             milestoneAchievedField.setVisibility(View.VISIBLE);
         } else {
+            attendeeCountField.setVisibility(View.VISIBLE);
+            milestoneAchievedField.setVisibility(View.INVISIBLE);
             String attendeeCountString = "";
             if (attendeeCount == 1) {
                 attendeeCountString = attendeeCount + "/" + milestone + " Attendee";
