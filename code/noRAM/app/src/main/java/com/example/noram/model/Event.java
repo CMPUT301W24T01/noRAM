@@ -16,9 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -44,6 +46,8 @@ public class Event {
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
+    private Long lastMilestone;
+    private List<Notification> notifications;
 
     /**
      * Default constructor for Event
@@ -60,7 +64,9 @@ public class Event {
      * @param details paragraph of event details
      * @param milestones list of attendance milestones to track
      * @param trackLocation is location tracking of check-ins enabled
+     * @param organizerId the id of the organizer who created the event
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param lastMilestone the last milestone that was achieved
      */
     public Event(
             String id,
@@ -72,7 +78,8 @@ public class Event {
             ArrayList<Integer> milestones,
             boolean trackLocation,
             String organizerId,
-            Long signUpLimit) {
+            Long signUpLimit,
+            Long lastMilestone) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -85,6 +92,8 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
+        this.lastMilestone = lastMilestone;
+        this.notifications = new ArrayList<>();
     }
 
     /**
@@ -100,8 +109,11 @@ public class Event {
      * @param promoQRID id of QR code used to promote the event
      * @param trackLocation is location tracking of check-ins enabled
      * @param checkedInAttendees list of checked in attendees
+     * @param organizerId the id of the organizer who created the event
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param lastMilestone the last milestone that was achieved
+     * @param notifications list of notifications
      */
     public Event(
             String id,
@@ -117,7 +129,9 @@ public class Event {
             List<String> checkedInAttendees,
             String organizerId,
             List<String> signedUpAttendees,
-            Long signUpLimit) {
+            Long signUpLimit,
+            Long lastMilestone,
+            List<Notification> notifications) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -132,6 +146,8 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
+        this.lastMilestone = lastMilestone;
+        this.notifications = notifications;
     }
 
     // Getters
@@ -238,6 +254,22 @@ public class Event {
             return 0;
         }
         return signedUpAttendees.size();
+    }
+
+    /**
+     * Returns the last milestone that was achieved
+     * @return lastMilestone attribute
+     */
+    public Long getLastMilestone() {
+        return lastMilestone;
+    }
+
+    /**
+     * Returns the number of checked-in attendees
+     * @return size of checkedInAttendees ArrayList
+     */
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
     // Setters
@@ -377,6 +409,22 @@ public class Event {
         this.signUpLimit = signUpLimit;
     }
 
+    /**
+     * Sets the last milestone that was achieved
+     * @param lastMilestone new last milestone
+     */
+    public void setLastMilestone(Long lastMilestone) {
+        this.lastMilestone = lastMilestone;
+    }
+
+    /**
+     * Sets the list of notifications
+     * @param notifications new list of notifications
+     */
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     // Functions
     /**
      * Check for equality between an event and another object
@@ -414,6 +462,8 @@ public class Event {
         data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
+        data.put("lastMilestone", lastMilestone);
+        data.put("notifications", notifications);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -436,6 +486,16 @@ public class Event {
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
+        this.setLastMilestone(doc.getLong("lastMilestone"));
+        this.setNotifications((List<Notification>) doc.get("notifications"));
+    }
+
+    /**
+     * Adds a notification to the event
+     * @param notification the notification to add
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
     }
 
     /**
@@ -446,15 +506,24 @@ public class Event {
         signedUpAttendees.add(attendee);
     }
 
+    /**
+     * Remove the string representation of an attendee from the signedUpAttendees list
+     * @param attendee string representation of the attendee being removed
+     */
+    public void removeSignedUpAttendee(String attendee){ signedUpAttendees.remove(attendee);}
+
     /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
      * * @param callback the callback to provide the list of attendees and their check-in counts to
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
+        // If no attendees have checked in, return an empty list
         if (checkedInAttendees.isEmpty()) {
             callback.accept(new ArrayList<>());
             return;
         }
+
+        // Get the attendee objects for each checked in attendee
         MainActivity.db.getAttendeeRef().whereIn("identifier", checkedInAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                 Map<String, Object> data = document.getData();
@@ -463,6 +532,7 @@ public class Event {
                 checkedInAttendeeObjects.add(attendee);
             }
 
+            // Count the number of times each attendee has checked in and return the list
             ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
             callback.accept(attendeeCheckInCounters);
         });
@@ -476,10 +546,44 @@ public class Event {
     public ArrayList<AttendeeCheckInCounter> countCheckIns(ArrayList<Attendee> attendees) {
         ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = new ArrayList<>();
 
+        // Count the number of times each attendee has checked in
         for (Attendee attendee : attendees) {
             int count = Collections.frequency(checkedInAttendees, attendee.getIdentifier());
             attendeeCheckInCounters.add(new AttendeeCheckInCounter(attendee, count));
         }
         return attendeeCheckInCounters;
+    }
+
+    /**
+     * Get an arraylist of pairs of milestones and the current number of attendees
+     * @return ArrayList of pairs of milestone and number of attendees
+     */
+    public ArrayList<Milestone> getMilestoneCounts() {
+        HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+        ArrayList<String> uniqueAttendeesList = new ArrayList<>(uniqueAttendees);
+
+        // Get the total number of unique attendees
+        int total = uniqueAttendeesList.size();
+
+        // Create a set of milestone objects to remove duplicates automatically
+        Set<Milestone> milestoneCounts = new HashSet<>();
+        for (int i = 0; i < milestones.size(); i++) {
+            Integer milestone = Integer.valueOf(String.valueOf(milestones.get(i)));
+            milestoneCounts.add(new Milestone(milestone, total));
+        }
+        // Convert the set to a list and sort it
+        ArrayList<Milestone> milestoneCountsList = new ArrayList<>(milestoneCounts);
+        milestoneCountsList.sort(Milestone::compareTo);
+
+        return milestoneCountsList;
+    }
+
+    /**
+     * Get the number of unique attendees that have checked in to the event
+     * @return the number of attendees that have checked in
+     */
+    public int getUniqueAttendeeCount() {
+        HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+        return uniqueAttendees.size();
     }
 }
