@@ -52,21 +52,13 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
         if (intent.hasExtra("event")) {
             String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
             assert (eventID != null);
-            Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
-            task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                /**
-                 * On successful acquisition of event attributes from database, create event
-                 * Set dateTime attributes with event attributes
-                 * Update text of views with event attributes
-                 *
-                 * @param documentSnapshot database object from which object is initialized
-                 */
+
+            // get event from db
+            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
+            eventTask.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                    // Make event
-                    event.updateWithDocument(documentSnapshot);
-
+                    event = documentSnapshot.toObject(Event.class);
                 }
             });
         }
