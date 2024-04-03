@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.35" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -75,16 +75,16 @@
 
     <TextView
         android:id="@+id/eventPoster_title"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/event_poster_title"
+        android:layout_height="wrap_content"
         android:layout_marginVertical="15dp"
+        android:text="@string/event_poster_title"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/title_text"
-        app:layout_constraintBottom_toTopOf="@id/poster_event"
-        app:layout_constraintVertical_bias="1"
-        />
+        app:layout_constraintVertical_bias="0.2" />
 
     <FrameLayout
         android:id="@+id/poster_event"
@@ -92,10 +92,12 @@
         android:layout_height="175dp"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="15dp"
-        app:layout_constraintTop_toTopOf="@id/eventPoster_title"
+        android:layout_marginTop="200dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-        app:layout_constraintVertical_bias="0.5"
-    />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventPoster_title"
+        app:layout_constraintVertical_bias="0.1" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

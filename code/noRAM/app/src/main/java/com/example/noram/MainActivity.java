@@ -18,14 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Attendee;
@@ -87,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         // hide menu until user is fully signed in and remove focus from its items
         navBar.setVisibility(View.INVISIBLE);
         navBar.setItemActiveIndicatorEnabled(false);
+        navBar.setSelectedItemId(R.id.invisible);
 
         // hide eventPoster's title until page is loaded
         eventPosterTitle = findViewById(R.id.eventPoster_title);
@@ -129,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        // set nothing to selected
+        navBar.setSelectedItemId(R.id.invisible);
         db.getmAuth().addAuthStateListener(auth -> signInFirebase());
     }
 
@@ -242,12 +244,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
         } else if(itemID == R.id.organize_events){
             startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
-        } else{
-            return false;
         }
 
-        // if valid item, show focus and return true
-        navBar.setItemActiveIndicatorEnabled(true);
+        // always return true even if we nav to the invisible item, since otherwise the UI doesn't update
         return true;
     }
 
