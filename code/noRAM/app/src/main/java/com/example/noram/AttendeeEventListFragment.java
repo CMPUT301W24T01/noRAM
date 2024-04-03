@@ -185,8 +185,13 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                     allEventDataList.add(event);
 
                     // if user correspond, add event to myEvents list
-                    ArrayList<String> attendees = (ArrayList<String>) doc.get("signedUpAttendees");
-                    if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
+                    ArrayList<String> signedUpAttendees = (ArrayList<String>) doc.get("signedUpAttendees");
+                    ArrayList<String> checkedInAttendees = (ArrayList<String>) doc.get("checkedInAttendees");
+                    boolean userEvent = (signedUpAttendees != null &&
+                            signedUpAttendees.contains(MainActivity.attendee.getIdentifier()))
+                            || (checkedInAttendees != null &&
+                            checkedInAttendees.contains(MainActivity.attendee.getIdentifier()));
+                    if(userEvent) {
                         userEventDataList.add(event);
                     }
                 }
