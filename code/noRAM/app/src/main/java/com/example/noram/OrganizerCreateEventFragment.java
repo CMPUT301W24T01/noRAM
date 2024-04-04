@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ import java.util.stream.Stream;
  * @author Carlin
  * @author Sandra
  * @author Cole
+ * @author ethan
  */
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
     // Attributes
@@ -76,6 +78,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     TextView editLimitSignUps;
     private ImageView imageView;
     Button nextButton;
+    ScrollView scroll;
 
     // Constructors
     /**
@@ -151,6 +154,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         deletePhoto = view.findViewById(R.id.delete_photo);
         deletePhoto.setVisibility(View.INVISIBLE);
         addPhoto = view.findViewById(R.id.add_photo);
+        scroll = view.findViewById(R.id.fragment_organizer_create_event);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +257,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     // new activity
                     startActivity(intent);
                     ((OrganizerActivity) getActivity()).displayMyEventsFragment();
+                    clearFields();
                 }
                 // Otherwise, show error Toast
                 else {
@@ -285,6 +290,26 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
+    }
+
+    /**
+     * Clears all fields in the fragment and the time info to reset the page
+     */
+    public void clearFields() {
+        editName.setText("");
+        editLocation.setText("");
+        editStartDateTime.setText("Set Start Date/Time");
+        startDateTime = null;
+        editEndDateTime.setText("Set End Date/Time");
+        endDateTime = null;
+        editDetails.setText("");
+        editMilestones.setText("");
+        trackLocationCheck.setChecked(false);
+        limitSignUpsCheck.setChecked(false);
+        editLimitSignUps.setText("");
+        editLimitSignUps.setVisibility(View.GONE);
+        scroll.fullScroll(ScrollView.FOCUS_UP);
+        deletePhoto();
     }
 
     /**

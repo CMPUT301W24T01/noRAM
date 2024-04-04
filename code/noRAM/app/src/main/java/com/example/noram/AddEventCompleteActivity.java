@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -109,13 +108,10 @@ public class AddEventCompleteActivity extends AppCompatActivity {
         // goToEvent button
         Context context = this;
         Button goToEventButton = findViewById(R.id.event_details_button);
-        goToEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean reset = true;
-                EventManager.displayOrganizerEvent(
-                    context, event, reset);
-            }
+        goToEventButton.setOnClickListener(v -> {
+            boolean reset = true;
+            EventManager.displayOrganizerEvent(
+                context, event, reset);
         });
     }
 
