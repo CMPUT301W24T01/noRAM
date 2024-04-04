@@ -53,8 +53,8 @@ public class OrganizerActivity extends AppCompatActivity {
 
         BottomNavigationView navBar = findViewById(R.id.organizer_activity_bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
-        navBar.setSelectedItemId(NAV_MY_EVENTS);
-        activeFragment = myEventsFragment;
+        navBar.setSelectedItemId(NAV_PROFILE);
+        activeFragment = profileFragment;
         header = findViewById(R.id.organizer_activity_header_text);
         header.setText(R.string.organizer_fragment_event_list_header);
 
