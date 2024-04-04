@@ -35,7 +35,7 @@ public class EventItemManager {
      * @param event The event who holds the data that the item is displaying
      * @param view View that the item is using to display the data
      */
-    EventItemManager(Context context, Event event, View view){
+    public EventItemManager(Context context, Event event, View view){
         this.context = context;
         this.event = event;
         this.view = view;

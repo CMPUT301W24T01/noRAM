@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.carousel.MaskableFrameLayout
+    android:id="@+id/carousel_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/carousel_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="image"
+        android:scaleType="centerCrop"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#80000000">
+        <TextView
+            android:id="@+id/carousel_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Placeholder"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/carousel_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Placeholder"
+            android:drawablePadding="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:drawableTint="@color/white"
+            android:drawableLeft="@drawable/event_24px" />
+    </LinearLayout>
+
+</com.google.android.material.carousel.MaskableFrameLayout>
