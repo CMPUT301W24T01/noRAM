@@ -54,7 +54,7 @@ public class MainActivityTest {
      */
     @Test
     public void attendeeButtonTest() {
-        onView(withId(R.id.attendeeButton)).perform(click());
+        onView(withId(R.id.bottom_nav_attend_events)).perform(click());
 
         intended(hasComponent(AttendeeActivity.class.getName()));
     }
@@ -64,7 +64,7 @@ public class MainActivityTest {
      */
     @Test
     public void organizerButtonTest() {
-        onView(withId(R.id.organizerButton)).perform(click());
+        onView(withId(R.id.bottom_nav_organize_events)).perform(click());
 
         intended(hasComponent(OrganizerActivity.class.getName()));
     }
