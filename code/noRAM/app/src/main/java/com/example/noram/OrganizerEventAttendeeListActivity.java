@@ -161,5 +161,10 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
             }
         }
         searchAttendeeAdapter.notifyDataSetChanged();
+        if (searchAttendeeDataList.isEmpty()) {
+            findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
+        }
     }
 }
