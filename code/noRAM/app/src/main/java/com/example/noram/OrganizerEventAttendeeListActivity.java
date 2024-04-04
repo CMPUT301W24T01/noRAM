@@ -16,7 +16,9 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.noram.controller.AttendeeArrayAdapter;
 import com.example.noram.controller.EventAttendeeArrayAdapter;
+import com.example.noram.model.Attendee;
 import com.example.noram.model.AttendeeCheckInCounter;
 import com.example.noram.model.Event;
 import com.google.android.gms.tasks.Task;
@@ -32,13 +34,21 @@ import java.util.Locale;
  */
 public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private Event event;
-    private ListView attendeeList; // list of all attendees in UI
-    private ListView searchAttendeeList; // list of attendees' search results
-    private ArrayList<AttendeeCheckInCounter> attendeeDataList; // data list of all attendees and their counts
-    private ArrayList<AttendeeCheckInCounter> searchAttendeeDataList; // data list of attendees' search results and their counts
+    private ListView checkedInAttendeeList; // list of all attendees in UI
+    private ListView signedUpAttendeeList;
+    private ListView searchCheckedInAttendeeList; // list of attendees' search results
+    private ListView searchSignedUpAttendeeList;
+    private ArrayList<AttendeeCheckInCounter> checkedInAttendeeDataList; // data list of all attendees and their counts
+    private ArrayList<Attendee> signedUpAttendeeDataList;
+    private ArrayList<AttendeeCheckInCounter> searchCheckedInAttendeeDataList; // data list of attendees' search results and their counts
+    private ArrayList<Attendee> searchSignedUpAttendeeDataList;
     private EditText searchInput; // searchbar
-    private EventAttendeeArrayAdapter attendeeAdapter; // adapter for attendee list
-    private EventAttendeeArrayAdapter searchAttendeeAdapter; // adapter for searchAttendee list
+    private EventAttendeeArrayAdapter checkedInAttendeeAdapter; // adapter for attendee list
+    private EventAttendeeArrayAdapter searchCheckedInAttendeeAdapter; // adapter for searchAttendee list
+    private AttendeeArrayAdapter signedUpAttendeeAdapter;
+    private AttendeeArrayAdapter searchSignedUpAttendeeAdapter;
+    private enum Showing {SIGNEDUP, CHECKEDIN}
+    private Showing showing = Showing.SIGNEDUP;
 
     /**
      * Setup the activity when it is created.
@@ -52,16 +62,30 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
 
         // get all views and initialize variables
         searchInput = findViewById(R.id.organizer_event_attendee_search);
-        attendeeList = findViewById(R.id.organizer_event_attendee_list);
-        attendeeDataList = new ArrayList<>();
-        searchAttendeeList = findViewById(R.id.organizer_event_attendee_search_list);
-        searchAttendeeDataList = new ArrayList<>();
 
-        // connect list to their adapters
-        attendeeAdapter = new EventAttendeeArrayAdapter(this, attendeeDataList);
-        searchAttendeeAdapter = new EventAttendeeArrayAdapter(this, searchAttendeeDataList);
-        attendeeList.setAdapter(attendeeAdapter);
-        searchAttendeeList.setAdapter(searchAttendeeAdapter);
+        // Checked in attendee lists
+        checkedInAttendeeList = findViewById(R.id.organizer_event_attendee_checked_in_list);
+        checkedInAttendeeDataList = new ArrayList<>();
+        searchCheckedInAttendeeList = findViewById(R.id.organizer_event_attendee_search_checked_in_list);
+        searchCheckedInAttendeeDataList = new ArrayList<>();
+
+        // Signed up attendee lists
+        signedUpAttendeeList = findViewById(R.id.organizer_event_attendee_signed_up_list);
+        signedUpAttendeeDataList = new ArrayList<>();
+        searchSignedUpAttendeeList = findViewById(R.id.organizer_event_attendee_search_signed_up_list);
+        searchSignedUpAttendeeDataList = new ArrayList<>();
+
+        // connect checked-in lists to their adapters
+        checkedInAttendeeAdapter = new EventAttendeeArrayAdapter(this, checkedInAttendeeDataList);
+        searchCheckedInAttendeeAdapter = new EventAttendeeArrayAdapter(this, searchCheckedInAttendeeDataList);
+        checkedInAttendeeList.setAdapter(checkedInAttendeeAdapter);
+        searchCheckedInAttendeeList.setAdapter(searchCheckedInAttendeeAdapter);
+
+        // connect signed-up lists to their adapters
+        signedUpAttendeeAdapter = new AttendeeArrayAdapter(this, signedUpAttendeeDataList);
+        searchSignedUpAttendeeAdapter = new AttendeeArrayAdapter(this, searchSignedUpAttendeeDataList);
+        signedUpAttendeeList.setAdapter(signedUpAttendeeAdapter);
+        searchSignedUpAttendeeList.setAdapter(searchSignedUpAttendeeAdapter);
 
         // get event from intent
         Intent intent = getIntent();
@@ -74,14 +98,25 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 event = new Event();
                 event.updateWithDocument(documentSnapshot);
 
-                // Get the attendees and their check-in counts
+                // Get the checked-in attendees and their check-in counts
                 event.getCheckedInAttendeesAndCounts(attendeeCallback -> {
-                    attendeeDataList.clear();
-                    attendeeDataList.addAll(attendeeCallback);
-                    attendeeAdapter.notifyDataSetChanged();
+                    checkedInAttendeeDataList.clear();
+                    checkedInAttendeeDataList.addAll(attendeeCallback);
+                    checkedInAttendeeAdapter.notifyDataSetChanged();
+//                    findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
+//                    if (checkedInAttendeeDataList.isEmpty()) {
+//                        findViewById(R.id.organizer_event_attendee_empty).setVisibility(View.VISIBLE);
+//                    }
+                });
+
+                // Get the signed-up attendees
+                event.getSignedUpAttendeeObjects(attendeeCallback -> {
+                    signedUpAttendeeDataList.clear();
+                    signedUpAttendeeDataList.addAll(attendeeCallback);
+                    signedUpAttendeeAdapter.notifyDataSetChanged();
                     findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
-                    if (attendeeDataList.isEmpty()) {
-                        findViewById(R.id.organizer_event_attendee_empty).setVisibility(View.VISIBLE);
+                    if (signedUpAttendeeDataList.isEmpty()) {
+                        findViewById(R.id.organizer_event_milestones_empty).setVisibility(View.VISIBLE);
                     }
                 });
             });
@@ -128,6 +163,38 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
 
         // Set up the back button
         findViewById(R.id.organizer_event_attendee_back).setOnClickListener(v -> finish());
+
+        // Set up signed-up button
+        findViewById(R.id.organizer_event_attendee_signed_up_button).setOnClickListener(v -> {
+            if (showing == Showing.CHECKEDIN) {
+                // Flip showing
+                showing = Showing.SIGNEDUP;
+
+                // Hide other lists
+                checkedInAttendeeList.setVisibility(View.GONE);
+                searchCheckedInAttendeeList.setVisibility(View.GONE);
+
+                // Show correct lists
+                signedUpAttendeeList.setVisibility(View.VISIBLE);
+                searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // Set up checked-in button
+        findViewById(R.id.organizer_event_attendee_signed_up_button).setOnClickListener(v -> {
+            if (showing == Showing.CHECKEDIN) {
+                // Flip showing
+                showing = Showing.CHECKEDIN;
+
+                // Hide other lists
+                checkedInAttendeeList.setVisibility(View.GONE);
+                searchCheckedInAttendeeList.setVisibility(View.GONE);
+
+                // Show correct lists
+                checkedInAttendeeList.setVisibility(View.VISIBLE);
+                searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     /**
@@ -135,31 +202,60 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
      * @param search The input of the user in the search, used to populate the search list
      */
     public void searchAttendees(String search) {
-        // if search is empty, show back all events and return. Otherwise, show searched events
-        if (search.isEmpty()) {
-            searchAttendeeList.setVisibility(View.INVISIBLE);
-            attendeeList.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        searchAttendeeList.setVisibility(View.VISIBLE);
-        attendeeList.setVisibility(View.INVISIBLE);
-
-        // remove old search
-        searchAttendeeDataList.clear();
-        // search through attendees' name and check-in count
-        for (AttendeeCheckInCounter attendeeAndCount : attendeeDataList) {
-
-            // get attendee's info
-            String name = (attendeeAndCount.getAttendee().getFirstName() + " " + attendeeAndCount.getAttendee().getLastName()).toLowerCase(Locale.ROOT);
-            String checkInCount = Integer.toString(attendeeAndCount.getCheckInCount()).toLowerCase(Locale.ROOT);
-
-            // if event contains search, add it to the search list
-            if ((name.contains(search)) || (checkInCount.contains(search))) {
-                // add valid events to result
-                searchAttendeeDataList.add(attendeeAndCount);
+        if (showing == Showing.CHECKEDIN) {
+            // if search is empty, show back all events and return. Otherwise, show searched events
+            if (search.isEmpty()) {
+                searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
+                checkedInAttendeeList.setVisibility(View.VISIBLE);
+                return;
             }
+
+            searchCheckedInAttendeeList.setVisibility(View.VISIBLE);
+            checkedInAttendeeList.setVisibility(View.INVISIBLE);
+
+            // remove old search
+            searchCheckedInAttendeeDataList.clear();
+            // search through attendees' name and check-in count
+            for (AttendeeCheckInCounter attendeeAndCount : checkedInAttendeeDataList) {
+
+                // get attendee's info
+                String name = (attendeeAndCount.getAttendee().getFirstName() + " " + attendeeAndCount.getAttendee().getLastName()).toLowerCase(Locale.ROOT);
+                String checkInCount = Integer.toString(attendeeAndCount.getCheckInCount()).toLowerCase(Locale.ROOT);
+
+                // if event contains search, add it to the search list
+                if ((name.contains(search)) || (checkInCount.contains(search))) {
+                    // add valid events to result
+                    searchCheckedInAttendeeDataList.add(attendeeAndCount);
+                }
+            }
+            searchCheckedInAttendeeAdapter.notifyDataSetChanged();
         }
-        searchAttendeeAdapter.notifyDataSetChanged();
+        else {
+            // if search is empty, show back all events and return. Otherwise, show searched events
+            if (search.isEmpty()) {
+                searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+                signedUpAttendeeList.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            searchSignedUpAttendeeList.setVisibility(View.VISIBLE);
+            signedUpAttendeeList.setVisibility(View.INVISIBLE);
+
+            // remove old search
+            searchSignedUpAttendeeDataList.clear();
+            // search through attendees' name and check-in count
+            for (Attendee attendee : signedUpAttendeeDataList) {
+
+                // get attendee's info
+                String name = (attendee.getFirstName() + " " + attendee.getLastName()).toLowerCase(Locale.ROOT);
+
+                // if event contains search, add it to the search list
+                if (name.contains(search)) {
+                    // add valid events to result
+                    searchSignedUpAttendeeDataList.add(attendee);
+                }
+            }
+            searchSignedUpAttendeeAdapter.notifyDataSetChanged();
+        }
     }
 }

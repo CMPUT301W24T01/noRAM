@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static Database db = new Database();
     public static final ShareHelper shareHelper = new ShareHelper();
     public static Attendee attendee = null;
-    public static Organizer organizer = null;
+    public static Organizer organizer = new Organizer();
     private Button adminButton;
     public static PushNotificationService pushService = new PushNotificationService();
     public static MainActivity mn;

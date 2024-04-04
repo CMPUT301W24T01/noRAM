@@ -106,16 +106,17 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
         ArrayList<Event> entireList = new ArrayList<>();
 
         // searches will be on events that organizer created
-        eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
-            .get().addOnSuccessListener(querySnapshot -> {
-                for(QueryDocumentSnapshot doc: querySnapshot){
-                    Event event = new Event();
-                    event.updateWithDocument(doc);
-                    entireList.add(event);
-                }
-            }
-        );
-
+        if (MainActivity.organizer != null) {
+            eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
+                    .get().addOnSuccessListener(querySnapshot -> {
+                                for (QueryDocumentSnapshot doc : querySnapshot) {
+                                    Event event = new Event();
+                                    event.updateWithDocument(doc);
+                                    entireList.add(event);
+                                }
+                            }
+                    );
+        }
         return entireList;
     }
 
@@ -156,28 +157,29 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
             EventManager.displayOrganizerEvent(getContext(), event);
         });
 
-        eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
-                .addSnapshotListener((querySnapshots, error) -> {
+        if (MainActivity.organizer != null) {
+            eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
+                    .addSnapshotListener((querySnapshots, error) -> {
 
-            // if error, log it and return
-            if(error != null){
-                Log.e("Firestore", error.toString());
-                return;
-            }
+                        // if error, log it and return
+                        if (error != null) {
+                            Log.e("Firestore", error.toString());
+                            return;
+                        }
 
-            // if querySnapshots is not null, update the list of events
-            if(querySnapshots != null){
-                allEventDataList.clear();
-                for(QueryDocumentSnapshot doc: querySnapshots){
-                    // get event's info and create it
-                    Event event = new Event();
-                    event.updateWithDocument(doc);
-                    allEventDataList.add(event);
-                }
-                allEventAdapter.notifyDataSetChanged();
-            }
-        });
-
+                        // if querySnapshots is not null, update the list of events
+                        if (querySnapshots != null) {
+                            allEventDataList.clear();
+                            for (QueryDocumentSnapshot doc : querySnapshots) {
+                                // get event's info and create it
+                                Event event = new Event();
+                                event.updateWithDocument(doc);
+                                allEventDataList.add(event);
+                            }
+                            allEventAdapter.notifyDataSetChanged();
+                        }
+                    });
+        }
         return rootView;
     }
 }
