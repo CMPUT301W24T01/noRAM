@@ -512,8 +512,9 @@ public class Event {
      */
     public void removeSignedUpAttendee(String attendee){ signedUpAttendees.remove(attendee);}
 
-    /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
-     * * @param callback the callback to provide the list of attendees and their check-in counts to
+    /**
+     * Get the list of checked in attendees and the number of times they have checked in to provide to the callback
+     * @param callback the callback to provide the list of attendees and their check-in counts to
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
@@ -536,6 +537,31 @@ public class Event {
             ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
             callback.accept(attendeeCheckInCounters);
         });
+    }
+
+    /**
+     * Get the list of signed up attendees
+     * @param callback the callback to provide the list of attendees to
+     */
+    public void getSignedUpAttendeeObjects(Consumer<ArrayList<Attendee>> callback) {
+        ArrayList<Attendee> signedUpAttendeeObjects = new ArrayList<>();
+        // If no attendees have signed in, return an empty list
+        if (signedUpAttendees.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+
+        // Get the attendee objects for each signed-up attendee
+        MainActivity.db.getAttendeeRef().whereIn("identifier", signedUpAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
+           for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+               Map<String, Object> data = document.getData();
+               Attendee attendee = new Attendee((String) data.get("identifier"));
+               attendee.updateWithMap(data);
+               signedUpAttendeeObjects.add(attendee);
+           }
+            callback.accept(signedUpAttendeeObjects);
+        });
+
     }
 
     /**
