@@ -17,9 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.noram.OrganizerCreateEventFragment;
-import com.example.noram.OrganizerEventListFragment;
-import com.example.noram.OrganizerProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -64,6 +61,7 @@ public class OrganizerActivity extends AppCompatActivity {
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, myEventsFragment, "myEvents")
+                .hide(myEventsFragment)
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, newEventFragment, "newEvent")
@@ -71,7 +69,6 @@ public class OrganizerActivity extends AppCompatActivity {
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, profileFragment, "profile")
-                .hide(profileFragment)
                 .commit();
 
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
