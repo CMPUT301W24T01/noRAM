@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.noram.AttendeeActivity;
 import com.example.noram.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -63,15 +64,16 @@ public class PushNotificationService extends FirebaseMessagingService {
         Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
         // Change to the UI Thread
-        MainActivity.mn.runOnUiThread(() -> {
-            // Display the notification with an alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
-            builder.setTitle(remoteMessage.getNotification().getTitle());
-            builder.setMessage(remoteMessage.getNotification().getBody());
-            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-            builder.show();
-        });
+//        MainActivity.mn.runOnUiThread(() -> {
+//            // Display the notification with an alert dialog
+//            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
+//            builder.setTitle(remoteMessage.getNotification().getTitle());
+//            builder.setMessage(remoteMessage.getNotification().getBody());
+//            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+//            builder.show();
+//        });
 
+        AttendeeActivity.showNotification(remoteMessage);
     }
 
     /**

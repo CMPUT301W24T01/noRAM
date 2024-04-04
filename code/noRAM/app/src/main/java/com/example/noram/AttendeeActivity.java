@@ -9,19 +9,18 @@ package com.example.noram;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.noram.controller.EventManager;
-import com.example.noram.model.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.RemoteMessage;
 
 /**
  * The AttendeeActivity class is the main activity for the Attendee user type.
@@ -159,5 +158,14 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
             startActivity(intent);
         });
         navBar.setSelectedItemId(NAV_EVENTS);
+    }
+
+    public static void showNotification(RemoteMessage remoteMessage) {
+        // Display the notification with an alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(remoteMessage.getNotification().getTitle());
+        builder.setMessage(remoteMessage.getNotification().getBody());
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 }
