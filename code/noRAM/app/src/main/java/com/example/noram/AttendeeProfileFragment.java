@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,13 +154,17 @@ public class AttendeeProfileFragment extends Fragment{
                 } else {
                     attendee.generateDefaultProfilePhoto();
                 }
+                Toast.makeText(getActivity(), "Changes saved!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), validateResult.second, Toast.LENGTH_LONG).show();
             }
         });
 
         // Revert the changes when the cancel button is clicked
-        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(v -> setFields(attendee));
+        view.findViewById(R.id.attendee_info_cancel_button).setOnClickListener(v -> {
+                setFields(attendee);
+                Toast.makeText(getActivity(), "Changes cancelled!", Toast.LENGTH_SHORT).show();
+        });
         return view;
     }
 

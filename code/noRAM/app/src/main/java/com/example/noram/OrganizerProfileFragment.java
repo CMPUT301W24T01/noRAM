@@ -123,13 +123,17 @@ public class OrganizerProfileFragment extends Fragment {
                 organizer.updateDBOrganizer();
                 MainActivity.db.downloadPhoto(organizer.getPhotoPath(),
                         t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), validateResult.second, Toast.LENGTH_LONG).show();
             }
         });
 
         // Revert the changes when the cancel button is clicked
-        view.findViewById(R.id.organizer_info_cancel_button).setOnClickListener(v -> setFields(organizer));
+        view.findViewById(R.id.organizer_info_cancel_button).setOnClickListener(v -> {
+            setFields(organizer);
+            Toast.makeText(getActivity(), "Changes cancelled", Toast.LENGTH_SHORT).show();
+        });
         return view;
     }
 
