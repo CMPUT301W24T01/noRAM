@@ -9,9 +9,9 @@ package com.example.noram;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -145,6 +145,18 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
      */
     @Override
     public void goToEvent(String eventId) {
+        Event event = new Event();
+        event.setId(eventId);
+        EventManager.displayAttendeeEvent(this, event);
+        navBar.setSelectedItemId(NAV_EVENTS);
+    }
+
+    /**
+     * Go to the confetti page for checking into an event
+     * @param eventId id of the event to go to
+     */
+    @Override
+    public void goToConfetti(String eventId) {
         // Navigate the navbar to the events page, then go to the confetti page
         Intent intent = new Intent(this, CheckInConfettiActivity.class);
         Bundle bundle = new Bundle();
