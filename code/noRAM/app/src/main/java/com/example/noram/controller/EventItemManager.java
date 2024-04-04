@@ -156,7 +156,10 @@ public class EventItemManager {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                organizerText.setText(documentSnapshot.getString("name"));
+                // get organizer name and ID and display it
+                String organizer = documentSnapshot.getString("name");
+                organizer += documentSnapshot.getId();
+                organizerText.setText(organizer);
             }
         });
     }
