@@ -96,19 +96,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    <EditText-->
-<!--        android:id="@+id/organizer_event_attendee_search"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:ems="10"-->
-<!--        android:hint="@string/event_search_hint"-->
-<!--        android:inputType="text"-->
-<!--        android:textSize="16sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="1.0"-->
-<!--        app:layout_constraintStart_toEndOf="@id/organizer_event_attendee_search_label"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_header" />-->
-
     <ProgressBar
         android:id="@+id/organizer_event_attendee_loading"
         style="?android:attr/progressBarStyle"
@@ -197,17 +184,6 @@
 
     </ListView>
 
-<!--    <TextView-->
-<!--        android:id="@+id/organizer_event_attendee_search_label"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:background="#00FFFFFF"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:text="Search:"-->
-<!--        android:textAlignment="gravity"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchLayout"
         android:layout_width="0dp"
