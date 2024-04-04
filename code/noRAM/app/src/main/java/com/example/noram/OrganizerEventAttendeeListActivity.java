@@ -65,7 +65,7 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_event_attendee);
 
         // get all views and initialize variables
-        searchInput = findViewById(R.id.organizer_event_attendee_search);
+        searchInput = findViewById(R.id.searchInput);
 
         // Checked in attendee lists
         checkedInAttendeeList = findViewById(R.id.organizer_event_attendee_checked_in_list);
@@ -86,8 +86,8 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         searchCheckedInAttendeeList.setAdapter(searchCheckedInAttendeeAdapter);
 
         // connect signed-up lists to their adapters
-        signedUpAttendeeAdapter = new AttendeeArrayAdapter(this, signedUpAttendeeDataList, 1);
-        searchSignedUpAttendeeAdapter = new AttendeeArrayAdapter(this, searchSignedUpAttendeeDataList, 1);
+        signedUpAttendeeAdapter = new AttendeeArrayAdapter(this, signedUpAttendeeDataList, AttendeeArrayAdapter.Format.IDHIDDEN);
+        searchSignedUpAttendeeAdapter = new AttendeeArrayAdapter(this, searchSignedUpAttendeeDataList, AttendeeArrayAdapter.Format.IDHIDDEN);
         signedUpAttendeeList.setAdapter(signedUpAttendeeAdapter);
         searchSignedUpAttendeeList.setAdapter(searchSignedUpAttendeeAdapter);
 
@@ -179,10 +179,6 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 // Flip showing
                 showing = Showing.SIGNEDUP;
 
-                // Update buttons
-                signedUpButton.setBackgroundColor(getResources().getColor(R.color.light_grey, getTheme()));
-                checkedInButton.setBackgroundColor(getResources().getColor(R.color.white, getTheme()));
-
                 // Clear empty message
                 checkedInEmpty.setVisibility(View.GONE);
 
@@ -207,10 +203,6 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 // Flip showing
                 showing = Showing.CHECKEDIN;
 
-                // Update buttons
-                signedUpButton.setBackgroundColor(getResources().getColor(R.color.white, getTheme()));
-                checkedInButton.setBackgroundColor(getResources().getColor(R.color.light_grey, getTheme()));
-
                 // Clear empty message
                 signedUpEmpty.setVisibility(View.GONE);
 
@@ -228,7 +220,6 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 }
             }
         });
-        Log.d("DEBUG", "HERE");
     }
 
     /**
