@@ -34,7 +34,7 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
 
     private ListView allEventList; // list of all events in UI
     private ArrayList<Event> allEventDataList; // data list of all events
-    EventArrayAdapter allEventAdapter; // adapter for allEvent list
+    private EventArrayAdapter allEventAdapter; // adapter for allEvent list
 
     /**
      * Default constructor

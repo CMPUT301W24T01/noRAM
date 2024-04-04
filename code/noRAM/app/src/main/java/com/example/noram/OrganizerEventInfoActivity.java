@@ -64,6 +64,7 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
             switchMenu(item);
             return true;
         });
+
         popup.getMenuInflater().inflate(R.menu.organizer_event_info_menu, popup.getMenu());
         popup.show();
     }

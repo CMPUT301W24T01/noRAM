@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -112,10 +112,11 @@
             android:layout_marginTop="16dp"
             android:text="Your upcoming events:"
             android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/organizer_current_attendees" />
+            app:layout_constraintTop_toBottomOf="@+id/organizer_all_time_attendees" />
 
         <TextView
             android:id="@+id/organizer_dashboard_header"
@@ -125,6 +126,7 @@
             android:layout_marginTop="16dp"
             android:text="Your Dashboard:"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
@@ -138,6 +140,7 @@
             android:layout_marginTop="16dp"
             android:text="Edit Organizer Appearance:"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +154,8 @@
             android:text="@string/total_current_n_signups_n0"
             android:textAlignment="center"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/organizer_current_attendees"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
 
@@ -164,6 +168,7 @@
             android:textAlignment="center"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
 
@@ -175,14 +180,26 @@
             android:text="@string/all_time_nattendees_n0"
             android:textAlignment="center"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/organizer_current_attendees"
-            app:layout_constraintTop_toBottomOf="@+id/organizer_dashboard_header" />
+            app:layout_constraintEnd_toEndOf="@+id/organizer_current_attendees"
+            app:layout_constraintStart_toStartOf="@+id/organizer_current_attendees"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_current_signups" />
+
+        <TextView
+            android:id="@+id/organizer_all_time_signups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/all_time_nsignups_n0"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/organizer_current_signups"
+            app:layout_constraintStart_toStartOf="@+id/organizer_current_signups"
+            app:layout_constraintTop_toBottomOf="@+id/organizer_current_signups" />
 
         <ListView
             android:id="@+id/organizer_brief_event_list"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
@@ -190,5 +207,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/organizer_upcoming_events_header" />
 
+        <TextView
+            android:id="@+id/empty_list_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:text="@string/empty_placeholder_organizer_profile_list"
+            app:layout_constraintBottom_toBottomOf="@+id/organizer_brief_event_list"
+            app:layout_constraintEnd_toEndOf="@+id/organizer_brief_event_list"
+            app:layout_constraintStart_toStartOf="@+id/organizer_brief_event_list"
+            app:layout_constraintTop_toTopOf="@+id/organizer_brief_event_list" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>

@@ -50,7 +50,9 @@ public class Event {
     private List<Notification> notifications;
 
     /**
-     * Default constructor for Event
+     * Default constructor for Event. Often used to create an event shell where we can then populate
+     * from a document, or for creating events when we only actually care about the ID, for navigation
+     * purposes.
      */
     public Event() {}
 
