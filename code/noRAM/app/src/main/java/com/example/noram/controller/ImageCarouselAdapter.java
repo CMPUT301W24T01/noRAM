@@ -26,7 +26,8 @@ import java.util.ArrayList;
  * @author Cole
  */
 public class ImageCarouselAdapter extends RecyclerView.Adapter<ImageCarouselAdapter.ViewHolder> {
-
+    // reference for this class: EveryDayProgrammer, https://medium.com/@everydayprogrammer/implementing-material-3-carousel-in-android-studio-245435a5cdc5
+    // "Implementing Material 3 Carousel in Android Studio", accessed april 3 2024.
     private ArrayList<Event> events;
     private Context context;
 
