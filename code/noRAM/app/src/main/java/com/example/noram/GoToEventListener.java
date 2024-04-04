@@ -6,8 +6,6 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import com.example.noram.model.Event;
-
 /**
  * Interface for a class that listens to GoToEvent requests
  * @maintainer Cole
@@ -19,4 +17,10 @@ public interface GoToEventListener {
      * @param eventId id of the event to go to
      */
     void goToEvent(String eventId);
+
+    /**
+     * Request that the application goes to the event's confetti check-in page
+     * @param eventId id of the event to go to
+     */
+    void goToConfetti(String eventId);
 }

@@ -47,7 +47,7 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
             checkinQRShare.setOnClickListener(v -> shareQRCode(checkinCode));
             checkinQRImage.setImageBitmap(checkinCode.getBitmap());
         });
-        MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+        MainActivity.db.getQrRef().document(promoID).get().addOnSuccessListener(documentSnapshot1 -> {
             QRCode promoCode = new QRCode();
             promoCode.updateWithMap(documentSnapshot1.getData());
             promoQRShare.setOnClickListener(v -> shareQRCode(promoCode));
