@@ -559,8 +559,9 @@ public class Event {
                attendee.updateWithMap(data);
                signedUpAttendeeObjects.add(attendee);
            }
+            callback.accept(signedUpAttendeeObjects);
         });
-        callback.accept(signedUpAttendeeObjects);
+
     }
 
     /**

@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +34,7 @@ import java.util.Locale;
  * A {@link AppCompatActivity} subclass.
  * @Maintainer Ethan
  * @Author Ethan
+ * @Author Carlin
  */
 public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private Event event;
@@ -82,10 +86,18 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         searchCheckedInAttendeeList.setAdapter(searchCheckedInAttendeeAdapter);
 
         // connect signed-up lists to their adapters
-        signedUpAttendeeAdapter = new AttendeeArrayAdapter(this, signedUpAttendeeDataList);
-        searchSignedUpAttendeeAdapter = new AttendeeArrayAdapter(this, searchSignedUpAttendeeDataList);
+        signedUpAttendeeAdapter = new AttendeeArrayAdapter(this, signedUpAttendeeDataList, 1);
+        searchSignedUpAttendeeAdapter = new AttendeeArrayAdapter(this, searchSignedUpAttendeeDataList, 1);
         signedUpAttendeeList.setAdapter(signedUpAttendeeAdapter);
         searchSignedUpAttendeeList.setAdapter(searchSignedUpAttendeeAdapter);
+
+        // Get buttons
+        Button signedUpButton = findViewById(R.id.organizer_event_attendee_signed_up_button);
+        Button checkedInButton = findViewById(R.id.organizer_event_attendee_checked_in_button);
+
+        // Get "no attendees" displays
+        TextView checkedInEmpty = findViewById(R.id.organizer_event_checked_in_attendee_empty);
+        TextView signedUpEmpty = findViewById(R.id.organizer_event_signed_up_attendee_empty);
 
         // get event from intent
         Intent intent = getIntent();
@@ -103,10 +115,6 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                     checkedInAttendeeDataList.clear();
                     checkedInAttendeeDataList.addAll(attendeeCallback);
                     checkedInAttendeeAdapter.notifyDataSetChanged();
-//                    findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
-//                    if (checkedInAttendeeDataList.isEmpty()) {
-//                        findViewById(R.id.organizer_event_attendee_empty).setVisibility(View.VISIBLE);
-//                    }
                 });
 
                 // Get the signed-up attendees
@@ -116,7 +124,7 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                     signedUpAttendeeAdapter.notifyDataSetChanged();
                     findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
                     if (signedUpAttendeeDataList.isEmpty()) {
-                        findViewById(R.id.organizer_event_milestones_empty).setVisibility(View.VISIBLE);
+                        signedUpEmpty.setVisibility(View.VISIBLE);
                     }
                 });
             });
@@ -124,6 +132,7 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         } else {
             throw new RuntimeException("Must pass Event with key \"event\" using intent.putExtra(\"event\", eventIDAsString);");
         }
+
 
         // connect searchbar to listen for user input
         searchInput.addTextChangedListener(new TextWatcher() {
@@ -165,10 +174,17 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         findViewById(R.id.organizer_event_attendee_back).setOnClickListener(v -> finish());
 
         // Set up signed-up button
-        findViewById(R.id.organizer_event_attendee_signed_up_button).setOnClickListener(v -> {
+        signedUpButton.setOnClickListener(v -> {
             if (showing == Showing.CHECKEDIN) {
                 // Flip showing
                 showing = Showing.SIGNEDUP;
+
+                // Update buttons
+                signedUpButton.setBackgroundColor(getResources().getColor(R.color.light_grey, getTheme()));
+                checkedInButton.setBackgroundColor(getResources().getColor(R.color.white, getTheme()));
+
+                // Clear empty message
+                checkedInEmpty.setVisibility(View.GONE);
 
                 // Hide other lists
                 checkedInAttendeeList.setVisibility(View.GONE);
@@ -177,24 +193,42 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 // Show correct lists
                 signedUpAttendeeList.setVisibility(View.VISIBLE);
                 searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+
+                // Check emptiness
+                if (signedUpAttendeeDataList.isEmpty()) {
+                    signedUpEmpty.setVisibility(View.VISIBLE);
+                }
             }
         });
 
         // Set up checked-in button
-        findViewById(R.id.organizer_event_attendee_signed_up_button).setOnClickListener(v -> {
-            if (showing == Showing.CHECKEDIN) {
+        checkedInButton.setOnClickListener(v -> {
+            if (showing == Showing.SIGNEDUP) {
                 // Flip showing
                 showing = Showing.CHECKEDIN;
 
+                // Update buttons
+                signedUpButton.setBackgroundColor(getResources().getColor(R.color.white, getTheme()));
+                checkedInButton.setBackgroundColor(getResources().getColor(R.color.light_grey, getTheme()));
+
+                // Clear empty message
+                signedUpEmpty.setVisibility(View.GONE);
+
                 // Hide other lists
-                checkedInAttendeeList.setVisibility(View.GONE);
-                searchCheckedInAttendeeList.setVisibility(View.GONE);
+                signedUpAttendeeList.setVisibility(View.GONE);
+                searchSignedUpAttendeeList.setVisibility(View.GONE);
 
                 // Show correct lists
                 checkedInAttendeeList.setVisibility(View.VISIBLE);
                 searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
+
+                // Check emptiness
+                if (checkedInAttendeeDataList.isEmpty()) {
+                    checkedInEmpty.setVisibility(View.VISIBLE);
+                }
             }
         });
+        Log.d("DEBUG", "HERE");
     }
 
     /**

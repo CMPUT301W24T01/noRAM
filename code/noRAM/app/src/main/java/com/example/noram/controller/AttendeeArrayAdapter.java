@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;
     private Context context;
+    private int format; // 0 for show everything, 1 for show name/pic/homepage
 
     /**
      * A constructor to create an AttendeeArrayAdapter
@@ -43,6 +44,19 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         super(context,0, attendees);
         this.attendees = attendees;
         this.context = context;
+    }
+
+    /**
+     * A constructor to create an AttendeeArrayAdapter with a specified format (default is 0)
+     * @param context the context of the adapter
+     * @param attendees the attendees to be displayed
+     * @param format designates which format to use
+     */
+    public AttendeeArrayAdapter(Context context, ArrayList<Attendee> attendees, int format) {
+        super(context, 0, attendees);
+        this.attendees = attendees;
+        this.context = context;
+        this.format = format;
     }
 
     /**
@@ -83,6 +97,11 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         attendeeHomepage.setText(attendee.getHomePage());
         attendeeEmail.setText(attendee.getEmail());
         photo.updateWithBitmap(attendeePhoto);
+
+        // Hide views based on format
+        if (format == 1) {
+            attendeeID.setVisibility(View.GONE);
+        }
 
         return view;
     }

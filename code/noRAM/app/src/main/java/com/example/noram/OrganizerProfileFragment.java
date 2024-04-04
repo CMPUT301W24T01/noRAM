@@ -95,9 +95,7 @@ public class OrganizerProfileFragment extends Fragment {
         organizer = MainActivity.organizer;
 
         // Set the fields to the attendee's information
-        if (organizer != null) {
-            setFields(organizer);
-        }
+        setFields(organizer);
 
         // hide delete button if we are using our attendee's default photo
         if (organizer.isUsingAttendeeProfilePicture()) {

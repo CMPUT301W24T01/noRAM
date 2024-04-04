@@ -97,10 +97,23 @@
         app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
 
     <TextView
-        android:id="@+id/organizer_event_attendee_empty"
+        android:id="@+id/organizer_event_checked_in_attendee_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="There are no attendees yet"
+        android:text="There are no checked-in attendees yet"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
+    <TextView
+        android:id="@+id/organizer_event_signed_up_attendee_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There are no signed-up attendees yet"
         android:textAlignment="center"
         android:textSize="24sp"
         android:visibility="invisible"
