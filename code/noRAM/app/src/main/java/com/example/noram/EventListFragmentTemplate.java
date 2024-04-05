@@ -52,8 +52,6 @@ public abstract class EventListFragmentTemplate extends Fragment {
      */
     protected void setReferenceSearchList(ArrayList<Event> newList){
         eventListRef = newList;
-        Log.d("EVENTLISTREF", newList.toString());
-        Log.d("EVENTLISTREF", eventListRef.toString());
     }
 
     /**
@@ -177,6 +175,8 @@ public abstract class EventListFragmentTemplate extends Fragment {
                 searchEventDataList.add(event);
             }
         }
+        // sort events so that "NOW" events are at the top
+        searchEventDataList.sort(new EventTimeComparator());
 
         // notify
         searchEventAdapter.notifyDataSetChanged();

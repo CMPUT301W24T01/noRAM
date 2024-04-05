@@ -21,6 +21,7 @@ import com.example.noram.model.Event;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A {@link Fragment} subclass.
@@ -145,6 +146,11 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                             event.updateWithDocument(doc);
                             allEventDataList.add(event);
                         }
+
+                        // sort events so that "NOW" events are at the top
+                        allEventDataList.sort(new EventTimeComparator());
+
+                        // update
                         allEventAdapter.notifyDataSetChanged();
                     }
                 });

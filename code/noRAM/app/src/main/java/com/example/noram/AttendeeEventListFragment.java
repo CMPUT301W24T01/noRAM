@@ -217,6 +217,10 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                         userEventDataList.add(event);
                     }
                 }
+                // sort events so that "NOW" events are at the top
+                allEventDataList.sort(new EventTimeComparator());
+                userEventAdapter.sort(new EventTimeComparator());
+
                 // update after both lists are changed
                 allEventAdapter.notifyDataSetChanged();
                 userEventAdapter.notifyDataSetChanged();
