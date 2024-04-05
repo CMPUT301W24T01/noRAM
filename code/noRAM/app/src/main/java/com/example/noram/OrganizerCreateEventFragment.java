@@ -51,34 +51,34 @@ import java.util.stream.Stream;
  */
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
     // Attributes
-    int startYear = -1;
-    int startMonth;
-    int startDay;
-    int startHour;
-    int startMinute;
-    int endYear = -1;
-    int endMonth;
-    int endDay;
-    int endHour;
-    int endMinute;
+    private int startYear = -1;
+    private int startMonth;
+    private int startDay;
+    private int startHour;
+    private int startMinute;
+    private int endYear = -1;
+    private int endMonth;
+    private int endDay;
+    private int endHour;
+    private int endMinute;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private AppCompatButton editStartDateTime;
     private AppCompatButton editEndDateTime;
-    View createdView;
+    private View createdView;
     private Uri imageUri;
-    FloatingActionButton addPhoto;
+    private FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
-    TextView editName;
-    TextView editLocation;
-    TextView editDetails;
-    TextView editMilestones;
-    CheckBox trackLocationCheck;
-    CheckBox limitSignUpsCheck;
-    TextView editLimitSignUps;
+    private TextView editName;
+    private TextView editLocation;
+    private TextView editDetails;
+    private TextView editMilestones;
+    private CheckBox trackLocationCheck;
+    private CheckBox limitSignUpsCheck;
+    private TextView editLimitSignUps;
     private ImageView imageView;
-    Button nextButton;
-    ScrollView scroll;
+    private Button nextButton;
+    private ScrollView scroll;
 
     // Constructors
     /**
