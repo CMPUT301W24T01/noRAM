@@ -612,4 +612,21 @@ public class Event {
         HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
         return uniqueAttendees.size();
     }
+
+    /**
+     * Check if the event is happening right now
+     * @return Returns true if the event is happening right now, false otherwise
+     */
+    public boolean isHappeningNow(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        return this.getStartTime().isBefore(currentTime) && this.getEndTime().isAfter(currentTime);
+    }
+
+    /**
+     * Check if the event already happened (if current time is after event's endtime)
+     * @return True if the event already happened, false otherwise
+     */
+    public boolean hasHappened(){
+        return endTime.isBefore(LocalDateTime.now());
+    }
 }
