@@ -17,22 +17,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.noram.model.Notification;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * The OrganizerEventNotificationsActivity class allows event organizers to send locations for their event.
  * A {@link AppCompatActivity} subclass.
- * @Maintainer Christiaan
- * @Author Christiaan
+ * @maintainer Christiaan
+ * @author Christiaan
  */
 public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
     // Attributes
-    private Event event = new Event();
+    private List<Notification> listNotification;
+    Event event = new Event();
 
     /**
      * Setup the activity when it is created.
@@ -44,24 +46,21 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_event_notifications);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
 
-        // Ensure intent contains event
-        Intent intent = getIntent();
-        if (intent.hasExtra("event")) {
-            String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
-            assert (eventID != null);
-
-            // get event from db
-            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
-            eventTask.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    event = documentSnapshot.toObject(Event.class);
-                }
-            });
-        }
+//        // Ensure intent contains event
+//        Intent intent = getIntent();
+//        if (intent.hasExtra("event")) {
+//            String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
+//            assert (eventID != null);
+//
+//            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
+//            eventTask.addOnSuccessListener(documentSnapshot -> {
+//                event.updateWithDocument(documentSnapshot);
+//                listNotification = event.getNotifications();
+//            });
+//        }
 
         // Set up views
         TextView editTitle = findViewById(R.id.organizer_notifications_edit_title_text);
