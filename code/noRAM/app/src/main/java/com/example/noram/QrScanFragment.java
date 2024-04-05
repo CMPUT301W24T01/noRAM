@@ -7,7 +7,6 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,15 +20,11 @@ import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.example.noram.model.Event;
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.example.noram.controller.EventManager;
-import com.google.firebase.firestore.Transaction;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -140,11 +135,15 @@ public class QrScanFragment extends Fragment {
                 QRType qrType = QRType.valueOf(qrDocument.getString("type"));
 
                 if (qrType == QRType.SIGN_IN) {
+                    // check in and go to confetti
                     EventManager.checkInToEvent(eventId);
                     showCheckInSuccess();
+                    goToEventListener.goToConfetti(eventId);
+                } else {
+                    // tell the activity to go to the event
+                    goToEventListener.goToEvent(eventId);
                 }
-                // tell the activity to go to the event
-                goToEventListener.goToEvent(eventId);
+
                 scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });

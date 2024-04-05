@@ -1,9 +1,9 @@
 /*
-This file is used to create an adapter that connects a ListView of events with an ArrayList of events.
+This file is used to create an adapter that connects a ListView of events with an ArrayList of
+events for the "Events" admin section
 Outstanding Issues:
 - None
  */
-
 package com.example.noram.controller;
 
 import android.content.Context;
@@ -25,24 +25,25 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
- * An adapter that connects a ListView of events with an ArrayList of events.
+ * An adapter that connects a ListView of events with an ArrayList of events specifically in the
+ * Admin's "Events" section
  * A {@link EventArrayAdapter} object is used to display a list of events in a ListView.
  * @maintainer Gabriel
  * @author Gabriel
  */
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class EventAdminArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
     /**
-     * A constructor to create an EventArrayAdapter
+     * A constructor to create an EventAdminArrayAdapter
      * @param context the context of the adapter
      * @param events the events to be displayed
      */
-    public EventArrayAdapter(Context context, ArrayList<Event> events){
-        super(context,0, events);
-        this.events = events;
-        this.context = context;
+    public EventAdminArrayAdapter(Context context, ArrayList<Event> events){
+            super(context,0, events);
+            this.events = events;
+            this.context = context;
     }
 
     /**
@@ -58,21 +59,21 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_list_item, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.event_admin_list_item, parent,false);
         }
 
         // get event data
         Event event = events.get(position);
 
-        // update fields and return view
         EventItemManager manager = new EventItemManager(context, event, view);
 
+        // update view's fields and return view
         manager.setTitle();
         manager.setTime();
         manager.setLocation();
         manager.setSignedUpCount();
-        manager.setSignedUpStatus();
-        manager.setCheckedInStatus();
+        manager.setID();
+        manager.setOrganizer();
 
         return view;
     }

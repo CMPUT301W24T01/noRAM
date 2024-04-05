@@ -18,14 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Attendee;
@@ -238,9 +236,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private boolean navigateTo(MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.attend_events ){
+        if(itemID == R.id.bottom_nav_attend_events){
             startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
-        } else if(itemID == R.id.organize_events){
+        } else if(itemID == R.id.bottom_nav_organize_events){
             startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
         } else{
             return false;

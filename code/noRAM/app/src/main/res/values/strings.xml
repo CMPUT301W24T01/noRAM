@@ -95,4 +95,8 @@
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below is an event you might enjoy:</string>
     <string name="unsign_button">Unsign</string>
+    <string name="signed_up">Signed-Up</string>
+    <string name="checked_in">Checked-In</string>
+    <string name="there_are_no_checked_in_attendees_yet">There are no checked-in attendees yet</string>
+    <string name="there_are_no_signed_up_attendees_yet">There are no signed-up attendees yet</string>
 </resources>
