@@ -29,12 +29,9 @@ import java.util.ArrayList;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-<<<<<<< Updated upstream
-=======
     private ArrayList<Notification> NotificationDataList;
     private NotificationArrayAdapter NotificationAdapter;
     private ListView NotificationList;
->>>>>>> Stashed changes
     private Event event;
 
     /**
@@ -50,20 +47,11 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         // retrieve corresponding event in database
         String eventID = String.valueOf(getIntent().getIntExtra(eventIDLabel,0));
 
-<<<<<<< Updated upstream
         MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 event = documentSnapshot.toObject(Event.class);
             }
         });
-=======
-        Log.d("event ID", eventID);
-
-        Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
-            eventTask.addOnSuccessListener(documentSnapshot -> {
-                event.updateWithDocument(documentSnapshot);
-            });
->>>>>>> Stashed changes
 
         Log.d("event ID", event.getId());
 
@@ -71,7 +59,6 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
         ListView notificationList = findViewById(R.id.notification_list);
 
-<<<<<<< Updated upstream
         ArrayList<Notification> notificationDataList = new ArrayList<>();
 
         NotificationArrayAdapter notificationAdapter = new NotificationArrayAdapter(this, notificationDataList);
@@ -81,13 +68,12 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         notificationDataList.addAll(event.getNotifications());
 
         notificationAdapter.notifyDataSetChanged();
-=======
+
         NotificationDataList = (ArrayList<Notification>) event.getNotifications();
 
         NotificationAdapter.addAll(NotificationDataList);
 
         NotificationAdapter.notifyDataSetChanged();
->>>>>>> Stashed changes
 
     }
 }
