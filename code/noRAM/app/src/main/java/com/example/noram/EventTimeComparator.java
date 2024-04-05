@@ -15,6 +15,8 @@ import java.util.Comparator;
 
 /**
  * Comparator that compares two event based on if they are happening right now
+ * @maintainer Gabriel
+ * @author Gabriel
  */
 public class EventTimeComparator implements Comparator<Event> {
 

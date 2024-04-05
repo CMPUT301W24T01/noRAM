@@ -119,7 +119,8 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // afterward toggle visibility of lists
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
-        searchEventList.setVisibility(View.INVISIBLE);}
+        searchEventList.setVisibility(View.INVISIBLE);
+    }
 
     /**
      * Makes the list of all events visible and hides the other list
