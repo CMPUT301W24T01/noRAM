@@ -99,4 +99,5 @@
     <string name="checked_in">Checked-In</string>
     <string name="there_are_no_checked_in_attendees_yet">There are no checked-in attendees yet</string>
     <string name="there_are_no_signed_up_attendees_yet">There are no signed-up attendees yet</string>
+    <string name="past_events">Past Events</string>
 </resources>

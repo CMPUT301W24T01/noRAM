@@ -2,6 +2,8 @@
 This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
 Outstanding Issues:
 - UI needs to be cleaned up
+- When the searchbar is cleared, the "AllEvents" list is shown by default (no matter what list was
+being consulted)
  */
 
 package com.example.noram;
@@ -171,7 +173,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         myEventsButton.setOnClickListener(view -> displayMyEvents());
         allEventsButton.setOnClickListener(view -> displayAllEvents());
 
-        // connect the three lists so that each item display its event
+        // connect the lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
             EventManager.displayAttendeeEvent(getActivity(),event);
@@ -190,20 +192,16 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                 allEventDataList.clear();
                 userEventDataList.clear();
                 for(QueryDocumentSnapshot doc: querySnapshots){
-                    // get event ending time
-                    LocalDateTime eventTime;
-                    eventTime = LocalDateTime.parse(
-                        doc.getString("endTime"),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-                    );
-                    // do not add event if time was already passed
-                    if(eventTime.isBefore(LocalDateTime.now())){
-                        continue;
-                    }
-
                     // get event's info and create it
                     Event event = new Event();
                     event.updateWithDocument(doc);
+
+                    // do not add event if it already happened
+                    if(event.hasHappened()){
+                        continue;
+                    }
+
+                    // add to all event list
                     allEventDataList.add(event);
 
                     // if user correspond, add event to myEvents list

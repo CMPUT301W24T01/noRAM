@@ -1,7 +1,8 @@
 /*
 This file is used to display the list of events that a user has created.
 Outstanding Issues:
-- Instead of the user's events being displayed, all events are listed
+- When the searchbar is cleared, the "AllEvents" list is shown by default (no matter what list was
+being consulted)
  */
 
 package com.example.noram;
@@ -33,9 +34,14 @@ import java.util.Collections;
  */
 public class OrganizerEventListFragment extends EventListFragmentTemplate {
 
+    // attributes for all event list
     private ListView allEventList; // list of all events in UI
     private ArrayList<Event> allEventDataList; // data list of all events
-    EventArrayAdapter allEventAdapter; // adapter for allEvent list
+    private EventArrayAdapter allEventAdapter; // adapter for allEvent list
+    // attributes for past event list
+    private ListView pastEventList;
+    private ArrayList<Event> pastEventDataList;
+    private EventArrayAdapter pastEventAdapter;
 
     /**
      * Default constructor
@@ -85,6 +91,7 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
     protected void showSearchList(){
         searchEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
+        pastEventList.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -94,7 +101,33 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
     @Override
     protected void hideSearchList(){
         searchEventList.setVisibility(View.INVISIBLE);
+        allEventList.setVisibility(View.VISIBLE); // show all events by default
+        pastEventList.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Makes all-events list visible and hides the other lists
+     */
+    private void displayAllEvents(){
+        // clear search bar and makes searches happen on allEvents list
+        setReferenceSearchList(allEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
+        pastEventList.setVisibility(View.INVISIBLE);
+        searchEventList.setVisibility(View.INVISIBLE);}
+
+    /**
+     * Makes the list of past events visible and hides the other list
+     */
+    private void displayPastEvents(){
+        // clear search bar and makes searches happen on pastEvent list
+        setReferenceSearchList(pastEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
+        pastEventList.setVisibility(View.VISIBLE);
+        allEventList.setVisibility(View.INVISIBLE);
+        searchEventList.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -118,16 +151,30 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
         // get all views and initialize variables
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<>();
+        pastEventList = rootView.findViewById(R.id.pastEventsList);
+        pastEventDataList = new ArrayList<>();
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
         allEventList.setAdapter(allEventAdapter);
+        pastEventAdapter = new EventArrayAdapter(this.getContext(), pastEventDataList);
+        pastEventList.setAdapter(pastEventAdapter);
 
         // connect the two lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
             EventManager.displayOrganizerEvent(getContext(), event);
         });
+        pastEventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = pastEventDataList.get(position);
+            EventManager.displayOrganizerEvent(getContext(), event);
+        });
+
+        // connect each button to corresponding function
+        rootView.findViewById(R.id.allEventsButton).setOnClickListener(view -> displayAllEvents());
+        rootView.findViewById(R.id.pastEventsButton).setOnClickListener(view -> displayPastEvents());
+
+        // connect database to lists
         eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
                 .addSnapshotListener((querySnapshots, error) -> {
 
@@ -144,14 +191,23 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                             // get event's info and create it
                             Event event = new Event();
                             event.updateWithDocument(doc);
-                            allEventDataList.add(event);
+
+                            // either add to all or past event list if event already happened or not
+                            if(event.hasHappened()){
+                                pastEventDataList.add(event);
+                            }
+                            else{
+                                allEventDataList.add(event);
+                            }
                         }
 
                         // sort events so that "NOW" events are at the top
                         allEventDataList.sort(new EventTimeComparator());
+                        pastEventDataList.sort(new EventTimeComparator());
 
                         // update
                         allEventAdapter.notifyDataSetChanged();
+                        pastEventAdapter.notifyDataSetChanged();
                     }
                 });
 
