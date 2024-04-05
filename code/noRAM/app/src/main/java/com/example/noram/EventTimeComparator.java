@@ -19,16 +19,6 @@ import java.util.Comparator;
 public class EventTimeComparator implements Comparator<Event> {
 
     /**
-     * Check if an event is happening right now
-     * @param event Event who is being checked
-     * @return Returns true if the event is happening right now, false otherwise
-     */
-    private boolean happeningNow(Event event){
-        LocalDateTime currentTime = LocalDateTime.now();
-        return event.getStartTime().isBefore(currentTime) && event.getEndTime().isAfter(currentTime);
-    }
-
-    /**
      * Compare two events based by checking if they are happening right now or not.
      * To have "NOW" event in the first positions of a given list, an event is considered lower in
      * value if it is happening right now
@@ -38,11 +28,10 @@ public class EventTimeComparator implements Comparator<Event> {
      */
     @Override
     public int compare(Event event1, Event event2){
-        boolean event1Now = happeningNow(event1);
-        boolean event2Now = happeningNow(event2);
+        boolean event1Now = event1.isHappeningNow();
 
         // if same result, use UID instead to sort
-        if(event1Now==event2Now){
+        if(event1Now == event2.isHappeningNow()){
             return event1.getId().compareTo(event2.getId());
         } else if(event1Now){
             // event1 was happening now
