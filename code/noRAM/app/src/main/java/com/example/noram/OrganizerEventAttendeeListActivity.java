@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -254,11 +253,13 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 }
             }
             searchCheckedInAttendeeAdapter.notifyDataSetChanged();
-            if (searchCheckedInAttendeeDataList.isEmpty()) {
-                findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
-            } else {
-                findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
-            }
+//            if (!checkedInAttendeeDataList.isEmpty()) {
+//                if (searchCheckedInAttendeeDataList.isEmpty()) {
+//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
+//                } else {
+//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
+//                }
+//            }
         }
         else {
             // if search is empty, show back all events and return. Otherwise, show searched events
@@ -286,11 +287,13 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 }
             }
             searchSignedUpAttendeeAdapter.notifyDataSetChanged();
-            if (searchSignedUpAttendeeDataList.isEmpty()) {
-                findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
-            } else {
-                findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
-            }
+//            if (!signedUpAttendeeDataList.isEmpty()) {
+//                if (searchSignedUpAttendeeDataList.isEmpty()) {
+//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
+//                } else {
+//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
+//                }
+//            }
         }
     }
 }
