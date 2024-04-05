@@ -7,6 +7,7 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,9 +27,7 @@ import java.util.ArrayList;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-    private ArrayList<Notification> NotificationDataList;
-    private NotificationArrayAdapter NotificationAdapter;
-    private ListView NotificationList;
+    private Event event;
 
     /**
      * This method is called when the activity is created.
@@ -45,28 +44,25 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
         MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                // displayAnnouncements(event);
+                event = documentSnapshot.toObject(Event.class);
             }
         });
 
-        NotificationList = findViewById(R.id.notification_list);
+        Log.d("event ID", event.getId());
 
-        NotificationDataList = new ArrayList<>();
-        
-        NotificationAdapter = new NotificationArrayAdapter(this, NotificationDataList);
+        Log.d("notification list", String.valueOf(event.getNotifications()));
 
-        NotificationList.setAdapter(NotificationAdapter);
+        ListView notificationList = findViewById(R.id.notification_list);
 
-        // get notifications from database for the given event by decomposing the event from the db and then calling get notifications on it
+        ArrayList<Notification> notificationDataList = new ArrayList<>();
 
-        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                assert event != null;
-                NotificationDataList.addAll(event.getNotifications());
-                NotificationAdapter.notifyDataSetChanged();
-            }
-        });
+        NotificationArrayAdapter notificationAdapter = new NotificationArrayAdapter(this, notificationDataList);
+
+        notificationList.setAdapter(notificationAdapter);
+
+        notificationDataList.addAll(event.getNotifications());
+
+        notificationAdapter.notifyDataSetChanged();
+
     }
 }
