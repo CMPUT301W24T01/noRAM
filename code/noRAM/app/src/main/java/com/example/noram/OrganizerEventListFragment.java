@@ -97,28 +97,6 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
     }
 
     /**
-     * Creates the ArrayList that will contain all of the database's events. This will be used to
-     * make static searches (locally)
-     * @return An Event arrayList containing all of the events on which the search will be performed
-     */
-    @Override
-    protected ArrayList<Event> generateEventList(){
-        ArrayList<Event> entireList = new ArrayList<>();
-
-        // searches will be on events that organizer created
-        eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
-                .get().addOnSuccessListener(querySnapshot -> {
-                            for (QueryDocumentSnapshot doc : querySnapshot) {
-                                Event event = new Event();
-                                event.updateWithDocument(doc);
-                                entireList.add(event);
-                            }
-                        }
-                );
-        return entireList;
-    }
-
-    /**
      * Creates the view for the Organizer's Events List Fragment
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,
@@ -135,11 +113,6 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_organizer_event_list, container, false);
-
-        // setup the search list
-        setupSearch(
-                rootView.findViewById(R.id.searchEventsList), rootView.findViewById(R.id.searchInput)
-        );
 
         // get all views and initialize variables
         allEventList = rootView.findViewById(R.id.allEventsList);
@@ -175,6 +148,14 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                         allEventAdapter.notifyDataSetChanged();
                     }
                 });
+
+        // setup the search list
+        setupSearch(
+                rootView.findViewById(R.id.searchEventsList), rootView.findViewById(R.id.searchInput)
+        );
+        // searches are by default on all events
+        setReferenceSearchList(allEventDataList);
+
 
         return rootView;
     }

@@ -109,15 +109,22 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the user's personal events visible and hides the other lists
      */
     private void displayMyEvents(){
+        // clear search bar and makes searches happen on myEvents list
+        setReferenceSearchList(userEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
-        searchEventList.setVisibility(View.INVISIBLE);
-    }
+        searchEventList.setVisibility(View.INVISIBLE);}
 
     /**
      * Makes the list of all events visible and hides the other list
      */
     private void displayAllEvents(){
+        // clear search bar and makes searches happen on allEvents list
+        setReferenceSearchList(allEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
@@ -149,6 +156,8 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // setup search functionality
         searchEventList = rootView.findViewById(R.id.searchEventsList);
         setupSearch(searchEventList, rootView.findViewById(R.id.searchInput));
+        // searches are by default on all events
+        setReferenceSearchList(allEventDataList);
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);

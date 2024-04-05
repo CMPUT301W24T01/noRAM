@@ -8,6 +8,7 @@ package com.example.noram;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -31,8 +32,9 @@ public abstract class EventListFragmentTemplate extends Fragment {
     private ArrayList<Event> searchEventDataList; // data list of events' search results
     EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
     protected final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
-    protected ArrayList<Event> eventListRef; // all the events in the database
+    protected ArrayList<Event> eventListRef = null; // list of events on which searches are performed
     protected ListView searchEventList; // view showing all the searched events
+    protected EditText searchBox;
 
     /**
      * This method is called when the fragment is resumed.
@@ -45,23 +47,13 @@ public abstract class EventListFragmentTemplate extends Fragment {
     }
 
     /**
-     * Creates the ArrayList that will contain all of the database's events. This will be used to
-     * make static searches (locally)
-     * @return An Event arrayList containing all of the events on which the search will be performed
+     * Changes the reference list (on which searches are performed) for a new list
+     * @param newList The new list on which searches will now be performed
      */
-    protected ArrayList<Event> generateEventList(){
-        ArrayList<Event> entireList = new ArrayList<>();
-
-        // fill list with all events
-        eventRef.get().addOnSuccessListener(querySnapshot -> {
-            for(QueryDocumentSnapshot doc: querySnapshot){
-                Event event = new Event();
-                event.updateWithDocument(doc);
-                entireList.add(event);
-            }
-        });
-
-        return entireList;
+    protected void setReferenceSearchList(ArrayList<Event> newList){
+        eventListRef = newList;
+        Log.d("EVENTLISTREF", newList.toString());
+        Log.d("EVENTLISTREF", eventListRef.toString());
     }
 
     /**
@@ -71,8 +63,8 @@ public abstract class EventListFragmentTemplate extends Fragment {
      * @param searchInput The EditText that will take user input for searches
      */
     protected void setupSearch(ListView searchList, EditText searchInput){
-        // keep local version of all events (for static searches)
-        eventListRef = generateEventList();
+        // searchbox used to input searches
+        searchBox = searchInput;
 
         // basic connections between lists and adapters
         searchEventList = searchList;
@@ -133,10 +125,10 @@ public abstract class EventListFragmentTemplate extends Fragment {
     }
 
     /**
-     * Hook that hides the searchList view on the screen. Override to show the other views that need
-     * to be visible
+     * Hook that hides the searchList view on the screen.
+     * Override to show the other views that need to be visible
      */
-    protected void hideSearchList(){
+    protected void hideSearchList() {
         searchEventList.setVisibility(View.INVISIBLE);
     }
 
@@ -156,6 +148,13 @@ public abstract class EventListFragmentTemplate extends Fragment {
         if(search.isEmpty()){
             hideSearchList();
             return;
+        }
+
+        // check that reference list was initialized
+        if(eventListRef == null){
+            throw new RuntimeException("eventListRef should have been initialized using " +
+                "setReferenceSearchList before doing a search."
+            );
         }
 
         // show search list
