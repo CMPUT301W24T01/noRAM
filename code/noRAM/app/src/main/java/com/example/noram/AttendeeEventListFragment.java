@@ -22,6 +22,8 @@ import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -188,6 +190,17 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                 allEventDataList.clear();
                 userEventDataList.clear();
                 for(QueryDocumentSnapshot doc: querySnapshots){
+                    // get event ending time
+                    LocalDateTime eventTime;
+                    eventTime = LocalDateTime.parse(
+                        doc.getString("endTime"),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                    );
+                    // do not add event if time was already passed
+                    if(eventTime.isBefore(LocalDateTime.now())){
+                        continue;
+                    }
+
                     // get event's info and create it
                     Event event = new Event();
                     event.updateWithDocument(doc);
