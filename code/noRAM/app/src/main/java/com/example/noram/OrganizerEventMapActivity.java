@@ -155,12 +155,12 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
         //attempt to get the location
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             // if the API can get a location
+            /**
+             On successful acquisition of user's location, pass it to draw onto the map
+             @param location the location to be added to the database
+             */
             @Override
             public void onSuccess(Location location) {
-                /**
-                 On successful acquisition of user's location, pass it to draw onto the map
-                 @param location the location to be added to the database
-                 */
                 //and the location is not null
                 if (location != null) {
                     //draw location on the map

@@ -52,25 +52,6 @@ public class MainActivityTest {
     /**
      * Verifies the attendee "browse events" button opens the attendee page
      */
-//TODO: do we need this still? I did not write this test
-
-//    @Test
-//    public void attendeeButtonTest() {
-//        onView(withId(R.id.attendeeButton)).perform(click());
-//
-//        intended(hasComponent(AttendeeActivity.class.getName()));
-//    }
-//
-//    /**
-//     * Verifies that the organizer button opens the organizer page
-//     */
-//    @Test
-//    public void organizerButtonTest() {
-//        onView(withId(R.id.organizerButton)).perform(click());
-//
-//        intended(hasComponent(OrganizerActivity.class.getName()));
-//    }
-
     @Test
     public void attendeeButtonTest() {
         onView(withId(R.id.bottom_nav_attend_events)).perform(click());
