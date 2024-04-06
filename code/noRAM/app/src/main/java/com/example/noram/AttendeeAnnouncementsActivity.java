@@ -44,16 +44,20 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_announcements);
 
-        // retrieve corresponding event in database
-        String eventID = String.valueOf(getIntent().getIntExtra(eventIDLabel,0));
 
-        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+        // get eventIDLabel and also eventID from intent
+        String eventID = getIntent().getStringExtra(eventIDLabel);
+        assert eventID != null;
+
+        Log.d("event ID before db", eventID);
+
+        MainActivity.db.getEventsRef().document(eventID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                event = documentSnapshot.toObject(Event.class);
+                event.updateWithDocument(documentSnapshot);
             }
         });
 
-        Log.d("event ID", event.getId());
+        Log.d("event ID after db", event.getId());
 
         Log.d("notification list", String.valueOf(event.getNotifications()));
 
