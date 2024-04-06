@@ -6,7 +6,6 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,8 +22,6 @@ import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.function.Consumer;
 
 /**
  * The AttendeeActivity class is the main activity for the Attendee user type.
