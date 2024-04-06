@@ -83,12 +83,8 @@ public class PushNotificationService extends FirebaseMessagingService {
         // Change to the UI Thread
         MainActivity.mn.runOnUiThread(() -> {
             // Display the notification with an alert dialog
-            AlertDialog.Builder builder;
-            if (AttendeeActivity.sn != null) {
-                builder = new AlertDialog.Builder(AttendeeActivity.sn);
-            } else {
-                builder = new AlertDialog.Builder(MainActivity.mn);
-            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
             builder.setTitle(remoteMessage.getNotification().getTitle());
             builder.setMessage(remoteMessage.getNotification().getBody());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());

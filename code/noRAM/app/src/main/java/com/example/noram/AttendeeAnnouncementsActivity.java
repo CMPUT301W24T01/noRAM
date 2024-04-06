@@ -7,16 +7,14 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ListView;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.NotificationArrayAdapter;
 import com.example.noram.model.Event;
 import com.example.noram.model.Notification;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -29,10 +27,7 @@ import java.util.ArrayList;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-    private ArrayList<Notification> NotificationDataList;
-    private NotificationArrayAdapter NotificationAdapter;
-    private ListView NotificationList;
-    private Event event;
+    private Event event = new Event();
 
     /**
      * This method is called when the activity is created.
@@ -54,30 +49,25 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         MainActivity.db.getEventsRef().document(eventID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 event.updateWithDocument(documentSnapshot);
+
+                Log.d("event notifications", String.valueOf(event.getNotifications()));
+
+                ListView notificationList = findViewById(R.id.notification_list);
+
+                ArrayList<Notification> notificationDataList = new ArrayList<>();
+
+                NotificationArrayAdapter notificationAdapter = new NotificationArrayAdapter(this, notificationDataList);
+
+                notificationList.setAdapter(notificationAdapter);
+
+                notificationDataList.addAll(event.getNotifications());
+
+                notificationAdapter.notifyDataSetChanged();
+
             }
         });
 
-        Log.d("event ID after db", event.getId());
-
-        Log.d("notification list", String.valueOf(event.getNotifications()));
-
-        ListView notificationList = findViewById(R.id.notification_list);
-
-        ArrayList<Notification> notificationDataList = new ArrayList<>();
-
-        NotificationArrayAdapter notificationAdapter = new NotificationArrayAdapter(this, notificationDataList);
-
-        notificationList.setAdapter(notificationAdapter);
-
-        notificationDataList.addAll(event.getNotifications());
-
-        notificationAdapter.notifyDataSetChanged();
-
-        NotificationDataList = (ArrayList<Notification>) event.getNotifications();
-
-        NotificationAdapter.addAll(NotificationDataList);
-
-        NotificationAdapter.notifyDataSetChanged();
+        findViewById(R.id.AttendeeAnnoucementsbackButton).setOnClickListener(v -> finish());
 
     }
 }

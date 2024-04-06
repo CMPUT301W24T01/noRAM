@@ -61,7 +61,7 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
 
         // get all variables from page
         if(usingDefaultViewIDs){
-             backButton = findViewById(R.id.backButton);
+             backButton = findViewById(R.id.AttendeeAnnoucementsbackButton);
              eventTitle = findViewById(R.id.eventTitle);
              organizerText = findViewById(R.id.organizerText);
              organizerImage = findViewById(R.id.organizerImage);
