@@ -137,6 +137,7 @@ public class QrScanFragment extends Fragment {
                 if (qrType == QRType.SIGN_IN) {
                     // check in and go to confetti
                     EventManager.checkInToEvent(eventId);
+                    EventManager.signUpForEvent(eventId, false);
                     showCheckInSuccess();
                     goToEventListener.goToConfetti(eventId);
                 } else {
