@@ -240,9 +240,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private boolean navigateTo(MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.attend_events ){
+        if(itemID == R.id.bottom_nav_attend_events){
             startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
-        } else if(itemID == R.id.organize_events){
+        } else if(itemID == R.id.bottom_nav_organize_events){
             startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
         }
 

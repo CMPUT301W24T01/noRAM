@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -83,6 +84,9 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
         sendButton.setOnClickListener(v -> {
             // Send notification
+
+            // send toast saying notification sent
+            Toast.makeText(getApplicationContext(), "Notification Sent!", Toast.LENGTH_SHORT).show();
             String title = editTitle.getText().toString();
             String content = editContent.getText().toString();
             MainActivity.pushService.sendNotification(title, content, event, false);

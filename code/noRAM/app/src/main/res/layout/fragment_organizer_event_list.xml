@@ -7,6 +7,45 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerEventListFragment">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/allEventsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/all_events_button"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_color"
+        app:layout_constraintBottom_toTopOf="@+id/allEventsList"
+        app:layout_constraintEnd_toStartOf="@+id/pastEventsButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pastEventsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="10dp"
+        android:text="@string/past_events"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_color"
+        app:layout_constraintBottom_toTopOf="@+id/allEventsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/allEventsButton" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchLayout"
         android:layout_width="0dp"
@@ -36,7 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/allEventsButton" />
 
     <ListView
         android:id="@+id/searchEventsList"
@@ -46,7 +85,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchLayout"
+        app:layout_constraintTop_toBottomOf="@id/allEventsButton"
         tools:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/pastEventsList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/allEventsButton"
+        tools:visibility="invisible"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

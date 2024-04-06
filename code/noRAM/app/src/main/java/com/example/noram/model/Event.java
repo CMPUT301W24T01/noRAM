@@ -514,8 +514,9 @@ public class Event {
      */
     public void removeSignedUpAttendee(String attendee){ signedUpAttendees.remove(attendee);}
 
-    /** Get the list of checked in attendees and the number of times they have checked in to provide to the callback
-     * * @param callback the callback to provide the list of attendees and their check-in counts to
+    /**
+     * Get the list of checked in attendees and the number of times they have checked in to provide to the callback
+     * @param callback the callback to provide the list of attendees and their check-in counts to
      */
     public void getCheckedInAttendeesAndCounts(Consumer<ArrayList<AttendeeCheckInCounter>> callback) {
         ArrayList<Attendee> checkedInAttendeeObjects = new ArrayList<>();
@@ -538,6 +539,31 @@ public class Event {
             ArrayList<AttendeeCheckInCounter> attendeeCheckInCounters = countCheckIns(checkedInAttendeeObjects);
             callback.accept(attendeeCheckInCounters);
         });
+    }
+
+    /**
+     * Get the list of signed up attendees
+     * @param callback the callback to provide the list of attendees to
+     */
+    public void getSignedUpAttendeeObjects(Consumer<ArrayList<Attendee>> callback) {
+        ArrayList<Attendee> signedUpAttendeeObjects = new ArrayList<>();
+        // If no attendees have signed in, return an empty list
+        if (signedUpAttendees.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+
+        // Get the attendee objects for each signed-up attendee
+        MainActivity.db.getAttendeeRef().whereIn("identifier", signedUpAttendees).get().addOnSuccessListener(queryDocumentSnapshots -> {
+           for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+               Map<String, Object> data = document.getData();
+               Attendee attendee = new Attendee((String) data.get("identifier"));
+               attendee.updateWithMap(data);
+               signedUpAttendeeObjects.add(attendee);
+           }
+            callback.accept(signedUpAttendeeObjects);
+        });
+
     }
 
     /**
@@ -587,5 +613,22 @@ public class Event {
     public int getUniqueAttendeeCount() {
         HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
         return uniqueAttendees.size();
+    }
+
+    /**
+     * Check if the event is happening right now
+     * @return Returns true if the event is happening right now, false otherwise
+     */
+    public boolean isHappeningNow(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        return this.getStartTime().isBefore(currentTime) && this.getEndTime().isAfter(currentTime);
+    }
+
+    /**
+     * Check if the event already happened (if current time is after event's endtime)
+     * @return True if the event already happened, false otherwise
+     */
+    public boolean hasHappened(){
+        return endTime.isBefore(LocalDateTime.now());
     }
 }
