@@ -56,7 +56,7 @@ public class EventAttendeeArrayAdapter extends ArrayAdapter<AttendeeCheckInCount
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_attendee_list_item, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.event_checked_in_attendee_list_item, parent,false);
         }
 
         // get attendee data

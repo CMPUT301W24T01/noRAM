@@ -17,9 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.noram.OrganizerCreateEventFragment;
-import com.example.noram.OrganizerEventListFragment;
-import com.example.noram.OrganizerProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -40,6 +37,7 @@ public class OrganizerActivity extends AppCompatActivity {
     private final Fragment myEventsFragment = OrganizerEventListFragment.newInstance();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment;
+    private BottomNavigationView navBar;
     private TextView header;
 
     // Main behaviour
@@ -54,16 +52,17 @@ public class OrganizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer);
 
-        BottomNavigationView navBar = findViewById(R.id.organizer_activity_bottom_nav);
+        navBar = findViewById(R.id.organizer_activity_bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
-        navBar.setSelectedItemId(NAV_MY_EVENTS);
-        activeFragment = myEventsFragment;
+        navBar.setSelectedItemId(NAV_PROFILE);
+        activeFragment = profileFragment;
         header = findViewById(R.id.organizer_activity_header_text);
         header.setText(R.string.organizer_fragment_event_list_header);
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, myEventsFragment, "myEvents")
+                .hide(myEventsFragment)
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, newEventFragment, "newEvent")
@@ -71,7 +70,6 @@ public class OrganizerActivity extends AppCompatActivity {
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, profileFragment, "profile")
-                .hide(profileFragment)
                 .commit();
 
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -125,14 +123,8 @@ public class OrganizerActivity extends AppCompatActivity {
     public void displayMyEventsFragment(){
         Fragment selectedFragment = myEventsFragment;
         int headerText = R.string.organizer_fragment_event_list_header;
-
         // update the fragment container to show the myEvents fragment .
-        fragmentManager.beginTransaction()
-                .hide(activeFragment)
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .show(selectedFragment)
-                .commitNow();
-        activeFragment = selectedFragment;
+        navBar.setSelectedItemId(R.id.navbar_my_events);
 
         // set header and return
         header.setText(headerText);

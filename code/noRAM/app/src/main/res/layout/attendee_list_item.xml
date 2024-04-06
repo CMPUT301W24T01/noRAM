@@ -23,6 +23,8 @@
         android:layout_marginStart="8dp"
         android:text="Attendee Name"
         android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/attendee_photo"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,10 +33,9 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="fitCenter"
-        android:layout_marginEnd="8dp"
-        tools:srcCompat="@drawable/qr_background_gradient"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/attendee_name"/>
+        app:layout_constraintTop_toTopOf="@+id/attendee_name"
+        tools:srcCompat="@drawable/qr_background_gradient" />
 
     <TextView
         android:id="@+id/attendee_id"

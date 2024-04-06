@@ -44,18 +44,57 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/organizer_event_attendee_header" />
 
-    <EditText
-        android:id="@+id/organizer_event_attendee_search"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/organizer_event_attendee_button_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/event_search_hint"
-        android:inputType="text"
-        android:textSize="16sp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@id/organizer_event_attendee_search_label"
-        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_header" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchLayout">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_event_attendee_signed_up_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginEnd="144dp"
+            android:background="@drawable/button_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="30dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="10dp"
+            android:text="@string/signed_up"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/organizer_event_attendee_checked_in_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/organizer_event_attendee_checked_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_background"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="30dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="10dp"
+            android:text="@string/checked_in"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/organizer_event_attendee_signed_up_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/organizer_event_attendee_loading"
@@ -68,32 +107,59 @@
         app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
 
     <TextView
-        android:id="@+id/organizer_event_attendee_empty"
+        android:id="@+id/organizer_event_checked_in_attendee_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="There are no attendees yet"
+        android:text="@string/there_are_no_checked_in_attendees_yet"
         android:textAlignment="center"
         android:textSize="24sp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/organizer_event_attendee_list"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
+    <TextView
+        android:id="@+id/organizer_event_signed_up_attendee_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/there_are_no_signed_up_attendees_yet"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+
+    <TextView
+        android:id="@+id/organizer_event_attendee_search_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No results found"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
 
     <ListView
-        android:id="@+id/organizer_event_attendee_list"
+        android:id="@+id/organizer_event_attendee_signed_up_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:listSelector="@android:color/transparent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_search">
+        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_button_layout">
 
     </ListView>
 
     <ListView
-        android:id="@+id/organizer_event_attendee_search_list"
+        android:id="@+id/organizer_event_attendee_search_signed_up_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:listSelector="@android:color/transparent"
@@ -101,18 +167,55 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_search" />
+        app:layout_constraintTop_toBottomOf="@id/organizer_event_attendee_button_layout">
 
-    <TextView
-        android:id="@+id/organizer_event_attendee_search_label"
+    </ListView>
+
+    <ListView
+        android:id="@+id/organizer_event_attendee_checked_in_list"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:background="#00FFFFFF"
-        android:gravity="center_vertical"
-        android:text="Search:"
-        android:textAlignment="gravity"
-        android:textSize="20sp"
+        android:layout_height="0dp"
+        android:listSelector="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_button_layout">
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/organizer_event_attendee_search_checked_in_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:listSelector="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_button_layout">
+
+    </ListView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/organizer_event_attendee_button_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableStart="@drawable/search_24px"
+            android:drawablePadding="5dp"
+            android:hint="@string/event_search_hint"
+            android:inputType="text"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

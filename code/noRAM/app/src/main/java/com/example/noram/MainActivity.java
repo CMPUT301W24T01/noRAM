@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         // hide menu until user is fully signed in and remove focus from its items
         navBar.setVisibility(View.INVISIBLE);
         navBar.setItemActiveIndicatorEnabled(false);
+        navBar.setSelectedItemId(R.id.invisible);
 
         // hide eventPoster's title until page is loaded
         eventPosterTitle = findViewById(R.id.eventPoster_title);
@@ -134,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        // set nothing to selected
+        navBar.setSelectedItemId(R.id.invisible);
         db.getmAuth().addAuthStateListener(auth -> signInFirebase());
     }
 
@@ -278,16 +282,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private boolean navigateTo(MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.attend_events ){
+        if(itemID == R.id.bottom_nav_attend_events){
             startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
-        } else if(itemID == R.id.organize_events){
+        } else if(itemID == R.id.bottom_nav_organize_events){
             startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
-        } else{
-            return false;
         }
 
-        // if valid item, show focus and return true
-        navBar.setItemActiveIndicatorEnabled(true);
+        // always return true even if we nav to the invisible item, since otherwise the UI doesn't update
         return true;
     }
 }
