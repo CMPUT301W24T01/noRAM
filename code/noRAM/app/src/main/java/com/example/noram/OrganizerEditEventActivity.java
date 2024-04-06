@@ -11,6 +11,7 @@ import android.view.View;
 import android.content.Intent;
 
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -218,6 +219,20 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         });
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for Cancel button
+             * Aborts changes to events
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // back button exits the page
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener for Cancel button
              * Aborts changes to events
