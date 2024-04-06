@@ -29,7 +29,7 @@
         app:tint="#FFFFFF" />
 
     <ImageButton
-        android:id="@+id/AttendeeAnnoucementsbackButton"
+        android:id="@+id/backButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="#00FF0808"
@@ -67,7 +67,7 @@
                 android:src="@drawable/baseline_circle_notifications_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="#000000" />
+                app:tint="#000000"  />
 
             <TextView
                 android:id="@+id/announcementText"

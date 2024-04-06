@@ -67,7 +67,7 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.AttendeeAnnoucementsbackButton).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
     }
 }
