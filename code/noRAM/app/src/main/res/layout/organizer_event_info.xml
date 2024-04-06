@@ -193,6 +193,20 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/menu_24px" />
 
+            <ImageButton
+                android:id="@+id/editButton"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="#00FF0808"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="Arrow pointing to the left"
+                android:outlineProvider="none"
+                android:src="@drawable/outline_edit_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#000000" />
+
             <TextView
                 android:id="@+id/organizer_event_menu_text"
                 android:layout_width="wrap_content"

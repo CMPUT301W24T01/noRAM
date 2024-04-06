@@ -2,17 +2,14 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/organizer_event_edit_details"
-        android:title="Edit Details" />
-    <item
         android:id="@+id/organizer_event_attendees"
-        android:title="View Attendees" />
+        android:title="Attendees" />
     <item
         android:id="@+id/organizer_event_map"
-        android:title="View Attendance Map" />
+        android:title="Attendance Map" />
     <item
         android:id="@+id/organizer_event_milestones"
-        android:title="View Attendance Milestones" />
+        android:title="Attendance Milestones" />
     <item
         android:id="@+id/organizer_event_notifications"
         android:title="Send Notification" />
