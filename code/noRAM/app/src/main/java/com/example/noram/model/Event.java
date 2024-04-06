@@ -512,8 +512,7 @@ public class Event {
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         //grab checkedInAttendeesLocations from db
-        List<HashMap<String, Object>> geoData =
-                (List<HashMap<String, Object>>) doc.get("checkedInAttendeesLocations");
+        List<HashMap<String, Object>> geoData = (List<HashMap<String, Object>>) doc.get("checkedInAttendeesLocations");
         //then use parseGeopointListFromDatabase() before setting the event attribute
         this.setCheckedInAttendeesLocations(parseGeopointListFromDatabase(geoData));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
@@ -544,11 +543,14 @@ public class Event {
      */
     private List<GeoPoint> parseGeopointListFromDatabase(List<HashMap<String,Object>> databaseInfo) {
         ArrayList<GeoPoint> geopointList = new ArrayList<>();
-        for (HashMap<String, Object> entry: databaseInfo) {
-            double latitude = (double) entry.get("latitude");
-            double longitude = (double) entry.get("longitude");
-            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
-            geopointList.add(geoPoint);
+        //on first download from db, this list is null?
+        if (databaseInfo != null){
+            for (HashMap<String, Object> entry : databaseInfo) {
+                double latitude = (double) entry.get("latitude");
+                double longitude = (double) entry.get("longitude");
+                GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                geopointList.add(geoPoint);
+            }
         }
         return geopointList;
     }
