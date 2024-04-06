@@ -8,6 +8,7 @@ being consulted)
 
 package com.example.noram;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         searchEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
-        if (searchEventDataList.isEmpty()) {
+        if (searchEventDataList.isEmpty() && eventListRef != null && !eventListRef.isEmpty()) {
             noResults.setVisibility(View.VISIBLE);
         } else {
             noResults.setVisibility(View.INVISIBLE);
@@ -130,13 +131,19 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the user's personal events visible and hides the other lists
      */
     private void displayMyEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on myEvents list
         setReferenceSearchList(userEventDataList, ListType.SPECIFIC);
         searchBox.setText("");
 
         // change button backgrounds
-        myEventsButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.selected_button_background));
-        allEventsButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.button_background));
+        myEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
 
         // afterward toggle visibility of lists
         userEventList.setVisibility(View.VISIBLE);
@@ -153,13 +160,19 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the list of all events visible and hides the other list
      */
     private void displayAllEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on allEvents list
         setReferenceSearchList(allEventDataList, ListType.GENERAL);
         searchBox.setText("");
 
         // change button backgrounds
-        myEventsButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.button_background));
-        allEventsButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.selected_button_background));
+        myEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
 
         // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
@@ -190,8 +203,8 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // get all views and initialize variables
         myEventsButton = rootView.findViewById(R.id.myEventsButton);
         allEventsButton = rootView.findViewById(R.id.allEventsButton);
-        noResults = rootView.findViewById(R.id.AttendeeEventsNoResults);
-        noEvents = rootView.findViewById(R.id.AttendeeEventsNoEvents);
+        noResults = rootView.findViewById(R.id.attendeeEventsNoResults);
+        noEvents = rootView.findViewById(R.id.attendeeEventsNoEvents);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<>();
         userEventList = rootView.findViewById(R.id.userEventsList);
@@ -262,20 +275,17 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                 // update after both lists are changed
                 allEventAdapter.notifyDataSetChanged();
                 userEventAdapter.notifyDataSetChanged();
+
+                // Display the correct list
+                if (listType == ListType.SPECIFIC) {
+                    displayMyEvents();
+                } else {
+                    displayAllEvents();
+                }
             }
         });
 
         return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (listType == ListType.SPECIFIC) {
-            displayMyEvents();
-        } else {
-            displayAllEvents();
-        }
     }
 
     /**
