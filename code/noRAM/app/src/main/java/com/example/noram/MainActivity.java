@@ -12,6 +12,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView eventPosterTitle;
     private ImageCarouselAdapter adapter;
     private ArrayList<Event> carouselEvents;
+    private TextView carouselEmptyText;
+    private int currentCarouselIdx;
+    private Handler timerHandler;
+    private Runnable timerRunnable;
 
     /**
      * Create and setup the main activity.
@@ -81,10 +86,23 @@ public class MainActivity extends AppCompatActivity {
         carouselEvents = new ArrayList<>();
         adapter = new ImageCarouselAdapter(MainActivity.this, carouselEvents);
         recyclerView.setAdapter(adapter);
+        carouselEmptyText = findViewById(R.id.main_activity_no_events_text);
 
-        // NOTE: temporary buttons to move to each activity
-        // In the future, we should evaluate whether there is a better method of navigation;
-        // for now, this will give us a base to start work without clashing against each other.
+        // if someone starts scrolling through the recycler view, we stop auto scrolling
+        recyclerView.setOnTouchListener((v, event) -> {
+            timerHandler.removeCallbacks(timerRunnable);
+            return false;
+        });
+
+        // setup timer to auto scroll
+        timerHandler = new Handler();
+        timerRunnable = () -> {
+            // update carousel index, scroll to that index, and start another callback timer
+            currentCarouselIdx = ++currentCarouselIdx % carouselEvents.size();
+            recyclerView.smoothScrollToPosition(currentCarouselIdx);
+            timerHandler.postDelayed(timerRunnable, 3000);
+        };
+
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.INVISIBLE);
         navBar = findViewById(R.id.bottom_nav);
@@ -242,16 +260,34 @@ public class MainActivity extends AppCompatActivity {
 
                     // make sure the event has a photo and hasn't already ended
                     if (names.contains(photoPath) && LocalDateTime.now().isBefore(eventEndTime)) {
-                        Log.d("DEBUG", "FOund :D");
                         found++;
                         Event event = new Event();
                         event.updateWithDocument(doc);
                         carouselEvents.add(event);
                     }
                 }
+
+                if (carouselEvents.isEmpty()) {
+                    carouselEmptyText.setVisibility(View.VISIBLE);
+                } else {
+                    carouselEmptyText.setVisibility(View.INVISIBLE);
+                }
+
                 adapter.notifyDataSetChanged();
+                timerHandler.postDelayed(timerRunnable, 3000);
+                currentCarouselIdx = 0;
             });
         });
+    }
+
+    /**
+     * When we pause the activity, pause the auto-scroll runnable
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // stop timer
+        timerHandler.removeCallbacks(timerRunnable);
     }
 
     /**
