@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
+import com.example.noram.model.ListType;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
      */
     private void displayAllEvents(){
         // clear search bar and makes searches happen on allEvents list
-        setReferenceSearchList(allEventDataList);
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
         searchBox.setText("");
         // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
@@ -121,7 +122,7 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
      */
     private void displayPastEvents(){
         // clear search bar and makes searches happen on pastEvent list
-        setReferenceSearchList(pastEventDataList);
+        setReferenceSearchList(pastEventDataList, ListType.SPECIFIC);
         searchBox.setText("");
         // afterward toggle visibility of lists
         pastEventList.setVisibility(View.VISIBLE);
@@ -215,7 +216,7 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                 rootView.findViewById(R.id.searchEventsList), rootView.findViewById(R.id.searchInput)
         );
         // searches are by default on all events
-        setReferenceSearchList(allEventDataList);
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
 
 
         return rootView;

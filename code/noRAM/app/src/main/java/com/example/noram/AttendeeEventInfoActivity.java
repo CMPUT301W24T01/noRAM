@@ -87,7 +87,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         updateSignUpText();
         hideSignedIn();
         // show feedback message
-        Toast.makeText(this, "Successfully unsigned!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sign in undone!", Toast.LENGTH_SHORT).show();
     }
 
     /**

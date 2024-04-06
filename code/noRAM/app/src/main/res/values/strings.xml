@@ -94,7 +94,7 @@
     <string name="main_menu_attend">Attend Event</string>
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below are some events you might enjoy:</string>
-    <string name="unsign_button">Unsign</string>
+    <string name="unsign_button">Undo Sign Up</string>
     <string name="total_current_nattendees_n0">Total Current \nAttendees:\n0</string>
     <string name="all_time_nattendees_n0">All Time \nAttendees:\n0</string>
     <string name="all_time_nsignups_n0">All Time \nSignups:\n0</string>
@@ -108,4 +108,6 @@
     <string name="past_events">Past Events</string>
     <string name="welcome_to_noram_events">Welcome to noRAM Events!</string>
     <string name="no_events_to_show_why_not_make_one">No events to show... why not make one?</string>
+    <string name="no_results_found">No Results Found</string>
+    <string name="there_s_no_events_here">There\'s no events here</string>
 </resources>

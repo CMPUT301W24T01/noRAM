@@ -47,6 +47,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/allEventsButton" />
 
+    <TextView
+        android:id="@+id/AttendeeEventsNoEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/there_s_no_events_here"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/AttendeeEventsNoResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_results_found"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchLayout"
         android:layout_width="0dp"
@@ -76,7 +102,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allEventsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/allEventsButton">
+
+    </ListView>
 
     <ListView
         android:id="@+id/userEventsList"
@@ -86,7 +114,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allEventsButton"
+        app:layout_constraintTop_toTopOf="@+id/allEventsList"
         tools:visibility="invisible" />
 
     <ListView
@@ -97,7 +125,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allEventsButton"
+        app:layout_constraintTop_toTopOf="@+id/allEventsList"
         tools:visibility="invisible"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="button_background_color">#778CD9</color>
+    <color name="button_selected_color">#99778CD9</color>
     <color name="profile_photo_background">#7E8587</color>
     <color name="add_photo_draw_background">#6BBCD5</color>
     <color name="darker_blue">#2BA5AF</color>
