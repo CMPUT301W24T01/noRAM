@@ -50,8 +50,7 @@ public class EventManager {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
-
-
+            
             // get all unique checked-in attendees
             HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
             Long numAttendees = Long.valueOf(uniqueAttendees.size());
@@ -81,7 +80,7 @@ public class EventManager {
      * Sign the current user up for the event given by eventID
      * @param eventID ID string of the event
      */
-    public static void signUpForEvent(String eventID) {
+    public static void signUpForEvent(String eventID, boolean allowMultipleSignup) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);
         MainActivity.attendee.getEventsCheckedInto().add(eventID);
         MainActivity.attendee.updateDBAttendee();
@@ -90,6 +89,10 @@ public class EventManager {
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+
+            // if we are already signed up and don't allow it to happen multiple times, don't add.
+            if (signedUpAttendees.contains(MainActivity.attendee.getIdentifier()) && !allowMultipleSignup) return null;
+
             signedUpAttendees.add(MainActivity.attendee.getIdentifier());
             transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
             return null;
