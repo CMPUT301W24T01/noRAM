@@ -80,6 +80,7 @@
         android:layout_marginVertical="15dp"
         android:text="@string/event_poster_title"
         android:textSize="18sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/carousel_recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

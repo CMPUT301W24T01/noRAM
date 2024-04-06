@@ -32,6 +32,8 @@ import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
 import com.example.noram.model.PushNotificationService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.carousel.CarouselLayoutManager;
+import com.google.android.material.carousel.HeroCarouselStrategy;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ImageCarouselAdapter(MainActivity.this, carouselEvents);
         recyclerView.setAdapter(adapter);
         carouselEmptyText = findViewById(R.id.main_activity_no_events_text);
+        CarouselLayoutManager manager = new CarouselLayoutManager(new HeroCarouselStrategy());
+        recyclerView.setLayoutManager(manager);
 
         // if someone starts scrolling through the recycler view, we stop auto scrolling
         recyclerView.setOnTouchListener((v, event) -> {
