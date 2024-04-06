@@ -1,7 +1,7 @@
 /*
 This file is used to display the announcements for a specific event.
 Outstanding Issues:
--
+- None
  */
 
 package com.example.noram;
@@ -39,13 +39,13 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_announcements);
 
-
         // get eventIDLabel and also eventID from intent
         String eventID = getIntent().getStringExtra(eventIDLabel);
         assert eventID != null;
 
         Log.d("event ID before db", eventID);
 
+        // get event from database and update with document snapshot to get notifications
         MainActivity.db.getEventsRef().document(eventID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 event.updateWithDocument(documentSnapshot);
