@@ -9,6 +9,7 @@ package com.example.noram;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -113,6 +114,8 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
             //if yes, get their location and show it on the map
             getLastLocationUser();
         } else {
+            //request user location
+            requestLocationPermission();
             // TODO: Cole, are we leaving this code as is? You mentioned you might want to change
             // TODO:        the marker to represent the event location instead of the  organizer.
             //Tell user they can not user maps unless they allow location services
@@ -121,7 +124,6 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
             finish();
             return;
         }
-        // TODO: if we change to represent the event location, then I will add an if-statement here
         // after placing the organizer's location, add of the location of its attendees
         eventID = Objects.requireNonNull(getIntent().getExtras()).getString("event");
         assert (eventID != null);
@@ -227,6 +229,26 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
     }
 
     /**
+     * Asks the user to allow location tracking
+     */
+    public void requestLocationPermission(){
+        //Note, the thrid invokation of the method, after two denies, does not pop up.
+        String fineLocation = Manifest.permission.ACCESS_FINE_LOCATION;
+        String coarseLocation = Manifest.permission.ACCESS_FINE_LOCATION;
+        // Initialize an ArrayList to hold the permissions
+        ArrayList<String> permissionsList = new ArrayList<>();
+        // Add the permission to the ArrayList
+        permissionsList.add(fineLocation);
+        // Add the permission to the ArrayList
+        permissionsList.add(coarseLocation);
+        // Convert the ArrayList to an array
+        String[] permissions = permissionsList.toArray(new String[permissionsList.size()]);
+        // Request permissions, 99 requestCode doesn't mean anything
+        ActivityCompat.requestPermissions(this, permissions, 99);
+        //stackOverflow used as reference https://stackoverflow.com/questions/40142331/how-to-request-location-permission-at-runtime
+    }
+
+    /**
      * Allows the map to resume once put on pause
      */
     @Override
@@ -235,6 +257,10 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
             if (map != null) {
                 // connect back button to the previous screen
                 backButton.setOnClickListener(v -> {finish();});
+                if (!hasLocationPermissions()) {
+                    //get their location to run map
+                    getLastLocationUser();
+                }
                 map.onResume();
             }
     }
@@ -249,6 +275,10 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
         if (map != null) {
             // connect back button to the previous screen
             backButton.setOnClickListener(v -> {finish();});
+            if (!hasLocationPermissions()) {
+                //get their location to run map
+                getLastLocationUser();
+            }
             map.onPause();
         }
     }
