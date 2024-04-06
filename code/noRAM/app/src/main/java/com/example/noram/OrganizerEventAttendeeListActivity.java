@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.noram.controller.AttendeeArrayAdapter;
 import com.example.noram.controller.EventAttendeeArrayAdapter;
@@ -52,6 +53,11 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private AttendeeArrayAdapter searchSignedUpAttendeeAdapter;
     private enum Showing {SIGNEDUP, CHECKEDIN}
     private Showing showing = Showing.SIGNEDUP;
+    private Button signedUpButton;
+    private Button checkedInButton;
+    private TextView checkedInEmpty;
+    private TextView signedUpEmpty;
+    private TextView searchEmpty;
 
     /**
      * Setup the activity when it is created.
@@ -90,13 +96,19 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         signedUpAttendeeList.setAdapter(signedUpAttendeeAdapter);
         searchSignedUpAttendeeList.setAdapter(searchSignedUpAttendeeAdapter);
 
-        // Get buttons
-        Button signedUpButton = findViewById(R.id.organizer_event_attendee_signed_up_button);
-        Button checkedInButton = findViewById(R.id.organizer_event_attendee_checked_in_button);
+        // Get buttons and set them to the correct states
+        signedUpButton = findViewById(R.id.organizer_event_attendee_signed_up_button);
+        checkedInButton = findViewById(R.id.organizer_event_attendee_checked_in_button);
+        if (showing == Showing.SIGNEDUP) {
+            signedUpButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.selected_button_background));
+        } else {
+            checkedInButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.selected_button_background));
+        }
 
-        // Get "no attendees" displays
-        TextView checkedInEmpty = findViewById(R.id.organizer_event_checked_in_attendee_empty);
-        TextView signedUpEmpty = findViewById(R.id.organizer_event_signed_up_attendee_empty);
+        // Get "no attendees"/"no results" displays
+        checkedInEmpty = findViewById(R.id.organizer_event_checked_in_attendee_empty);
+        signedUpEmpty = findViewById(R.id.organizer_event_signed_up_attendee_empty);
+        searchEmpty = findViewById(R.id.organizer_event_attendee_search_empty);
 
         // get event from intent
         Intent intent = getIntent();
@@ -114,6 +126,8 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                     checkedInAttendeeDataList.clear();
                     checkedInAttendeeDataList.addAll(attendeeCallback);
                     checkedInAttendeeAdapter.notifyDataSetChanged();
+                    findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
+                    displayCurrentList();
                 });
 
                 // Get the signed-up attendees
@@ -122,9 +136,7 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                     signedUpAttendeeDataList.addAll(attendeeCallback);
                     signedUpAttendeeAdapter.notifyDataSetChanged();
                     findViewById(R.id.organizer_event_attendee_loading).setVisibility(View.GONE);
-                    if (signedUpAttendeeDataList.isEmpty()) {
-                        signedUpEmpty.setVisibility(View.VISIBLE);
-                    }
+                    displayCurrentList();
                 });
             });
 
@@ -172,53 +184,117 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
         // Set up the back button
         findViewById(R.id.organizer_event_attendee_back).setOnClickListener(v -> finish());
 
-        // Set up signed-up button
-        signedUpButton.setOnClickListener(v -> {
-            if (showing == Showing.CHECKEDIN) {
-                // Flip showing
-                showing = Showing.SIGNEDUP;
+        // Set up the list buttons
+        signedUpButton.setOnClickListener(v -> displaySignedUp());
+        checkedInButton.setOnClickListener(v -> displayCheckedIn());
+    }
 
-                // Clear empty message
-                checkedInEmpty.setVisibility(View.GONE);
+    /**
+     * Display the signed-up attendees list
+     */
+    private void displaySignedUp() {
+        showing = Showing.SIGNEDUP;
 
-                // Hide other lists
-                checkedInAttendeeList.setVisibility(View.GONE);
-                searchCheckedInAttendeeList.setVisibility(View.GONE);
+        // Clear empty message and search
+        checkedInEmpty.setVisibility(View.GONE);
+        searchInput.setText("");
 
-                // Show correct lists
-                signedUpAttendeeList.setVisibility(View.VISIBLE);
-                searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+        // Change button backgrounds
+        signedUpButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.selected_button_background));
+        checkedInButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.button_background));
 
-                // Check emptiness
-                if (signedUpAttendeeDataList.isEmpty()) {
-                    signedUpEmpty.setVisibility(View.VISIBLE);
-                }
+        // Hide other lists
+        checkedInAttendeeList.setVisibility(View.GONE);
+        searchCheckedInAttendeeList.setVisibility(View.GONE);
+
+        // Show correct lists
+        signedUpAttendeeList.setVisibility(View.VISIBLE);
+        searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+
+        // Check emptiness
+        if (signedUpAttendeeDataList.isEmpty()) {
+            signedUpEmpty.setVisibility(View.VISIBLE);
+        } else {
+            signedUpEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Display the checked-in attendees list
+     */
+    private void displayCheckedIn() {
+        showing = Showing.CHECKEDIN;
+
+        // Clear empty message and search
+        signedUpEmpty.setVisibility(View.GONE);
+        searchInput.setText("");
+
+        // Change button backgrounds
+        checkedInButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.selected_button_background));
+        signedUpButton.setBackground(AppCompatResources.getDrawable(this, R.drawable.button_background));
+
+        // Hide other lists
+        signedUpAttendeeList.setVisibility(View.GONE);
+        searchSignedUpAttendeeList.setVisibility(View.GONE);
+
+        // Show correct lists
+        checkedInAttendeeList.setVisibility(View.VISIBLE);
+        searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
+
+        // Check emptiness
+        if (checkedInAttendeeDataList.isEmpty()) {
+            checkedInEmpty.setVisibility(View.VISIBLE);
+        } else {
+            checkedInEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Display the current list of attendees
+     */
+    private void displayCurrentList() {
+        if (showing == Showing.SIGNEDUP) {
+            displaySignedUp();
+        } else {
+            displayCheckedIn();
+        }
+    }
+
+    /**
+     * Shows the search list and hides the main list
+     */
+    private void showSearchList() {
+        if (showing == Showing.CHECKEDIN) {
+            searchCheckedInAttendeeList.setVisibility(View.VISIBLE);
+            checkedInAttendeeList.setVisibility(View.INVISIBLE);
+            if (searchCheckedInAttendeeDataList.isEmpty() && !checkedInAttendeeDataList.isEmpty()) {
+                searchEmpty.setVisibility(View.VISIBLE);
+            } else {
+                searchEmpty.setVisibility(View.INVISIBLE);
             }
-        });
-
-        // Set up checked-in button
-        checkedInButton.setOnClickListener(v -> {
-            if (showing == Showing.SIGNEDUP) {
-                // Flip showing
-                showing = Showing.CHECKEDIN;
-
-                // Clear empty message
-                signedUpEmpty.setVisibility(View.GONE);
-
-                // Hide other lists
-                signedUpAttendeeList.setVisibility(View.GONE);
-                searchSignedUpAttendeeList.setVisibility(View.GONE);
-
-                // Show correct lists
-                checkedInAttendeeList.setVisibility(View.VISIBLE);
-                searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
-
-                // Check emptiness
-                if (checkedInAttendeeDataList.isEmpty()) {
-                    checkedInEmpty.setVisibility(View.VISIBLE);
-                }
+        } else {
+            searchSignedUpAttendeeList.setVisibility(View.VISIBLE);
+            signedUpAttendeeList.setVisibility(View.INVISIBLE);
+            if (searchSignedUpAttendeeDataList.isEmpty() && !signedUpAttendeeDataList.isEmpty()) {
+                searchEmpty.setVisibility(View.VISIBLE);
+            } else {
+                searchEmpty.setVisibility(View.INVISIBLE);
             }
-        });
+        }
+    }
+
+    /**
+     * Hides the search list and shows the main list
+     */
+    private void hideSearchList() {
+        if (showing == Showing.CHECKEDIN) {
+            searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
+            checkedInAttendeeList.setVisibility(View.VISIBLE);
+        } else {
+            searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
+            signedUpAttendeeList.setVisibility(View.VISIBLE);
+        }
+        searchEmpty.setVisibility(View.GONE);
     }
 
     /**
@@ -226,17 +302,13 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
      * @param search The input of the user in the search, used to populate the search list
      */
     public void searchAttendees(String search) {
+        // if search is empty, show back all events and return. Otherwise, show searched events
+        if (search.isEmpty()) {
+            hideSearchList();
+            return;
+        }
+
         if (showing == Showing.CHECKEDIN) {
-            // if search is empty, show back all events and return. Otherwise, show searched events
-            if (search.isEmpty()) {
-                searchCheckedInAttendeeList.setVisibility(View.INVISIBLE);
-                checkedInAttendeeList.setVisibility(View.VISIBLE);
-                return;
-            }
-
-            searchCheckedInAttendeeList.setVisibility(View.VISIBLE);
-            checkedInAttendeeList.setVisibility(View.INVISIBLE);
-
             // remove old search
             searchCheckedInAttendeeDataList.clear();
             // search through attendees' name and check-in count
@@ -253,25 +325,8 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 }
             }
             searchCheckedInAttendeeAdapter.notifyDataSetChanged();
-//            if (!checkedInAttendeeDataList.isEmpty()) {
-//                if (searchCheckedInAttendeeDataList.isEmpty()) {
-//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
-//                } else {
-//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
-//                }
-//            }
-        }
-        else {
-            // if search is empty, show back all events and return. Otherwise, show searched events
-            if (search.isEmpty()) {
-                searchSignedUpAttendeeList.setVisibility(View.INVISIBLE);
-                signedUpAttendeeList.setVisibility(View.VISIBLE);
-                return;
-            }
 
-            searchSignedUpAttendeeList.setVisibility(View.VISIBLE);
-            signedUpAttendeeList.setVisibility(View.INVISIBLE);
-
+        } else {
             // remove old search
             searchSignedUpAttendeeDataList.clear();
             // search through attendees' name and check-in count
@@ -287,13 +342,9 @@ public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
                 }
             }
             searchSignedUpAttendeeAdapter.notifyDataSetChanged();
-//            if (!signedUpAttendeeDataList.isEmpty()) {
-//                if (searchSignedUpAttendeeDataList.isEmpty()) {
-//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.VISIBLE);
-//                } else {
-//                    findViewById(R.id.organizer_event_attendee_search_empty).setVisibility(View.GONE);
-//                }
-//            }
         }
+
+        // show search list
+        showSearchList();
     }
 }

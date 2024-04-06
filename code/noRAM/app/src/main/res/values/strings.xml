@@ -108,6 +108,7 @@
     <string name="past_events">Past Events</string>
     <string name="welcome_to_noram_events">Welcome to noRAM Events!</string>
     <string name="no_events_to_show_why_not_make_one">No events to show... why not make one?</string>
-    <string name="no_results_found">No Results Found</string>
+    <string name="no_results_found">No results found</string>
     <string name="there_s_no_events_here">There\'s no events here</string>
+    <string name="list_of_attendees">List of Attendees</string>
 </resources>
