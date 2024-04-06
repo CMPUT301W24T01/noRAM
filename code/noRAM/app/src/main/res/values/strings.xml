@@ -95,18 +95,15 @@
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below is an event you might enjoy:</string>
     <string name="unsign_button">Unsign</string>
-<<<<<<< HEAD
     <string name="total_current_nattendees_n0">Total Current \nAttendees:\n0</string>
     <string name="all_time_nattendees_n0">All Time \nAttendees:\n0</string>
     <string name="all_time_nsignups_n0">All Time \nSignups:\n0</string>
     <string name="total_current_n_signups_n0">Total Current \n Signups:\n0</string>
     <string name="dashboard">Dashboard</string>
     <string name="empty_placeholder_organizer_profile_list">No upcoming events - try adding one!</string>
-=======
     <string name="signed_up">Signed-Up</string>
     <string name="checked_in">Checked-In</string>
     <string name="there_are_no_checked_in_attendees_yet">There are no checked-in attendees yet</string>
     <string name="there_are_no_signed_up_attendees_yet">There are no signed-up attendees yet</string>
     <string name="past_events">Past Events</string>
->>>>>>> master
 </resources>
