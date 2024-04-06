@@ -111,7 +111,6 @@ public class QrScanFragment extends Fragment {
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
-
         // Reference: https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
@@ -142,7 +141,6 @@ public class QrScanFragment extends Fragment {
                     showCheckInFailure("Event not found for the QR code.");
                     return;
                 }
-                Log.d("DEBUG", "code exists");
                 // Get event id and qr type
                 String eventId = qrDocument.getString("event");
 
@@ -169,6 +167,7 @@ public class QrScanFragment extends Fragment {
      * If location is accessed, goto eventManager.checkInEvent() to update db
      * If location access fails, exit map.
      * @suppress the permission check because I check it in onCreate()
+     * @param ID the event ID
      */
     @SuppressLint("MissingPermission")
     private void getLocationQREntry(String ID) {
@@ -176,26 +175,31 @@ public class QrScanFragment extends Fragment {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         //attempt to get the location
         fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-            // if the API can get a location
+            /**
+             On successful acquisition of user's location, pass it
+             @param location the location to be added to the database
+             */
             @Override
             public void onSuccess(Location location) {
-                //and the location is not null
+                //and the location if it is not null
                 if (location != null) {
                     EventManager.checkInToEvent(ID, location);
                 } else {
-                    //TODO: exit maps. User provided permission to use location but the location was not properly received.
-                    //TODO: create an internal error message
-                    Toast.makeText(getContext(), "Unable to retrieve location, signing in without location", Toast.LENGTH_SHORT).show();
+                    //location was not provided
+                    Toast.makeText(getContext(), "Location tracking denied, signing-in without location", Toast.LENGTH_LONG).show();
                     EventManager.checkInToEvent(ID, null);
                 }
             }
         }).addOnFailureListener(getActivity(), new OnFailureListener() {
+            /**
+             On failed acquisition of user's location, report error
+             @param e the exception that occurred.
+             */
             @Override
             public void onFailure(@NonNull Exception e) {
-                // exit map
-                //TODO: create an internal error message
+                //user provided permission to use location but the location was not properly received.
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Failed to load location, sign-in without location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Failed to retrieve location, internal error. Signing-in without location", Toast.LENGTH_LONG).show();
                 EventManager.checkInToEvent(ID, null);
             }
         });

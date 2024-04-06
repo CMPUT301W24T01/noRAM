@@ -45,37 +45,48 @@ public class EventManager {
     // Identifier for event's checked-in status
     public static final String checkedInLabel = "checkedIn";
 
-
     /**
-     * Check-in the current user to the event given by eventID
+     * Check-in the current user to the event given by eventID into the db
      * @param eventId ID string of the event
+     * @param userLocation the location of the user if they allowed location-tracking at the time
+     * of check-in
      */
     @SuppressLint("MissingPermission")
     public static void checkInToEvent(String eventId, Location userLocation) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
-
+        Log.i("we are inside CheckIN", "yay");
+        GeoPoint point;
+        //if the user allowed location tracking, also add it to the db
+        if (userLocation != null ) {
+            //unpack the location
+            Double latitude = userLocation.getLatitude();
+            Double longitude = userLocation.getLongitude();
+            // create a new GeoPoint for the db
+            point = new GeoPoint(latitude, longitude);
+            //add GeoPoint on the transaction
+            MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+                DocumentSnapshot snapshot = transaction.get(eventRef);
+                //add GeoPoint to checkedInAttendeeLocations
+                List<GeoPoint> checkedInAttendeesLocations =
+                        (List<GeoPoint>) snapshot.get("checkedInAttendeesLocations");
+                checkedInAttendeesLocations.add(point);
+                transaction.update(eventRef, "checkedInAttendeesLocations",
+                        checkedInAttendeesLocations);
+                return null;
+            });
+        }
+        //if user location is null, we only update checkedInAttendees
         // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
             transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
-
-            //add to checkedInAttendeeLocations
-            if (userLocation != null) {
-                Double latitude = userLocation.getLatitude();
-                Double longitude = userLocation.getLongitude();
-                GeoPoint point = new GeoPoint(latitude, longitude);
-                List<GeoPoint> checkedInAttendeesLocations = (List<GeoPoint>) snapshot.get("checkedInAttendeesLocations");
-                checkedInAttendeesLocations.add(point);
-                transaction.update(eventRef, "checkedInAttendeesLocations", checkedInAttendeesLocations);
-            }
             return null;
         });
     }
-
 
     /**
      * Sign the current user up for the event given by eventID

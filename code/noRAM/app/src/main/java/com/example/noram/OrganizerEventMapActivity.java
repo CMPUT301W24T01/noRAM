@@ -2,10 +2,8 @@
 This file is used to create the map feature for an organizer while they view their event.
 An organizer is able to see their location and the location from where all their attendees checked-in from.
 Outstanding Issues:
-- Get all attendees to show up as dots on the map.
-- Properly handle the map application to prompt for location access if it does not have it
-- must function if users check 'allow geolocation tracking' <- maybe that wording should be changed to 'allow location tracking?'
-- create a back button that returns to the previous menu screen
+- Maybe: Properly handle the map application to prompt for location access if it does not have it
+- Maybe: if event object says no tracking, continue as usual, just remove the map from the menu.
  */
 package com.example.noram;
 
@@ -21,6 +19,9 @@ import android.location.LocationRequest;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,12 +31,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.noram.controller.EventManager;
+import com.example.noram.model.Event;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Transaction;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.config.Configuration;
@@ -50,6 +56,8 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,8 +65,8 @@ import java.util.Objects;
  * A {@link AppCompatActivity} subclass.
  * @author Sandra Taskovic
  *         https://github.com/osmdroid
- *         CHATGPT for adding onSuccesListener and onFailureListner when acessing user location
- *         this video for help on how to use googlePlay API https://www.youtube.com/watch?v=M0kUd2dpxo4&t=854s
+ *         CHATGPT for adding onSuccesListener and onFailureListner when acessing the user location
+ *         this video on how to use googlePlay API https://www.youtube.com/watch?v=M0kUd2dpxo4&t=854s
  * @maintainer Sandra Taskovic
  */
 
@@ -68,21 +76,21 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
      * A {@link AppCompatActivity} subclass.
      */
 
-    //TODO: Sandra removes this line when she is sure we don't need it
-    //private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    private ImageButton backButton;
+    private String eventID;
+    private List<GeoPoint> checkedInAttendeesLocations;
 
     /**
      * Create the map activity.
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down.
-     *
+     * @param savedInstanceState If the fragment is being re-created from
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //set up the XML view
         setContentView(R.layout.activity_organizer_event_map);
+        backButton = findViewById(R.id.organizer_event_back_button_map);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -104,21 +112,38 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
         if (hasLocationPermissions()) {
             //if yes, get their location and show it on the map
             getLastLocationUser();
-        }
-        else{
+        } else {
+            // TODO: Cole, are we leaving this code as is? You mentioned you might want to change
+            // TODO:        the marker to represent the event location instead of the  organizer.
             //Tell user they can not user maps unless they allow location services
-            //TODO: ask the user for location permissions again.
-            //TODO: if they allow location change the db to reflect this
-            Toast.makeText(getApplicationContext(), "Must allow Location to use maps.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Must allow location tracking to use maps.", Toast.LENGTH_LONG).show();
             //exit maps activity somehow
             finish();
-            }
-    }
+            return;
+        }
+        // TODO: if we change to represent the event location, then I will add an if-statement here
+        // after placing the organizer's location, add of the location of its attendees
+        eventID = Objects.requireNonNull(getIntent().getExtras()).getString("event");
+        assert (eventID != null);
+        MainActivity.db.getEventsRef().document(eventID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            /**
+             On successful acquisition of event attributes from database, grab
+             checkedInAttendeesLocations and send it to be handled by the map
+             @param documentSnapshot database object from which object is initialized
+             */
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    // Make event
+                    Event event = new Event();
+                    event.updateWithDocument(documentSnapshot);
+                    checkedInAttendeesLocations = event.getCheckedInAttendeesLocations();
+                    handleLocation2(checkedInAttendeesLocations);
+                }
+            });
+    };
     /**
      * get the last location of the user for use in the map activity.
      * uses the FusedLocationProviderClient provided by Google API to access location.
-     * If location is accessed, goto handleLocation() to draw on map.
-     * If location access fails, exit map.
      * @suppress the permission check because I check it in onCreate()
      */
     @SuppressLint("MissingPermission")
@@ -130,36 +155,41 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
             // if the API can get a location
             @Override
             public void onSuccess(Location location) {
+                /**
+                 On successful acquisition of user's location, pass it to draw onto the map
+                 @param location the location to be added to the database
+                 */
                 //and the location is not null
                 if (location != null) {
                     //draw location on the map
-                    //TODO: create different drawables for attendees and organizers
-                    handleLocation(location, R.drawable.attendee_map_icon);
+                    handleLocation1(location, R.drawable.attendee_map_icon);
                 } else {
-                    //TODO: exit maps. User provided permission to use location but the location was not properly received.
-                    //TODO: create an internal error message
+                    //Exit maps. User provided permission to use location but the location was not properly received.
                     Toast.makeText(getApplicationContext(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
-        // FusedLocationProviderClient unable to get location
         }).addOnFailureListener(this, new OnFailureListener() {
+            /**
+             On failed acquisition of user's location, report error
+             @param e the exception that occurred.
+             */
             @Override
             public void onFailure(@NonNull Exception e) {
-                // exit map
-                //TODO: create an internal error message
+                //Exit maps. User did not provide access to locations.
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Failed to get location", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
     }
+
     /**
-     * Once the location is acessed, draw it on the map
+     * Once the organizer's location is accessed, draw it on the map using the passed drawable
      * @param location the location of the user
      * @param drawID the drawable ID location used to draw location on the map
      */
-    private void handleLocation(Location location, int drawID) {
+    private void handleLocation1(Location location, int drawID) {
         Double latitude = location.getLatitude();
         Double longitude = location.getLongitude();
 
@@ -171,50 +201,54 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
         map.getOverlays().add(startMarker);
         map.getController().setCenter(point);
     }
-    /**
-     * Once the location is acessed, draw it on the map
-     * another version of this function but instead uses the default marker icon provided by the map
-     * @param location the location of the user
-     */
-    private void handleLocation(Location location) {
-        Double latitude = location.getLatitude();
-        Double longitude = location.getLongitude();
 
-        GeoPoint point = new GeoPoint(latitude, longitude);
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(point);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        map.getOverlays().add(startMarker);
-        map.getController().setCenter(point);
+    /**
+     * Once the list of attendee location is accessed, draw it on the map.
+     * This function uses the default marker icon provided by the map.
+     * @param checkedInAttendeesLocations the location of the user
+     */
+    private void handleLocation2(List<GeoPoint> checkedInAttendeesLocations) {
+        int myNum = checkedInAttendeesLocations.size();
+        for (int i = 0; i < myNum; i++) {
+            GeoPoint point = checkedInAttendeesLocations.get(i);
+            Marker startMarker = new Marker(map);
+            startMarker.setPosition(point);
+            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+            map.getOverlays().add(startMarker);
+            map.getController().setCenter(point);
+        }
     }
+
     /**
      * Confirms if the app has access to the user location
      */
     private boolean hasLocationPermissions() {
         return (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }
+
     /**
      * Allows the map to resume once put on pause
      */
-    //TODO: Sandra figures out if we actually need this method
     @Override
     public void onResume() {
         super.onResume();
             if (map != null) {
+                // connect back button to the previous screen
+                backButton.setOnClickListener(v -> {finish();});
                 map.onResume();
             }
     }
+
     /**
      * Allows the map to be put on pause
      */
-    //TODO: Sandra figures out if we actually need this method
     @Override
     public void onPause() {
         super.onPause();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        super.onPause();
+        //this will refresh the osmdroid configuration on resuming.;
         if (map != null) {
+            // connect back button to the previous screen
+            backButton.setOnClickListener(v -> {finish();});
             map.onPause();
         }
     }

@@ -7,13 +7,17 @@ Outstanding Issues:
 package com.example.noram.model;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.GeoPoint;
 
+import org.checkerframework.checker.units.qual.A;
+import org.osmdroid.util.GeoPoint;
+
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -453,7 +457,11 @@ public class Event {
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
-        this.setCheckedInAttendeesLocations((List<GeoPoint>) doc.get("checkedInAttendeesLocations"));
+        //grab checkedInAttendeesLocations from db
+        List<HashMap<String, Object>> geoData =
+                (List<HashMap<String, Object>>) doc.get("checkedInAttendeesLocations");
+        //then use parseGeopointListFromDatabase() before setting the event attribute
+        this.setCheckedInAttendeesLocations(parseGeopointListFromDatabase(geoData));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQRID(doc.getString("promoQRID"));
         this.setCheckInQRID(doc.getString("checkInQRID"));
@@ -461,6 +469,24 @@ public class Event {
         this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
+    }
+
+    /**
+     * Parses the list of hashmaps firestore provides for attendee locations into a list of GeoPoint
+     * objects
+     * @author Cole
+     * @param databaseInfo data from firestore
+     * @return parsed list of geopoints
+     */
+    private List<GeoPoint> parseGeopointListFromDatabase(List<HashMap<String,Object>> databaseInfo) {
+        ArrayList<GeoPoint> geopointList = new ArrayList<>();
+        for (HashMap<String, Object> entry: databaseInfo) {
+            double latitude = (double) entry.get("latitude");
+            double longitude = (double) entry.get("longitude");
+            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+            geopointList.add(geoPoint);
+        }
+        return geopointList;
     }
 
     /**
