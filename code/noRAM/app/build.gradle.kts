@@ -87,4 +87,7 @@ dependencies {
     // Confetti Library
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")
 
+    // HTTP requests
+    implementation("com.android.volley:volley:1.2.1")
+
 }

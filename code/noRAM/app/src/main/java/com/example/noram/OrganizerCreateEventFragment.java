@@ -8,6 +8,7 @@ package com.example.noram;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -79,6 +82,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private ImageView imageView;
     private Button nextButton;
     private ScrollView scroll;
+    private ImageView locationPickerButton;
 
     // Constructors
     /**
@@ -155,6 +159,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         deletePhoto.setVisibility(View.INVISIBLE);
         addPhoto = view.findViewById(R.id.add_photo);
         scroll = view.findViewById(R.id.fragment_organizer_create_event);
+        locationPickerButton = view.findViewById(R.id.location_picker_button);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -290,6 +295,26 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
+
+        // create a ActivityResultLauncher to get the location from the LocationPickerActivity
+        // when we start it
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Bundle bundle = data.getExtras();
+                        String newLocation = bundle.getString("location");
+                        editLocation.setText(newLocation);
+                    }
+                });
+
+        // location picker button to start location picker
+        locationPickerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LocationPickerActivity.class);
+            launcher.launch(intent);
+        });
+
     }
 
     /**
