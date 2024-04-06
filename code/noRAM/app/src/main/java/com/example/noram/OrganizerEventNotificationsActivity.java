@@ -46,21 +46,21 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_event_notifications);
 
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
-//        // Ensure intent contains event
-//        Intent intent = getIntent();
-//        if (intent.hasExtra("event")) {
-//            String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
-//            assert (eventID != null);
-//
-//            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
-//            eventTask.addOnSuccessListener(documentSnapshot -> {
-//                event.updateWithDocument(documentSnapshot);
-//                listNotification = event.getNotifications();
-//            });
-//        }
+        // Ensure intent contains event
+        Intent intent = getIntent();
+        if (intent.hasExtra("event")) {
+            String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
+            assert (eventID != null);
+
+            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
+            eventTask.addOnSuccessListener(documentSnapshot -> {
+                event.updateWithDocument(documentSnapshot);
+                listNotification = event.getNotifications();
+            });
+        }
 
         // Set up views
         TextView editTitle = findViewById(R.id.organizer_notifications_edit_title_text);
