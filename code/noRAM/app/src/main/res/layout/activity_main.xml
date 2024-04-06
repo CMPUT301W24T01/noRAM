@@ -34,8 +34,9 @@
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" Welcome to QR Event Scanner!"
+        android:text="@string/welcome_to_noram_events"
         android:textSize="24sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,13 +45,19 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="360dp"
-        android:layout_height="360dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="-48dp"
+        android:layout_marginTop="-48dp"
+        android:layout_marginEnd="-48dp"
+        android:layout_marginBottom="-48dp"
         android:src="@mipmap/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/title_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/header_bar"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -79,24 +86,42 @@
         android:layout_marginVertical="15dp"
         android:text="@string/event_poster_title"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/carousel_recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/title_text"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toBottomOf="@id/title_text"
+        app:layout_constraintVertical_bias="0.2"/>
 
-    <FrameLayout
-        android:id="@+id/poster_event"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/carousel_recycler"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginVertical="15dp"
-        android:layout_marginTop="200dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10sp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventPoster_title"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@id/eventPoster_title"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/main_activity_no_events_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/no_events_to_show_why_not_make_one"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/carousel_recycler"
+        app:layout_constraintEnd_toEndOf="@+id/carousel_recycler"
+        app:layout_constraintStart_toStartOf="@+id/carousel_recycler"
+        app:layout_constraintTop_toTopOf="@+id/carousel_recycler">
+    </TextView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

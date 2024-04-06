@@ -93,7 +93,7 @@
     <string name="signedin_text">Signed Up</string>
     <string name="main_menu_attend">Attend Event</string>
     <string name="main_menu_organize">Organize Event</string>
-    <string name="event_poster_title">Below is an event you might enjoy:</string>
+    <string name="event_poster_title">Below are some events you might enjoy:</string>
     <string name="unsign_button">Unsign</string>
     <string name="total_current_nattendees_n0">Total Current \nAttendees:\n0</string>
     <string name="all_time_nattendees_n0">All Time \nAttendees:\n0</string>
@@ -106,4 +106,6 @@
     <string name="there_are_no_checked_in_attendees_yet">There are no checked-in attendees yet</string>
     <string name="there_are_no_signed_up_attendees_yet">There are no signed-up attendees yet</string>
     <string name="past_events">Past Events</string>
+    <string name="welcome_to_noram_events">Welcome to noRAM Events!</string>
+    <string name="no_events_to_show_why_not_make_one">No events to show... why not make one?</string>
 </resources>

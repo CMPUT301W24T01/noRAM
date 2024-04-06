@@ -129,7 +129,7 @@ public class OrganizerProfileFragment extends Fragment {
         // clicking event items brings you to the page
         briefEventList.setOnItemClickListener((parent, view1, position, id) -> {
             Event event = eventNamesList.get(position);
-            EventManager.displayAttendeeEvent(getContext(), event);
+            EventManager.displayOrganizerEvent(getContext(), event);
         });
 
         // Get the attendee from the main activity
