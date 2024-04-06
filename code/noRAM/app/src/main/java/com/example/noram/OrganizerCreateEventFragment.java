@@ -230,7 +230,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     List<Integer> milestones;
                     if (!milestonesString.isEmpty()) {
                         milestones = Stream.of(milestonesString.split(","))
-                                    .mapToInt(Integer::parseInt)
+                                    .mapToInt(value -> Integer.parseInt(value.replaceAll("\\s+", "")))
                                     .boxed()
                                     .collect(Collectors.toList()
                                     );

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,29 +11,45 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/organizer_fragment_create_event_p1_edit_name_text"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/organizer_fragment_create_event_p1_edit_name_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginTop="10sp"
             android:layout_marginEnd="20sp"
-            android:ems="10"
-            android:hint="@string/organizer_fragment_create_event_p1_name_hint"
-            android:inputType="textShortMessage"
-            android:textSize="20sp" />
+            android:textColorHint="@color/hint_color"
+            android:minEms="10"
+            android:maxEms="10">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/organizer_fragment_create_event_p1_edit_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/organizer_fragment_create_event_p1_name_hint"
+                android:inputType="textShortMessage"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/organizer_fragment_create_event_p1_edit_location_text"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginTop="10sp"
             android:layout_marginEnd="20sp"
-            android:ems="10"
-            android:hint="@string/organizer_fragment_create_event_p1_location_hint"
-            android:inputType="textShortMessage"
-            android:textSize="20sp" />
+            android:textColorHint="@color/hint_color"
+            android:minEms="10"
+            android:maxEms="10">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/organizer_fragment_create_event_p1_edit_location_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/organizer_fragment_create_event_p1_location_hint"
+                android:inputType="textShortMessage"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/organizer_fragment_create_event_p1_edit_startDateTime_button"
@@ -58,29 +73,46 @@
             android:textAllCaps="false"
             android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/organizer_fragment_create_event_p1_edit_details_text"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/organizer_fragment_create_event_p1_edit_details_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginTop="10sp"
             android:layout_marginEnd="20sp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="@string/organizer_fragment_create_event_p1_details_hint"
-            android:inputType="textMultiLine"
-            android:textSize="20sp" />
+            android:textColorHint="@color/hint_color"
+            android:minEms="10"
+            android:maxEms="10">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/organizer_fragment_create_event_p1_edit_details_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/organizer_fragment_create_event_p1_details_hint"
+                android:inputType="textMultiLine"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/organizer_fragment_create_event_p1_edit_milestones_text"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/organizer_fragment_create_event_p1_edit_milestones_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
             android:layout_marginTop="10sp"
             android:layout_marginEnd="20sp"
-            android:ems="10"
-            android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
-            android:textSize="20sp" />
+            android:textColorHint="@color/hint_color"
+            android:minEms="10"
+            android:maxEms="10">
+            <!-- NOTE: the hint font size is specified different from the textSize, in the strings resource file -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/organizer_fragment_create_event_p1_edit_milestones_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
+                android:inputType="text"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/conLayout"

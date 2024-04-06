@@ -15,7 +15,7 @@
     <string name="organizer_fragment_create_event_p1_endTime_hint">End Date/Time</string>
     <string name="organizer_fragment_create_event_p1_endTime_set">End: %d/%d/%d @ %02d:%02d</string>
     <string name="organizer_fragment_create_event_p1_details_hint">Details</string>
-    <string name="organizer_fragment_create_event_p1_milestones_hint">Event Milestones (comma separated)</string>
+    <string name="organizer_fragment_create_event_p1_milestones_hint"><font size="44">Event Milestones (comma separated)</font></string>
     <string name="organizer_fragment_create_event_p1_location_check_text">Track check-in locations for this event?</string>
     <string name="organizer_fragment_create_event_p1_limitSignUps_check_text">Limit sign-ups for this event?</string>
     <string name="organizer_fragment_create_event_p1_limitSignUps_hint">Maximum number of sign-ups</string>
@@ -95,6 +95,12 @@
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below is an event you might enjoy:</string>
     <string name="unsign_button">Unsign</string>
+    <string name="total_current_nattendees_n0">Total Current \nAttendees:\n0</string>
+    <string name="all_time_nattendees_n0">All Time \nAttendees:\n0</string>
+    <string name="all_time_nsignups_n0">All Time \nSignups:\n0</string>
+    <string name="total_current_n_signups_n0">Total Current \n Signups:\n0</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="empty_placeholder_organizer_profile_list">No upcoming events - try adding one!</string>
     <string name="signed_up">Signed-Up</string>
     <string name="checked_in">Checked-In</string>
     <string name="there_are_no_checked_in_attendees_yet">There are no checked-in attendees yet</string>

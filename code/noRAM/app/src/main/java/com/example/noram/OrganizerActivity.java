@@ -54,14 +54,15 @@ public class OrganizerActivity extends AppCompatActivity {
 
         navBar = findViewById(R.id.organizer_activity_bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.organizer_activity_fragment_container_view);
-        navBar.setSelectedItemId(NAV_MY_EVENTS);
-        activeFragment = myEventsFragment;
+        navBar.setSelectedItemId(NAV_PROFILE);
+        activeFragment = profileFragment;
         header = findViewById(R.id.organizer_activity_header_text);
         header.setText(R.string.organizer_fragment_event_list_header);
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, myEventsFragment, "myEvents")
+                .hide(myEventsFragment)
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, newEventFragment, "newEvent")
@@ -69,7 +70,6 @@ public class OrganizerActivity extends AppCompatActivity {
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.organizer_activity_fragment_container_view, profileFragment, "profile")
-                .hide(profileFragment)
                 .commit();
 
         navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
