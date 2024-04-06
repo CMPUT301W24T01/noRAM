@@ -6,9 +6,11 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -47,7 +49,7 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
             checkinQRShare.setOnClickListener(v -> shareQRCode(checkinCode));
             checkinQRImage.setImageBitmap(checkinCode.getBitmap());
         });
-        MainActivity.db.getQrRef().document(checkinID).get().addOnSuccessListener(documentSnapshot1 -> {
+        MainActivity.db.getQrRef().document(promoID).get().addOnSuccessListener(documentSnapshot1 -> {
             QRCode promoCode = new QRCode();
             promoCode.updateWithMap(documentSnapshot1.getData());
             promoQRShare.setOnClickListener(v -> shareQRCode(promoCode));
@@ -64,6 +66,7 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
             switchMenu(item);
             return true;
         });
+
         popup.getMenuInflater().inflate(R.menu.organizer_event_info_menu, popup.getMenu());
         popup.show();
     }
@@ -76,9 +79,7 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
         Class<?> newActivity = null;
         int itemId = item.getItemId();
 
-        if (itemId == R.id.organizer_event_edit_details) {
-            newActivity = OrganizerEditEventActivity.class;
-        } else if (itemId == R.id.organizer_event_attendees) {
+        if (itemId == R.id.organizer_event_attendees) {
             newActivity = OrganizerEventAttendeeListActivity.class;
         } else if (itemId == R.id.organizer_event_map) {
             newActivity = OrganizerEventMapActivity.class;
@@ -131,6 +132,18 @@ public class OrganizerEventInfoActivity extends EventInfoActivityTemplate {
         // retrieve corresponding event in database
         String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
         initializePage(eventID);
+
+        // connect edit button to edit_event page
+        ImageButton editButton = findViewById(R.id.editButton);
+        Activity currentAct = this;
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(currentAct, OrganizerEditEventActivity.class);
+                intent.putExtra("event", event.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     /**

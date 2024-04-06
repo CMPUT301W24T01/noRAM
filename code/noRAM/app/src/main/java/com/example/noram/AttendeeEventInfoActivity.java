@@ -8,10 +8,8 @@ package com.example.noram;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,14 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.noram.controller.EventManager;
-import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -79,7 +70,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         // Check sign-up limit
         if (!event.isLimitedSignUps() || event.getSignUpCount() < event.getSignUpLimit()) {
             // sign-up to the event and display sign-up message
-            EventManager.signUpForEvent(event.getId());
+            EventManager.signUpForEvent(event.getId(), false);
             Toast.makeText(this, "Successfully signed up!", Toast.LENGTH_SHORT).show();
             event.addSignedUpAttendee(MainActivity.attendee.getIdentifier());
             // Update sign ups display

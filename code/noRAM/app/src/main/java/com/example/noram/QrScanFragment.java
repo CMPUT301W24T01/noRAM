@@ -24,7 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.example.noram.model.Event;
+import com.example.noram.controller.EventManager;
 import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.example.noram.controller.EventManager;
 import com.google.firebase.firestore.Transaction;
 
@@ -152,11 +153,16 @@ public class QrScanFragment extends Fragment {
                     }
                     else{
                         EventManager.checkInToEvent(eventId, null);
+                        //sign up and confetti
+                        EventManager.signUpForEvent(eventId, false);
                     }
                     showCheckInSuccess();
+                    goToEventListener.goToConfetti(eventId);
+                } else {
+                    // tell the activity to go to the event
+                    goToEventListener.goToEvent(eventId);
                 }
-                // tell the activity to go to the event
-                goToEventListener.goToEvent(eventId);
+
                 scanLoadingSpinBar.setVisibility(View.INVISIBLE);
             }
         });
@@ -184,10 +190,14 @@ public class QrScanFragment extends Fragment {
                 //and the location if it is not null
                 if (location != null) {
                     EventManager.checkInToEvent(ID, location);
+                    //sign up and confetti
+                    EventManager.signUpForEvent(ID, false);
                 } else {
                     //location was not provided
                     Toast.makeText(getContext(), "Location tracking denied, signing-in without location", Toast.LENGTH_LONG).show();
                     EventManager.checkInToEvent(ID, null);
+                    //sign up and confetti
+                    EventManager.signUpForEvent(ID, false);
                 }
             }
         }).addOnFailureListener(getActivity(), new OnFailureListener() {

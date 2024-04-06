@@ -2,6 +2,8 @@
 This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
 Outstanding Issues:
 - UI needs to be cleaned up
+- When the searchbar is cleared, the "AllEvents" list is shown by default (no matter what list was
+being consulted)
  */
 
 package com.example.noram;
@@ -22,6 +24,8 @@ import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -109,6 +113,10 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the user's personal events visible and hides the other lists
      */
     private void displayMyEvents(){
+        // clear search bar and makes searches happen on myEvents list
+        setReferenceSearchList(userEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
@@ -118,6 +126,10 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the list of all events visible and hides the other list
      */
     private void displayAllEvents(){
+        // clear search bar and makes searches happen on allEvents list
+        setReferenceSearchList(allEventDataList);
+        searchBox.setText("");
+        // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
@@ -149,6 +161,8 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         // setup search functionality
         searchEventList = rootView.findViewById(R.id.searchEventsList);
         setupSearch(searchEventList, rootView.findViewById(R.id.searchInput));
+        // searches are by default on all events
+        setReferenceSearchList(allEventDataList);
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
@@ -160,7 +174,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         myEventsButton.setOnClickListener(view -> displayMyEvents());
         allEventsButton.setOnClickListener(view -> displayAllEvents());
 
-        // connect the three lists so that each item display its event
+        // connect the lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = allEventDataList.get(position);
             EventManager.displayAttendeeEvent(getActivity(),event);
@@ -182,14 +196,30 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                     // get event's info and create it
                     Event event = new Event();
                     event.updateWithDocument(doc);
+
+                    // do not add event if it already happened
+                    if(event.hasHappened()){
+                        continue;
+                    }
+
+                    // add to all event list
                     allEventDataList.add(event);
 
                     // if user correspond, add event to myEvents list
-                    ArrayList<String> attendees = (ArrayList<String>) doc.get("signedUpAttendees");
-                    if(attendees!=null && attendees.contains(MainActivity.attendee.getIdentifier())) {
+                    ArrayList<String> signedUpAttendees = (ArrayList<String>) doc.get("signedUpAttendees");
+                    ArrayList<String> checkedInAttendees = (ArrayList<String>) doc.get("checkedInAttendees");
+                    boolean userEvent = (signedUpAttendees != null &&
+                            signedUpAttendees.contains(MainActivity.attendee.getIdentifier()))
+                            || (checkedInAttendees != null &&
+                            checkedInAttendees.contains(MainActivity.attendee.getIdentifier()));
+                    if(userEvent) {
                         userEventDataList.add(event);
                     }
                 }
+                // sort events so that "NOW" events are at the top
+                allEventDataList.sort(new EventTimeComparator());
+                userEventAdapter.sort(new EventTimeComparator());
+
                 // update after both lists are changed
                 allEventAdapter.notifyDataSetChanged();
                 userEventAdapter.notifyDataSetChanged();

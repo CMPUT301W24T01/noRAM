@@ -3,22 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/attendee_list_item_name"
+        android:id="@+id/notification_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/attendee_list_check_in_count"
+        android:id="@+id/notification_content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Checked-In X Times"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_list_item_name" />
+        app:layout_constraintTop_toBottomOf="@+id/notification_title_text" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

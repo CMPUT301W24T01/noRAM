@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/organizer_activity_edit_event_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/organizer_edit_event_header"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
         android:background="@color/main_color"
-        android:paddingStart="40sp"
-        android:paddingTop="10sp"
-        android:paddingEnd="40sp"
-        android:paddingBottom="10sp"
-        android:text="@string/organizer_activity_edit_event_header"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#00FF0808"
+        android:backgroundTint="#00473434"
+        android:contentDescription="Arrow pointing to the left"
+        android:outlineProvider="none"
+        android:src="@drawable/outline_arrow_back_ios_new_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/organizer_edit_event_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundTint="#FFFFFF"
+        android:layout_marginStart="24dp"
+        android:text="@string/organizer_activity_edit_event_header"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_edit_event_header"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
@@ -30,36 +47,52 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_activity_edit_event_header">
+        app:layout_constraintTop_toBottomOf="@+id/organizer_edit_event_header">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/organizer_activity_edit_event_edit_name_text"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_activity_edit_event_edit_name_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
-                android:ems="10"
-                android:hint="@string/organizer_fragment_create_event_p1_name_hint"
-                android:inputType="textShortMessage"
-                android:textSize="20sp" />
+                android:textColorHint="@color/hint_color"
+                android:minEms="10"
+                android:maxEms="10">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_activity_edit_event_edit_name_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/organizer_fragment_create_event_p1_name_hint"
+                    android:inputType="textShortMessage"
+                    android:textSize="20sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/organizer_activity_edit_event_edit_location_text"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_activity_edit_event_edit_location_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
-                android:ems="10"
-                android:hint="@string/organizer_fragment_create_event_p1_location_hint"
-                android:inputType="textShortMessage"
-                android:textSize="20sp" />
+                android:textColorHint="@color/hint_color"
+                android:minEms="10"
+                android:maxEms="10">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_activity_edit_event_edit_location_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/organizer_fragment_create_event_p1_location_hint"
+                    android:inputType="textShortMessage"
+                    android:textSize="20sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/organizer_activity_edit_event_edit_startDateTime_button"
@@ -68,6 +101,8 @@
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
+                android:background="@drawable/button_background"
+                android:textColor="@color/button_text_color"
                 android:text="@string/organizer_fragment_create_event_p1_startTime_hint"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
@@ -79,33 +114,51 @@
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
+                android:background="@drawable/button_background"
+                android:textColor="@color/button_text_color"
                 android:text="@string/organizer_fragment_create_event_p1_endTime_hint"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/organizer_activity_edit_event_edit_details_text"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_activity_edit_event_edit_details_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
-                android:ems="10"
-                android:gravity="start|top"
-                android:hint="@string/organizer_fragment_create_event_p1_details_hint"
-                android:inputType="textMultiLine"
-                android:textSize="20sp" />
+                android:textColorHint="@color/hint_color"
+                android:minEms="10"
+                android:maxEms="10">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_activity_edit_event_edit_details_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/organizer_fragment_create_event_p1_details_hint"
+                    android:inputType="textShortMessage"
+                    android:textSize="20sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/organizer_activity_edit_event_edit_milestones_text"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_activity_edit_event_edit_milestones_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
                 android:layout_marginEnd="20sp"
-                android:ems="10"
-                android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
-                android:textSize="20sp" />
+                android:textColorHint="@color/hint_color"
+                android:minEms="10"
+                android:maxEms="10">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_activity_edit_event_edit_milestones_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/organizer_fragment_create_event_p1_milestones_hint"
+                    android:inputType="textShortMessage"
+                    android:textSize="20sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/organizer_activity_edit_event_edit_upload_poster_button"

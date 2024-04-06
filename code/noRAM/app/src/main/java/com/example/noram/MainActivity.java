@@ -12,37 +12,39 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.noram.controller.EventManager;
+import com.example.noram.controller.ImageCarouselAdapter;
 import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
 import com.example.noram.model.PushNotificationService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.carousel.CarouselLayoutManager;
+import com.google.android.material.carousel.HeroCarouselStrategy;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * The main activity of the application. This activity is the first activity that is launched
@@ -62,7 +64,12 @@ public class MainActivity extends AppCompatActivity {
     public static MainActivity mn;
     private BottomNavigationView navBar;
     private TextView eventPosterTitle;
-
+    private ImageCarouselAdapter adapter;
+    private ArrayList<Event> carouselEvents;
+    private TextView carouselEmptyText;
+    private int currentCarouselIdx;
+    private Handler timerHandler;
+    private Runnable timerRunnable;
 
     /**
      * Create and setup the main activity.
@@ -75,12 +82,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set the main activity to this instance for use in other classes
         mn = this;
 
-        // NOTE: temporary buttons to move to each activity
-        // In the future, we should evaluate whether there is a better method of navigation;
-        // for now, this will give us a base to start work without clashing against each other.
+        RecyclerView recyclerView = findViewById(R.id.carousel_recycler);
+        carouselEvents = new ArrayList<>();
+        adapter = new ImageCarouselAdapter(MainActivity.this, carouselEvents);
+        recyclerView.setAdapter(adapter);
+        carouselEmptyText = findViewById(R.id.main_activity_no_events_text);
+        CarouselLayoutManager manager = new CarouselLayoutManager(new HeroCarouselStrategy());
+        recyclerView.setLayoutManager(manager);
+
+        // if someone starts scrolling through the recycler view, we stop auto scrolling
+        recyclerView.setOnTouchListener((v, event) -> {
+            timerHandler.removeCallbacks(timerRunnable);
+            return false;
+        });
+
+        // setup timer to auto scroll
+        timerHandler = new Handler();
+        timerRunnable = () -> {
+            // update carousel index, scroll to that index, and start another callback timer
+            currentCarouselIdx = ++currentCarouselIdx % carouselEvents.size();
+            recyclerView.smoothScrollToPosition(currentCarouselIdx);
+            timerHandler.postDelayed(timerRunnable, 3000);
+        };
+
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.INVISIBLE);
         navBar = findViewById(R.id.bottom_nav);
@@ -88,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // hide menu until user is fully signed in and remove focus from its items
         navBar.setVisibility(View.INVISIBLE);
         navBar.setItemActiveIndicatorEnabled(false);
+        navBar.setSelectedItemId(R.id.invisible);
 
         // hide eventPoster's title until page is loaded
         eventPosterTitle = findViewById(R.id.eventPoster_title);
@@ -130,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        // set nothing to selected
+        navBar.setSelectedItemId(R.id.invisible);
         db.getmAuth().addAuthStateListener(auth -> signInFirebase());
     }
 
@@ -188,17 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 // show the poster event and related title
                                 eventPosterTitle.setVisibility(View.VISIBLE);
-                                db.getEventsRef().get().addOnSuccessListener(query -> {
-                                    // get random event
-                                    Random random = new Random();
-                                    int randIndex = random.nextInt(query.size());
-                                    DocumentSnapshot randDoc = query.getDocuments().get(randIndex);
-
-                                    // random event is set as poster
-                                    Event event = new Event();
-                                    event.updateWithDocument(randDoc);
-                                    displayPosterEvent(event);
-                                });
+                                populateCarousel();
                             } else {
                                 Log.d(TAG, "get failed with ", task1.getException());
                             }
@@ -209,6 +229,69 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Authentication failed. Please Restart your App", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Populates the carousel with random items that have event banners
+     */
+    private void populateCarousel() {
+        // NOTE: i'm tired and this is probably not the best way to do this, but it works.
+        // Get events that have event photos by getting all photo paths and seeing if the event
+        // has a photo at the path we expect.
+        db.getStorage().getReference().child("event_banners").listAll().addOnSuccessListener(listResult -> {
+            List<StorageReference> items = listResult.getItems();
+            List<String> names = new ArrayList<>();
+            // get every photo in cloud storage
+            for (StorageReference i : items) {
+                names.add(i.getPath());
+            }
+
+            db.getEventsRef().get().addOnSuccessListener(queryDocumentSnapshots -> {
+                // randomly shuffle the items so we have some randomness in what we display
+                ArrayList<DocumentSnapshot> docs = (ArrayList<DocumentSnapshot>) queryDocumentSnapshots.getDocuments();
+                Collections.shuffle(docs);
+
+                // look for up to 5 events.
+                int found = 0;
+                carouselEvents.clear();
+                for (DocumentSnapshot doc : docs) {
+                    if (found == 5) break;
+                    // if the photo path we expect is found in cloud storage, we add this event to the
+                    // adapter
+                    String eventId = doc.getString("id");
+                    String photoPath = "/event_banners/"+eventId+"-upload";
+                    LocalDateTime eventEndTime = LocalDateTime.parse(doc.getString("endTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+                    // make sure the event has a photo and hasn't already ended
+                    if (names.contains(photoPath) && LocalDateTime.now().isBefore(eventEndTime)) {
+                        found++;
+                        Event event = new Event();
+                        event.updateWithDocument(doc);
+                        carouselEvents.add(event);
+                    }
+                }
+
+                if (carouselEvents.isEmpty()) {
+                    carouselEmptyText.setVisibility(View.VISIBLE);
+                } else {
+                    carouselEmptyText.setVisibility(View.INVISIBLE);
+                }
+
+                adapter.notifyDataSetChanged();
+                timerHandler.postDelayed(timerRunnable, 3000);
+                currentCarouselIdx = 0;
+            });
+        });
+    }
+
+    /**
+     * When we pause the activity, pause the auto-scroll runnable
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // stop timer
+        timerHandler.removeCallbacks(timerRunnable);
     }
 
     /**
@@ -239,99 +322,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private boolean navigateTo(MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.attend_events ){
+        if(itemID == R.id.bottom_nav_attend_events){
             startActivity(new Intent(MainActivity.this, AttendeeActivity.class));
-        } else if(itemID == R.id.organize_events){
+        } else if(itemID == R.id.bottom_nav_organize_events){
             startActivity(new Intent(MainActivity.this, OrganizerActivity.class));
-        } else{
-            return false;
         }
 
-        // if valid item, show focus and return true
-        navBar.setItemActiveIndicatorEnabled(true);
+        // always return true even if we nav to the invisible item, since otherwise the UI doesn't update
         return true;
-    }
-
-    /**
-     * Promotes a random event to the main page of the app, that the user can consult.
-     * The main logic is the same as with EventArrayAdapter
-     * @param event The event being promoted to the main page
-     */
-    private void displayPosterEvent(Event event){
-        // inflate layout
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.event_list_item, null);
-
-        FrameLayout container = findViewById(R.id.poster_event);
-        container.addView(view);
-
-        // get item's fields (UI)
-        TextView eventTitle = view.findViewById(R.id.event_title);
-        TextView eventTime = view.findViewById(R.id.event_time);
-        TextView eventLocation = view.findViewById(R.id.event_location);
-        TextView eventSignUpCapacity = view.findViewById(R.id.event_signUp_capacity);
-        TextView signedUpText = view.findViewById(R.id.event_signed_up_indicator);
-        TextView checkedInText = view.findViewById(R.id.event_checked_in_indicator);
-        TextView happeningNowText = view.findViewById(R.id.event_happening_now);
-
-        // update fields and return view
-        eventTitle.setText(event.getName());
-        LocalDateTime startTime = event.getStartTime();
-        LocalDateTime endTime = event.getEndTime();
-        if (startTime.toLocalDate().equals(endTime.toLocalDate())) {
-            eventTime.setText(String.format("%s \n%s to %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("h:mma")),
-                    endTime.format(DateTimeFormatter.ofPattern("h:mma"))
-            ));
-        } else {
-            // not the same date: need to include both dates
-            eventTime.setText(String.format("%s at %s to \n%s at %s",
-                    startTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    startTime.format(DateTimeFormatter.ofPattern("h:mm a")),
-                    endTime.format(DateTimeFormatter.ofPattern("MMM dd")),
-                    endTime.format(DateTimeFormatter.ofPattern("h:mm a"))
-            ));
-        }
-
-        // if event is currently happening, display "happening now!"
-        LocalDateTime current = LocalDateTime.now();
-        happeningNowText.setVisibility(startTime.isBefore(current) && endTime.isAfter(current) ? View.VISIBLE : View.GONE);
-
-        // show signups count
-        eventLocation.setText(event.getLocation());
-        if (event.isLimitedSignUps()) {
-            eventSignUpCapacity.setText(String.format(
-                    this.getString(R.string.signup_limit_format),
-                    event.getSignUpCount(),
-                    event.getSignUpLimit())
-            );
-        }
-        else {
-            eventSignUpCapacity.setText(String.format(
-                    this.getString(R.string.signup_count_format),
-                    event.getSignUpCount())
-            );
-        }
-
-        // show if user is already checked-in or signed-in
-        if (event.getCheckedInAttendees().contains(MainActivity.attendee.getIdentifier())) {
-            checkedInText.setVisibility(View.VISIBLE);
-        } else {
-            checkedInText.setVisibility(View.INVISIBLE);
-        }
-        if (event.getSignedUpAttendees().contains(MainActivity.attendee.getIdentifier())) {
-            signedUpText.setVisibility(View.VISIBLE);
-        } else {
-            signedUpText.setVisibility(View.INVISIBLE);
-        }
-
-        // user can go to the event by clicking on it
-        container.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                EventManager.displayAttendeeEvent(MainActivity.this,event);
-            }
-        });
     }
 }

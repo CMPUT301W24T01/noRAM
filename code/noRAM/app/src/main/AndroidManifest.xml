@@ -31,6 +31,8 @@
         <activity
             android:name=".CheckInConfettiActivity"
             android:exported="false" />
+        <activity android:name=".AttendeeAnnouncementsActivity"
+            android:exported="false" />
         <activity
             android:name=".OrganizerEventNotificationsActivity"
             android:exported="false" />

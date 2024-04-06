@@ -75,7 +75,7 @@ public class EventValidator {
             errMsg = "Sign-up limit is set below current number of signed-up attendees";
         }
         for (char c : milestonesString.toCharArray()) {
-            if (!(Character.isDigit(c) || c == ',')) {
+            if (!(Character.isDigit(c) || c == ',' || Character.isWhitespace(c))) {
                 valid = false;
                 errMsg = "Milestones are invalid";
             }

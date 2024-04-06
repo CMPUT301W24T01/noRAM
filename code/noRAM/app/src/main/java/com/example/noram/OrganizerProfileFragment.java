@@ -10,21 +10,36 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.noram.controller.BriefEventArrayAdapter;
+import com.example.noram.controller.EventManager;
+import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Fragment displayed when viewing profile for an organizer
@@ -37,6 +52,14 @@ public class OrganizerProfileFragment extends Fragment {
     private FloatingActionButton deletePhoto;
     private Organizer organizer;
     private EditText displayName;
+    private TextView currentSignupsText;
+    private TextView currentAttendeesText;
+    private TextView allTimeAttendeesText;
+    private TextView allTimeSignupsText;
+    private TextView emptyListPlaceholderText;
+    private ListView briefEventList;
+    private BriefEventArrayAdapter briefEventListAdapter;
+    private ArrayList<Event> eventNamesList;
 
     /**
      * This is the default constructor for the fragment.
@@ -90,6 +113,24 @@ public class OrganizerProfileFragment extends Fragment {
         addPhoto = view.findViewById(R.id.add_photo);
         deletePhoto = view.findViewById(R.id.delete_photo);
         displayName = view.findViewById(R.id.edit_organizer_display_name);
+        currentSignupsText = view.findViewById(R.id.organizer_current_signups);
+        currentAttendeesText = view.findViewById(R.id.organizer_current_attendees);
+        allTimeAttendeesText = view.findViewById(R.id.organizer_all_time_attendees);
+        allTimeSignupsText = view.findViewById(R.id.organizer_all_time_signups);
+        briefEventList = view.findViewById(R.id.organizer_brief_event_list);
+        emptyListPlaceholderText = view.findViewById(R.id.empty_list_placeholder);
+
+        // setup adapter for list
+        eventNamesList = new ArrayList<>();
+        briefEventListAdapter = new BriefEventArrayAdapter(this.getContext(), eventNamesList);
+        briefEventList.setAdapter(briefEventListAdapter);
+        ViewCompat.setNestedScrollingEnabled(briefEventList, true);
+
+        // clicking event items brings you to the page
+        briefEventList.setOnItemClickListener((parent, view1, position, id) -> {
+            Event event = eventNamesList.get(position);
+            EventManager.displayOrganizerEvent(getContext(), event);
+        });
 
         // Get the attendee from the main activity
         organizer = MainActivity.organizer;
@@ -105,6 +146,9 @@ public class OrganizerProfileFragment extends Fragment {
         // update the profile photo icon
         MainActivity.db.downloadPhoto(organizer.getPhotoPath(),
                 t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+
+        // update organizer stats
+        getUpdatedOrganizerStatsAndEvents();
 
         //set on click listener to add photo when pressed
         addPhoto.setOnClickListener(v -> startImagePicker());
@@ -123,13 +167,17 @@ public class OrganizerProfileFragment extends Fragment {
                 organizer.updateDBOrganizer();
                 MainActivity.db.downloadPhoto(organizer.getPhotoPath(),
                         t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), validateResult.second, Toast.LENGTH_LONG).show();
             }
         });
 
         // Revert the changes when the cancel button is clicked
-        view.findViewById(R.id.organizer_info_cancel_button).setOnClickListener(v -> setFields(organizer));
+        view.findViewById(R.id.organizer_info_cancel_button).setOnClickListener(v -> {
+            setFields(organizer);
+            Toast.makeText(getActivity(), "Changes cancelled", Toast.LENGTH_SHORT).show();
+        });
         return view;
     }
 
@@ -225,6 +273,7 @@ public class OrganizerProfileFragment extends Fragment {
 
         if (view != null) {
             setFields(organizer);
+            getUpdatedOrganizerStatsAndEvents();
         }
     }
 
@@ -236,4 +285,79 @@ public class OrganizerProfileFragment extends Fragment {
         // Set the fields to the attendee's information
         displayName.setText(organizer.getName());
     }
+
+    /**
+     * Updates the stats that appear on the page for the organizer and the events in the brief list.
+     */
+    private void getUpdatedOrganizerStatsAndEvents() {
+        MainActivity.db.getEventsRef().whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
+            .addSnapshotListener((querySnapshots, error) -> {
+                // if error, log it and return
+                if(error != null){
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+
+                // if querySnapshots is null, nothing to update.
+                if(querySnapshots == null) return;
+
+                int currentSignups = 0;
+                int currentCheckins = 0;
+                int totalCheckins = 0;
+                int totalSignups = 0;
+                eventNamesList.clear();
+                for (QueryDocumentSnapshot doc: querySnapshots) {
+                    List<String> signUps = (List<String>) doc.get("signedUpAttendees");
+                    List<String> checkIns = (List<String>) doc.get("checkedInAttendees");
+
+                    // only count unique sign ups or check ins
+                    Set<String> signUpSet = new HashSet<>(signUps);
+                    Set<String> checkInsSet = new HashSet<>(checkIns);
+                    LocalDateTime endTime = LocalDateTime.parse(doc.getString("endTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+                    // for each event, count the number of attendees
+                    totalCheckins += checkInsSet.size();
+                    totalSignups += signUpSet.size();
+
+                    // for every event that has not ended, get current signups + attendees
+                    if (LocalDateTime.now().isBefore(endTime)) {
+                        currentSignups += signUpSet.size();
+                        currentCheckins += checkInsSet.size();
+
+                        // add upcoming events to the upcoming event list
+                        String eventName = doc.getString("name");
+                        String id = doc.getString("id");
+                        Event event = new Event();
+                        event.setName(eventName);
+                        event.setId(id);
+                        eventNamesList.add(event);
+                    }
+                }
+                // update the dataset for adapter
+                briefEventListAdapter.notifyDataSetChanged();
+                if (eventNamesList.isEmpty()) {
+                    emptyListPlaceholderText.setVisibility(View.VISIBLE);
+                } else {
+                    emptyListPlaceholderText.setVisibility(View.INVISIBLE);
+                }
+
+                // update the UI once we have gone through all documents.
+                updateOrganizerStatsUI(currentSignups, currentCheckins, totalCheckins, totalSignups);
+            });
+    }
+
+    /**
+     * Update the UI that displays the organizer stats
+     * @param currentSignups current number of signups
+     * @param currentCheckins current number of checkins
+     * @param totalCheckins all time number of checkins
+     * @param totalSignups all time number of sign ups
+     */
+    private void updateOrganizerStatsUI(int currentSignups, int currentCheckins, int totalCheckins, int totalSignups) {
+        currentSignupsText.setText(String.format("Total Current \n Signups:\n%d", currentSignups));
+        currentAttendeesText.setText(String.format("Total Current \nAttendees:\n%d", currentCheckins));
+        allTimeAttendeesText.setText(String.format("All Time \nAttendees:\n%d", totalCheckins));
+        allTimeSignupsText.setText(String.format("All Time \nSignups:\n%d", totalSignups));
+    }
+
 }

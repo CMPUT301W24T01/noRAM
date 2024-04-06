@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.noram.controller.EventAdminArrayAdapter;
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -43,7 +44,7 @@ public class AdminEventsFragment extends Fragment {
 
     public ListView eventsList;
     ArrayList<Event> eventsDataList;
-    EventArrayAdapter eventsAdapter;
+    EventAdminArrayAdapter eventsAdapter;
     CollectionReference eventRef;
 
     /**
@@ -60,7 +61,7 @@ public class AdminEventsFragment extends Fragment {
         // get basic elements
         eventsList = rootView.findViewById(R.id.eventsList);
         eventsDataList = new ArrayList<>();
-        eventsAdapter = new EventArrayAdapter(this.getContext(), eventsDataList);
+        eventsAdapter = new EventAdminArrayAdapter(this.getContext(), eventsDataList);
         eventsList.setAdapter(eventsAdapter);
         eventRef = MainActivity.db.getEventsRef();
 

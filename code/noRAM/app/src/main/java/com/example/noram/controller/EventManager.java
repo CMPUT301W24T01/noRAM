@@ -31,7 +31,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
 
 import org.osmdroid.util.GeoPoint;
-
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ import java.util.List;
  * @maintainer Gabriel
  * @author Gabriel
  * @author Carlin
+ * @author Ethan
  */
 public class EventManager {
     public static final String eventIDLabel = "eventID"; // Identifier for event's ID in bundles
@@ -56,7 +58,6 @@ public class EventManager {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
-        Log.i("we are inside CheckIN", "yay");
         GeoPoint point;
         //if the user allowed location tracking, also add it to the db
         if (userLocation != null ) {
@@ -83,6 +84,27 @@ public class EventManager {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> checkedInAttendees = (List<String>) snapshot.get("checkedInAttendees");
             checkedInAttendees.add(MainActivity.attendee.getIdentifier());
+            
+            // get all unique checked-in attendees
+            HashSet<String> uniqueAttendees = new HashSet<>(checkedInAttendees);
+            Long numAttendees = Long.valueOf(uniqueAttendees.size());
+
+            // Get the milestones for the event
+            List<Long> milestones = (List<Long>) snapshot.get("milestones");
+
+            // Check if the event reaches a milestone from the attendee check-in
+            if (milestones.contains(numAttendees) && Collections.frequency(checkedInAttendees, MainActivity.attendee.getIdentifier()) == 1){
+                Event eventObject = new Event();
+                eventObject.updateWithDocument(snapshot);
+
+                // Send a notification to the organizer about the milestone
+                if (numAttendees == 1) {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendee!", eventObject, true);
+                } else {
+                    MainActivity.pushService.sendNotification("Milestone Reached", eventObject.getName() + " has reached " + numAttendees + " attendees!", eventObject, true);
+                }
+            }
+
             transaction.update(eventRef, "checkedInAttendees", checkedInAttendees);
             return null;
         });
@@ -92,7 +114,7 @@ public class EventManager {
      * Sign the current user up for the event given by eventID
      * @param eventID ID string of the event
      */
-    public static void signUpForEvent(String eventID) {
+    public static void signUpForEvent(String eventID, boolean allowMultipleSignup) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);
         MainActivity.attendee.getEventsCheckedInto().add(eventID);
         MainActivity.attendee.updateDBAttendee();
@@ -101,6 +123,10 @@ public class EventManager {
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
             List<String> signedUpAttendees = (List<String>) snapshot.get("signedUpAttendees");
+
+            // if we are already signed up and don't allow it to happen multiple times, don't add.
+            if (signedUpAttendees.contains(MainActivity.attendee.getIdentifier()) && !allowMultipleSignup) return null;
+
             signedUpAttendees.add(MainActivity.attendee.getIdentifier());
             transaction.update(eventRef, "signedUpAttendees", signedUpAttendees);
             return null;

@@ -9,11 +9,19 @@ package com.example.noram;
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,23 +29,14 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -48,36 +47,38 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * @author Carlin
  * @author Sandra
  * @author Cole
+ * @author ethan
  */
 public class OrganizerCreateEventFragment extends Fragment implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
     // Attributes
-    int startYear = -1;
-    int startMonth;
-    int startDay;
-    int startHour;
-    int startMinute;
-    int endYear = -1;
-    int endMonth;
-    int endDay;
-    int endHour;
-    int endMinute;
+    private int startYear = -1;
+    private int startMonth;
+    private int startDay;
+    private int startHour;
+    private int startMinute;
+    private int endYear = -1;
+    private int endMonth;
+    private int endDay;
+    private int endHour;
+    private int endMinute;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private AppCompatButton editStartDateTime;
     private AppCompatButton editEndDateTime;
-    View createdView;
+    private View createdView;
     private Uri imageUri;
-    FloatingActionButton addPhoto;
+    private FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
-    TextView editName;
-    TextView editLocation;
-    TextView editDetails;
-    TextView editMilestones;
-    CheckBox trackLocationCheck;
-    CheckBox limitSignUpsCheck;
-    TextView editLimitSignUps;
+    private TextView editName;
+    private TextView editLocation;
+    private TextView editDetails;
+    private TextView editMilestones;
+    private CheckBox trackLocationCheck;
+    private CheckBox limitSignUpsCheck;
+    private TextView editLimitSignUps;
     private ImageView imageView;
-    Button nextButton;
+    private Button nextButton;
+    private ScrollView scroll;
 
     // Constructors
     /**
@@ -153,6 +154,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         deletePhoto = view.findViewById(R.id.delete_photo);
         deletePhoto.setVisibility(View.INVISIBLE);
         addPhoto = view.findViewById(R.id.add_photo);
+        scroll = view.findViewById(R.id.fragment_organizer_create_event);
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -228,7 +230,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     List<Integer> milestones;
                     if (!milestonesString.isEmpty()) {
                         milestones = Stream.of(milestonesString.split(","))
-                                    .mapToInt(Integer::parseInt)
+                                    .mapToInt(value -> Integer.parseInt(value.replaceAll("\\s+", "")))
                                     .boxed()
                                     .collect(Collectors.toList()
                                     );
@@ -248,12 +250,14 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putBoolean("trackLocation", trackLocation);
                     bundle.putParcelable("imageUri", imageUri);
                     bundle.putLong("signUpLimit", signUpLimit);
+                    bundle.putLong("lastMilestone", -1L);
                     intent.putExtras(bundle);
 
                     // move back organizer activity to my_events fragment before launching the
                     // new activity
                     startActivity(intent);
                     ((OrganizerActivity) getActivity()).displayMyEventsFragment();
+                    clearFields();
                 }
                 // Otherwise, show error Toast
                 else {
@@ -286,6 +290,26 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
+    }
+
+    /**
+     * Clears all fields in the fragment and the time info to reset the page
+     */
+    public void clearFields() {
+        editName.setText("");
+        editLocation.setText("");
+        editStartDateTime.setText("Set Start Date/Time");
+        startDateTime = null;
+        editEndDateTime.setText("Set End Date/Time");
+        endDateTime = null;
+        editDetails.setText("");
+        editMilestones.setText("");
+        trackLocationCheck.setChecked(false);
+        limitSignUpsCheck.setChecked(false);
+        editLimitSignUps.setText("");
+        editLimitSignUps.setVisibility(View.GONE);
+        scroll.fullScroll(ScrollView.FOCUS_UP);
+        deletePhoto();
     }
 
     /**

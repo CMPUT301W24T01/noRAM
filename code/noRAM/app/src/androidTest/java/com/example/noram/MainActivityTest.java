@@ -15,8 +15,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import com.example.noram.model.Attendee;
@@ -29,6 +27,8 @@ import org.junit.Test;
 
 /**
  * Espresso tests for the main activity
+ * @maintainer Cole
+ * @author Cole
  */
 public class MainActivityTest {
     public ActivityScenario<MainActivity> scenario;
@@ -52,6 +52,8 @@ public class MainActivityTest {
     /**
      * Verifies the attendee "browse events" button opens the attendee page
      */
+//TODO: do we need this still? I did not write this test
+
 //    @Test
 //    public void attendeeButtonTest() {
 //        onView(withId(R.id.attendeeButton)).perform(click());
@@ -68,6 +70,23 @@ public class MainActivityTest {
 //
 //        intended(hasComponent(OrganizerActivity.class.getName()));
 //    }
+
+    @Test
+    public void attendeeButtonTest() {
+        onView(withId(R.id.bottom_nav_attend_events)).perform(click());
+
+        intended(hasComponent(AttendeeActivity.class.getName()));
+    }
+
+    /**
+     * Verifies that the organizer button opens the organizer page
+     */
+    @Test
+    public void organizerButtonTest() {
+        onView(withId(R.id.bottom_nav_organize_events)).perform(click());
+
+        intended(hasComponent(OrganizerActivity.class.getName()));
+    }
 
     /**
      * Tests whether the admin button properly navigates to the admin activity.
