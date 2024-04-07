@@ -8,21 +8,27 @@ package com.example.noram;
 
 import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -31,6 +37,7 @@ import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +68,8 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private int endDay;
     private int endHour;
     private int endMinute;
+    private boolean locationIsRealLocation = false;
+    private GeoPoint locationGeopoint;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private AppCompatButton editStartDateTime;
@@ -70,7 +79,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
     private TextView editName;
-    private TextView editLocation;
+    private EditText editLocation;
     private TextView editDetails;
     private TextView editMilestones;
     private CheckBox trackLocationCheck;
@@ -79,6 +88,7 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
     private ImageView imageView;
     private Button nextButton;
     private ScrollView scroll;
+    private ImageView locationPickerButton;
 
     // Constructors
     /**
@@ -155,6 +165,40 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
         deletePhoto.setVisibility(View.INVISIBLE);
         addPhoto = view.findViewById(R.id.add_photo);
         scroll = view.findViewById(R.id.fragment_organizer_create_event);
+        locationPickerButton = view.findViewById(R.id.location_picker_button);
+
+        // set editing the location textbox to change the locationIsRealLocation status to false.
+        editLocation.addTextChangedListener(new TextWatcher() {
+            /**
+             * Unused
+             * @param s
+             * @param start
+             * @param count
+             * @param after
+             */
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            /**
+             * Unused
+             * @param s
+             * @param start
+             * @param before
+             * @param count
+             */
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            /**
+             * If we manually edit the text in the location box, no longer treat it as a real location
+             * @param s unused
+             */
+            @Override
+            public void afterTextChanged(Editable s) {
+                locationGeopoint = null;
+                locationIsRealLocation = false;
+            }
+        });
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +295,12 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     bundle.putParcelable("imageUri", imageUri);
                     bundle.putLong("signUpLimit", signUpLimit);
                     bundle.putLong("lastMilestone", -1L);
+                    bundle.putBoolean("locationIsRealLocation", locationIsRealLocation);
+
+                    if (locationGeopoint != null) {
+                        bundle.putDouble("lon", locationGeopoint.getLongitude());
+                        bundle.putDouble("lat", locationGeopoint.getLatitude());
+                    }
                     intent.putExtras(bundle);
 
                     // move back organizer activity to my_events fragment before launching the
@@ -290,6 +340,30 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 showDeletePhotoConfirmation();
             }
         });
+
+        // create a ActivityResultLauncher to get the location from the LocationPickerActivity
+        // when we start it
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Bundle bundle = data.getExtras();
+                        String newLocation = bundle.getString("location");
+                        double lon = bundle.getDouble("lon");
+                        double lat = bundle.getDouble("lat");
+                        editLocation.setText(newLocation);
+                        locationIsRealLocation = true;
+                        locationGeopoint = new GeoPoint(lat, lon);
+                    }
+                });
+
+        // location picker button to start location picker
+        locationPickerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LocationPickerActivity.class);
+            launcher.launch(intent);
+        });
+
     }
 
     /**

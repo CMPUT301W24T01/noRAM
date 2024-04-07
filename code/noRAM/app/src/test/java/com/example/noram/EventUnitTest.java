@@ -92,7 +92,7 @@ public class EventUnitTest {
             String organizerId = "orgId";
             Long signUpLimit = -1L;
             Long lastMilestone = -1L;
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone);
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone, null);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -139,7 +139,7 @@ public class EventUnitTest {
             List<GeoPoint> checkedInAttendeesLocations = new ArrayList<>(Arrays.asList(first, first));
             Long lastMilestone = -1L;
             List<Notification> notificationList = new ArrayList<>();
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, checkedInAttendeesLocations, lastMilestone, notificationList);
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, checkedInAttendeesLocations, lastMilestone, notificationList, null);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -161,6 +161,49 @@ public class EventUnitTest {
             assertEquals(event.getLastMilestone(), lastMilestone);
             assertEquals(event.getNotifications(), notificationList);
         }
+    }
+
+    /**
+     * Tests that when given a geopoint the locationIsRealLocation value is set properly
+     */
+    @Test
+    public void locationIsRealLocationTest() {
+        String id = "id";
+        String name = "name";
+        String location = "location";
+        LocalDateTime startTime = LocalDateTime.parse("2021-04-01T12:00:00");
+        LocalDateTime endTime = LocalDateTime.parse("2021-04-01T12:00:01");
+        String details = "details";
+        ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
+        Boolean trackLocation = true;
+        String organizerId = "orgId";
+        Long signUpLimit = -1L;
+        Long lastMilestone = -1L;
+        GeoPoint geoPoint = new GeoPoint(0.0, 0.0);
+        Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone, geoPoint);
+
+        assertTrue(event.getLocationIsRealLocation());
+    }
+
+    /**
+     * Tests that when an event is created with a null geopoint the locationIsRealLocation value
+     */
+    @Test
+    public void locationNotRealLocationTest() {
+        String id = "id";
+        String name = "name";
+        String location = "location";
+        LocalDateTime startTime = LocalDateTime.parse("2021-04-01T12:00:00");
+        LocalDateTime endTime = LocalDateTime.parse("2021-04-01T12:00:01");
+        String details = "details";
+        ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 2, 3));
+        Boolean trackLocation = true;
+        String organizerId = "orgId";
+        Long signUpLimit = -1L;
+        Long lastMilestone = -1L;
+        Event event = new Event(id, name, location, startTime, endTime, details, milestones, trackLocation, organizerId, signUpLimit, lastMilestone, null);
+
+        assertFalse(event.getLocationIsRealLocation());
     }
 
     /**

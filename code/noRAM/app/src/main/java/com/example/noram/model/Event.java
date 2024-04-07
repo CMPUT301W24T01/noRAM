@@ -6,18 +6,13 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
-import android.location.Location;
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import org.checkerframework.checker.units.qual.A;
 import org.osmdroid.util.GeoPoint;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,6 +51,8 @@ public class Event {
     private List<GeoPoint> checkedInAttendeesLocations;
     private Long lastMilestone;
     private List<Notification> notifications;
+    private boolean locationIsRealLocation;
+    private GeoPoint locationCoordinates;
 
     /**
      * Default constructor for Event. Often used to create an event shell where we can then populate
@@ -89,7 +86,8 @@ public class Event {
             boolean trackLocation,
             String organizerId,
             Long signUpLimit,
-            Long lastMilestone) {
+            Long lastMilestone,
+            GeoPoint locationCoords) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -105,6 +103,8 @@ public class Event {
         this.checkedInAttendeesLocations = new ArrayList<>();
         this.lastMilestone = lastMilestone;
         this.notifications = new ArrayList<>();
+        locationCoordinates = locationCoords;
+        locationIsRealLocation = locationCoords != null;
     }
 
     /**
@@ -144,7 +144,8 @@ public class Event {
             Long signUpLimit,
             List<GeoPoint> checkedInAttendeesLocations,
             Long lastMilestone,
-            List<Notification> notifications) {
+            List<Notification> notifications,
+            GeoPoint locationCoordinates) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -162,7 +163,8 @@ public class Event {
         this.checkedInAttendeesLocations = checkedInAttendeesLocations;
         this.lastMilestone = lastMilestone;
         this.notifications = notifications;
-
+        this.locationCoordinates = locationCoordinates;
+        locationIsRealLocation = locationCoordinates != null;
     }
 
     // Getters
@@ -455,6 +457,38 @@ public class Event {
         this.notifications = notifications;
     }
 
+    /**
+     * Returns whether the event's location is a real location that has coordinates
+     * @return true if it has coordinates; false otherwise
+     */
+    public boolean getLocationIsRealLocation() {
+        return locationIsRealLocation;
+    }
+
+    /**
+     * Set whether the location is a real location with coordinates
+     * @param locationIsRealLocation new value
+     */
+    public void setLocationIsRealLocation(boolean locationIsRealLocation) {
+        this.locationIsRealLocation = locationIsRealLocation;
+    }
+
+    /**
+     * Get the location GeoPoint coordinates
+     * @return null if locationIsRealLocation is false, otherwise the coordinates
+     */
+    public GeoPoint getLocationCoordinates() {
+        return locationCoordinates;
+    }
+
+    /**
+     * Set the location geopoint coordinates
+     * @param locationCoordinates new value
+     */
+    public void setLocationCoordinates(GeoPoint locationCoordinates) {
+        this.locationCoordinates = locationCoordinates;
+    }
+
     // Functions
     /**
      * Check for equality between an event and another object
@@ -495,6 +529,8 @@ public class Event {
         data.put("signUpLimit", signUpLimit);
         data.put("lastMilestone", lastMilestone);
         data.put("notifications", notifications);
+        data.put("locationIsRealLocation", locationIsRealLocation);
+        data.put("locationCoordinates", locationCoordinates);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -523,6 +559,17 @@ public class Event {
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
         this.setLastMilestone(doc.getLong("lastMilestone"));
+
+        this.setLocationIsRealLocation(doc.getBoolean("locationIsRealLocation"));
+        if (locationIsRealLocation) {
+            HashMap<String, Object> data = (HashMap<String, Object>) doc.get("locationCoordinates");
+            double latitude = (double) data.get("latitude");
+            double longitude = (double) data.get("longitude");
+            locationCoordinates = new GeoPoint(latitude, longitude);
+        } else {
+            locationCoordinates = null;
+        }
+
         this.setNotifications(new ArrayList<>());
         if (doc.get("notifications") != null) {
             for (HashMap<String, String> notification : (List<HashMap<String, String>>) doc.get("notifications")) {

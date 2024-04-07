@@ -6,29 +6,28 @@ None
 
 package com.example.noram;
 
-import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
-
-import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.content.Intent;
-
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 
 import com.example.noram.model.Event;
@@ -39,6 +38,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -85,6 +86,9 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private CheckBox trackLocationCheck;
     private TextView editLimitSignUps;
     private CheckBox limitSignUpsCheck;
+    private ImageView locationPickerButton;
+    private boolean locationIsRealLocation;
+    private GeoPoint locationGeopoint;
     private FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
     private ImageView imageView;
@@ -109,13 +113,14 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         Intent intent = getIntent();
         if (intent.hasExtra("event")) {
             String eventID = intent.getExtras().getString("event");
-            assert(eventID != null);
+            assert (eventID != null);
             Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
             task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 /**
                  * On successful acquisition of event attributes from database, create event
                  * Set dateTime attributes with event attributes
                  * Update text of views with event attributes
+                 *
                  * @param documentSnapshot database object from which object is initialized
                  */
                 @Override
@@ -159,7 +164,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     editMilestones.setText(event.getMilestones().toString().replaceAll("[\\[\\]]", ""));
                     trackLocationCheck.setChecked(event.isTrackLocation());
                     limitSignUpsCheck.setChecked(event.isLimitedSignUps());
-                    editLimitSignUps.setText(event.isLimitedSignUps() ? Long.toString(event.getSignUpLimit()) : "" );
+                    editLimitSignUps.setText(event.isLimitedSignUps() ? Long.toString(event.getSignUpLimit()) : "");
                     if (event.isLimitedSignUps()) {
                         editLimitSignUps.setVisibility(View.VISIBLE);
                     }
@@ -168,6 +173,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             task.addOnFailureListener(new OnFailureListener() {
                 /**
                  * Failure as a result of an invalid event ID
+                 *
                  * @param e cause of failure
                  */
                 @Override
@@ -189,17 +195,56 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         editStartDateTime = findViewById(R.id.organizer_activity_edit_event_edit_startDateTime_button);
         editEndDateTime = findViewById(R.id.organizer_activity_edit_event_edit_endDateTime_button);
         editDetails = findViewById(R.id.organizer_activity_edit_event_edit_details_text);
-        editMilestones  = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
+        editMilestones = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
         trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
         limitSignUpsCheck = findViewById(R.id.organizer_activity_edit_event_edit_limitSignUps_check);
         editLimitSignUps = findViewById(R.id.organizer_activity_edit_event_signUpLimit_text);
+        locationPickerButton = findViewById(R.id.edit_location_picker_button);
+
+        editLocation.addTextChangedListener(new TextWatcher() {
+            /**
+             * Unused
+             *
+             * @param s
+             * @param start
+             * @param count
+             * @param after
+             */
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            /**
+             * Unused
+             *
+             * @param s
+             * @param start
+             * @param before
+             * @param count
+             */
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            /**
+             * If we manually edit the text in the location box, no longer treat it as a real location
+             *
+             * @param s unused
+             */
+            @Override
+            public void afterTextChanged(Editable s) {
+                locationGeopoint = null;
+                locationIsRealLocation = false;
+            }
+        });
+
         imageView = findViewById(R.id.image_view);
         deletePhoto = findViewById(R.id.delete_photo);
         addPhoto = findViewById(R.id.add_photo);
 
         //populate the imageview onCreate
         eventID = intent.getExtras().getString("event");
-        String eventImagePath = "event_banners/"+eventID+"-upload";
+        String eventImagePath = "event_banners/" + eventID + "-upload";
         //if the db pulls an image
         if (eventImagePath != null) {
             //set the imageBitmap of the view
@@ -210,7 +255,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                         imageView.setVisibility(View.VISIBLE);
                         imageView.setImageBitmap(t);
                     }));
-        }else{
+        } else {
             //remove the delete button if there is not a photo
             deletePhoto.setVisibility(View.INVISIBLE);
         }
@@ -220,6 +265,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for Start Data/Time button
              * Calls Date and Time picker fragments
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -232,6 +278,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for End Data/Time button
              * Calls DatePickerFragment
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -243,14 +290,14 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         limitSignUpsCheck.setOnClickListener(new View.OnClickListener() {
             /**
              * On-click listener to display/hide input box for sign-up limit
+             *
              * @param v The view that was clicked.
              */
             @Override
             public void onClick(View v) {
                 if (editLimitSignUps.getVisibility() == View.GONE) {
                     editLimitSignUps.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     editLimitSignUps.setVisibility(View.GONE);
                 }
             }
@@ -260,6 +307,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for Cancel button
              * Aborts changes to events
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -274,6 +322,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for Cancel button
              * Aborts changes to events
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -286,6 +335,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for apply button
              * Applies changes to events
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -316,8 +366,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                                 .boxed()
                                 .collect(Collectors.toList()
                                 );
-                    }
-                    else {
+                    } else {
                         milestones = new ArrayList<>();
                     }
 
@@ -330,6 +379,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     event.setMilestones(new ArrayList<>(milestones));
                     event.setTrackLocation(trackLocation);
                     event.setSignUpLimit(signUpLimit);
+                    event.setLocationIsRealLocation(locationIsRealLocation);
+                    event.setLocationCoordinates(locationGeopoint);
 
                     // Update event in database
                     event.updateDBEvent();
@@ -348,6 +399,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for addPhoto button
              * Calls startImagePicker
+             *
              * @param v The view that was clicked.
              */
             @Override
@@ -360,12 +412,36 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             /**
              * On-click listener for deletePhoto button
              * Calls showDeletePhotoConfirmation()
+             *
              * @param v The view that was clicked.
              */
             @Override
             public void onClick(View v) {
                 showDeletePhotoConfirmation();
             }
+        });
+
+        // create a ActivityResultLauncher to get the location from the LocationPickerActivity
+        // when we start it
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Bundle bundle = data.getExtras();
+                        String newLocation = bundle.getString("location");
+                        double lon = bundle.getDouble("lon");
+                        double lat = bundle.getDouble("lat");
+                        editLocation.setText(newLocation);
+                        locationIsRealLocation = true;
+                        locationGeopoint = new GeoPoint(lat, lon);
+                    }
+                });
+
+        // location picker button to start location picker
+        locationPickerButton.setOnClickListener(v -> {
+            Intent pickerIntent = new Intent(this, LocationPickerActivity.class);
+            launcher.launch(pickerIntent);
         });
     }
 

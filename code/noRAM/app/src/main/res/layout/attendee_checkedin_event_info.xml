@@ -65,7 +65,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:text="Event Title"
-                android:textSize="24sp"
+                android:textSize="32sp"
                 app:layout_constraintEnd_toStartOf="@+id/announcementImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -75,7 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="10dp"
                 android:text="Organized by Organizer"
                 android:textSize="24sp"
@@ -87,13 +87,13 @@
                 android:id="@+id/organizerImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toTopOf="@+id/eventLocation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/organizerText"
-                app:layout_constraintTop_toBottomOf="@+id/eventTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/announcementImage" />
 
             <TextView
                 android:id="@+id/eventLocation"

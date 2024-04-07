@@ -62,14 +62,12 @@ public class MilestoneUnitTest {
         Milestone milestone3 = new Milestone(2, 2);
         Milestone milestone4 = new Milestone(3, 2);
         Milestone milestone5 = new Milestone(2, 3);
-        Milestone milestone6 = new Milestone(1, 2);
-        Milestone milestone7 = new Milestone(125, 1);
-
 
         assertEquals(milestone1.hashCode(), milestone2.hashCode());
         assertNotEquals(milestone1.hashCode(), milestone3.hashCode());
         assertNotEquals(milestone1.hashCode(), milestone4.hashCode());
         assertNotEquals(milestone3.hashCode(), milestone4.hashCode());
         assertNotEquals(milestone4.hashCode(), milestone5.hashCode());
+
     }
 }
