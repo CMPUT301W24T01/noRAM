@@ -223,6 +223,20 @@ public class Attendee {
     }
 
     /**
+     * Generate a default name for the attendee if they do not have one
+     */
+    public void generateDefaultName() {
+        if (firstName.isEmpty() && lastName.isEmpty()) {
+            int hashIdentifier = identifier.hashCode();
+            String name = "User#" + hashIdentifier;
+            if (name.length() > 10) {
+                name = name.substring(0, 10);
+            }
+            firstName = name;
+        }
+    }
+
+    /**
      * Set the FCM token for the attendee
      * @param FCMToken new token
      */
