@@ -1,7 +1,7 @@
 /*
 This file is used to display the information about an event. Depending on event's data, the layout page will change.
 Outstanding Issues:
-- Not all fields on xml page are filled, needs to get organizer content and event posters
+- None
  */
 
 package com.example.noram;
@@ -94,7 +94,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         updateSignUpText();
         hideSignedIn();
         // show feedback message
-        Toast.makeText(this, "Successfully unsigned!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sign in undone!", Toast.LENGTH_SHORT).show();
     }
 
     /**

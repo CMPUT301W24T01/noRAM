@@ -1,13 +1,14 @@
 /*
 This file is used to display the announcements for a specific event.
 Outstanding Issues:
--
+- None
  */
 
 package com.example.noram;
 
 import android.os.Bundle;
 import android.widget.ListView;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,9 +27,7 @@ import java.util.ArrayList;
  */
 public class AttendeeAnnouncementsActivity extends AppCompatActivity {
     private static final String eventIDLabel = "eventID";
-    private ArrayList<Notification> NotificationDataList;
-    private NotificationArrayAdapter NotificationAdapter;
-    private ListView NotificationList;
+    private Event event = new Event();
 
     /**
      * This method is called when the activity is created.
@@ -40,33 +39,35 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_announcements);
 
-        // retrieve corresponding event in database
-        int eventID = getIntent().getIntExtra(eventIDLabel,0);
+        // get eventIDLabel and also eventID from intent
+        String eventID = getIntent().getStringExtra(eventIDLabel);
+        assert eventID != null;
 
-        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
+        Log.d("event ID before db", eventID);
+
+        // get event from database and update with document snapshot to get notifications
+        MainActivity.db.getEventsRef().document(eventID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                // displayAnnouncements(event);
+                event.updateWithDocument(documentSnapshot);
+
+                Log.d("event notifications", String.valueOf(event.getNotifications()));
+
+                ListView notificationList = findViewById(R.id.notification_list);
+
+                ArrayList<Notification> notificationDataList = new ArrayList<>();
+
+                NotificationArrayAdapter notificationAdapter = new NotificationArrayAdapter(this, notificationDataList);
+
+                notificationList.setAdapter(notificationAdapter);
+
+                notificationDataList.addAll(event.getNotifications());
+
+                notificationAdapter.notifyDataSetChanged();
+
             }
         });
 
-        NotificationList = findViewById(R.id.notification_list);
+        findViewById(R.id.AttendeeAnnoucementsbackButton).setOnClickListener(v -> finish());
 
-        NotificationDataList = new ArrayList<>();
-        
-        NotificationAdapter = new NotificationArrayAdapter(this, NotificationDataList);
-
-        NotificationList.setAdapter(NotificationAdapter);
-
-        // get notifications from database for the given event by decomposing the event from the db and then calling get notifications on it
-
-        MainActivity.db.getEventsRef().document(String.valueOf(eventID)).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                assert event != null;
-                NotificationDataList.addAll(event.getNotifications());
-                NotificationAdapter.notifyDataSetChanged();
-            }
-        });
     }
 }

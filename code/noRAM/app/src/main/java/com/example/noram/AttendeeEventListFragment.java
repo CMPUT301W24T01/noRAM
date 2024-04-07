@@ -1,13 +1,12 @@
 /*
 This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
 Outstanding Issues:
-- UI needs to be cleaned up
-- When the searchbar is cleared, the "AllEvents" list is shown by default (no matter what list was
-being consulted)
+- None
  */
 
 package com.example.noram;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,17 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
+import com.example.noram.model.ListType;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -43,15 +43,18 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     private ListView searchEventList; // list of events' search results
     private ArrayList<Event> allEventDataList; // data list of all events
     private ArrayList<Event> userEventDataList; // data list of all user's events
+    private EventArrayAdapter allEventAdapter; // adapter for allEvent list
+    private EventArrayAdapter userEventAdapter; // adapter for userEvent list
 
-    EventArrayAdapter allEventAdapter; // adapter for allEvent list
-    EventArrayAdapter userEventAdapter; // adapter for userEvent list
+    private TextView noResults;
+    private TextView noEvents;
+    private Button myEventsButton;
+    private Button allEventsButton;
 
     /**
      * Required empty public constructor
      */
-    public AttendeeEventListFragment() {
-    }
+    public AttendeeEventListFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -75,6 +78,11 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         searchEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
+        if (searchEventDataList.isEmpty() && eventListRef != null && !eventListRef.isEmpty()) {
+            noResults.setVisibility(View.VISIBLE);
+        } else {
+            noResults.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -84,8 +92,14 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     @Override
     protected void hideSearchList(){
         searchEventList.setVisibility(View.INVISIBLE);
-        allEventList.setVisibility(View.VISIBLE);
-        userEventList.setVisibility(View.INVISIBLE);
+        if (listType == ListType.SPECIFIC) {
+            allEventList.setVisibility(View.INVISIBLE);
+            userEventList.setVisibility(View.VISIBLE);
+        } else {
+            allEventList.setVisibility(View.VISIBLE);
+            userEventList.setVisibility(View.INVISIBLE);
+        }
+        noResults.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -113,26 +127,58 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
      * Makes the user's personal events visible and hides the other lists
      */
     private void displayMyEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on myEvents list
-        setReferenceSearchList(userEventDataList);
+        setReferenceSearchList(userEventDataList, ListType.SPECIFIC);
         searchBox.setText("");
+
+        // change button backgrounds
+        myEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
+
         // afterward toggle visibility of lists
         userEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
+        if (userEventDataList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
      * Makes the list of all events visible and hides the other list
      */
     private void displayAllEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on allEvents list
-        setReferenceSearchList(allEventDataList);
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
         searchBox.setText("");
+
+        // change button backgrounds
+        myEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
+
         // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
         userEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
+        if (allEventDataList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -151,8 +197,10 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         View rootView = inflater.inflate(R.layout.fragment_attendee_event_list, container, false);
 
         // get all views and initialize variables
-        Button myEventsButton = rootView.findViewById(R.id.myEventsButton);
-        Button allEventsButton = rootView.findViewById(R.id.allEventsButton);
+        myEventsButton = rootView.findViewById(R.id.myEventsButton);
+        allEventsButton = rootView.findViewById(R.id.allEventsButton);
+        noResults = rootView.findViewById(R.id.attendeeEventsNoResults);
+        noEvents = rootView.findViewById(R.id.attendeeEventsNoEvents);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<>();
         userEventList = rootView.findViewById(R.id.userEventsList);
@@ -162,7 +210,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         searchEventList = rootView.findViewById(R.id.searchEventsList);
         setupSearch(searchEventList, rootView.findViewById(R.id.searchInput));
         // searches are by default on all events
-        setReferenceSearchList(allEventDataList);
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
@@ -171,8 +219,12 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         userEventList.setAdapter(userEventAdapter);
 
         // connect each button to corresponding function
-        myEventsButton.setOnClickListener(view -> displayMyEvents());
-        allEventsButton.setOnClickListener(view -> displayAllEvents());
+        myEventsButton.setOnClickListener(view -> {
+            displayMyEvents();
+        });
+        allEventsButton.setOnClickListener(view -> {
+            displayAllEvents();
+        });
 
         // connect the lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
@@ -223,6 +275,13 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
                 // update after both lists are changed
                 allEventAdapter.notifyDataSetChanged();
                 userEventAdapter.notifyDataSetChanged();
+
+                // Display the correct list
+                if (listType == ListType.SPECIFIC) {
+                    displayMyEvents();
+                } else {
+                    displayAllEvents();
+                }
             }
         });
 

@@ -62,27 +62,28 @@ public class AttendeeActivity extends AppCompatActivity implements GoToEventList
         headerText = findViewById(R.id.attendee_header_text);
         navBar = findViewById(R.id.bottom_nav);
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragment_container_view);
-        navBar.setSelectedItemId(NAV_SCAN);
-        activeFragment = qrFragment;
+        navBar.setSelectedItemId(NAV_EVENTS);
+        activeFragment = eventsFragment;
 
         // Set the attendee activity to this instance for use in other classes
         sn = this;
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, eventsFragment, "events")
-                .hide(eventsFragment)
-                .commit();
-        fragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, profileFragment, "profile")
                 .hide(profileFragment)
                 .commit();
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, qrFragment, "qr")
+                .hide(qrFragment)
+                .commit();
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container_view, eventsFragment, "events")
+                .show(eventsFragment)
                 .commit();
 
         // Set the initial header text
-        headerText.setText(R.string.scan_qr_code_title);
+        headerText.setText(R.string.attendee_events_title);
 
         // create button listener so home button goes back to main page.
         homeButton.setOnClickListener(v -> finish());

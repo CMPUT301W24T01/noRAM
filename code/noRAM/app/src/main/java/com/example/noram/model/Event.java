@@ -523,7 +523,12 @@ public class Event {
         this.setSignedUpAttendees((List<String>) doc.get("signedUpAttendees"));
         this.setSignUpLimit(doc.getLong("signUpLimit"));
         this.setLastMilestone(doc.getLong("lastMilestone"));
-        this.setNotifications((List<Notification>) doc.get("notifications"));
+        this.setNotifications(new ArrayList<>());
+        if (doc.get("notifications") != null) {
+            for (HashMap<String, String> notification : (List<HashMap<String, String>>) doc.get("notifications")) {
+                this.addNotification(new Notification(notification.get("title"), notification.get("content")));
+            }
+        }
     }
 
     /**
