@@ -90,4 +90,9 @@ dependencies {
     // HTTP requests
     implementation("com.android.volley:volley:1.2.1")
 
+    //Maps API
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    
+    //Location Google Play API
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }
