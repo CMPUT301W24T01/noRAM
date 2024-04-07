@@ -16,7 +16,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <application
+<application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

@@ -6,7 +6,7 @@
 
     <string name="organizer_fragment_event_list_header">Event List</string>
 
-    <string name="organizer_fragment_create_event_p1_header">Create Event - Part 1</string>
+    <string name="organizer_fragment_create_event_p1_header">Create Event</string>
     <string name="organizer_fragment_create_event_p1_upl_poster_button">Upload Event Poster</string>
     <string name="organizer_fragment_create_event_p1_name_hint">Event Name</string>
     <string name="organizer_fragment_create_event_p1_location_hint">Event Location</string>
@@ -31,7 +31,8 @@
     <string name="organizer_activity_edit_event_done_button">Done</string>
     <string name="organizer_activity_edit_event_cancel_button">Cancel</string>
     <string name="organizer_activity_edit_event_apply_button">Apply</string>
-
+    <string name="organizer_profile_update_success">Changes saved</string>
+    <string name="organizer_profile_update_cancel">Changes cancelled</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attendee_profile">Attendee profile</string>
     <string name="event_list">Event List</string>
@@ -94,7 +95,7 @@
     <string name="main_menu_attend">Attend Event</string>
     <string name="main_menu_organize">Organize Event</string>
     <string name="event_poster_title">Below are some events you might enjoy:</string>
-    <string name="unsign_button">Unsign</string>
+    <string name="unsign_button">Undo Sign Up</string>
     <string name="total_current_nattendees_n0">Total Current \nAttendees:\n0</string>
     <string name="all_time_nattendees_n0">All Time \nAttendees:\n0</string>
     <string name="all_time_nsignups_n0">All Time \nSignups:\n0</string>
@@ -108,4 +109,9 @@
     <string name="past_events">Past Events</string>
     <string name="welcome_to_noram_events">Welcome to noRAM Events!</string>
     <string name="no_events_to_show_why_not_make_one">No events to show... why not make one?</string>
+    <string name="no_results_found">No results found</string>
+    <string name="there_s_no_events_here">There\'s no events here</string>
+    <string name="list_of_attendees">List of Attendees</string>
+    <string name="content_text">Content</string>
+    <string name="no_announcements_yet">No announcements yet</string>
 </resources>

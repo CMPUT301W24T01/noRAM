@@ -2,7 +2,7 @@
 This file is used to provide a template for displaying event information, that other activities
 can use.
 Outstanding Issues:
-- The activity assumes the IDs of the recurrent views on the XML page
+- None
  */
 
 package com.example.noram;

@@ -23,11 +23,13 @@ public class OrganizerUnitTest {
         String id = "id";
         String photoPath = "myPhoto";
         String name = "John John";
-        Organizer organizer = new Organizer(id, name, photoPath);
+        boolean usingAttendeeProfilePicture = false;
+        Organizer organizer = new Organizer(id, name, photoPath, usingAttendeeProfilePicture);
 
         assertEquals(organizer.getIdentifier(), id);
         assertEquals(organizer.getName(), name);
         assertEquals(organizer.getPhotoPath(), photoPath);
+        assertEquals(organizer.isUsingAttendeeProfilePicture(), usingAttendeeProfilePicture);
     }
 
     /**

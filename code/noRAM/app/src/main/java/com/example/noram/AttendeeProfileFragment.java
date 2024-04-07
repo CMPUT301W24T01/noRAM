@@ -1,15 +1,17 @@
 /*
 This file is used to display the attendee's profile information and allow for editing.
 Outstanding Issues:
-- The attendee's information is not saved to the database.
-- The attendee's profile picture is not the correct type.
-- Need to move attendee validation logic out of this class
+- None
  */
 
 package com.example.noram;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,14 +25,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
+import com.example.noram.model.ProfilePhotoGenerator;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import android.content.Context;
 
 /**
  * A {@link Fragment} subclass.
@@ -42,7 +49,7 @@ import com.google.firebase.storage.StorageReference;
  * @author Cole
  * @author Sandra
  */
-public class AttendeeProfileFragment extends Fragment{
+public class AttendeeProfileFragment extends Fragment {
     private ImageView imageView;
     private FloatingActionButton addPhoto;
     private FloatingActionButton deletePhoto;
@@ -122,6 +129,22 @@ public class AttendeeProfileFragment extends Fragment{
             deletePhoto.setVisibility(View.INVISIBLE);
         }
 
+        /**
+         * Only check for location permissions if user goes from unchecked to checked
+         */
+        if (!allowLocation.isChecked()) {
+            allowLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!hasLocationPermissions()) {
+                        allowLocation.setChecked(false);
+                        Toast.makeText(getContext(), "Please allow location tracking to track check-in locations.", Toast.LENGTH_SHORT).show();
+                        requestLocationPermission();
+                    }
+                }
+            });
+        }
+
         // update the profile photo icon
         MainActivity.db.downloadPhoto(attendee.getProfilePhotoString(),
                 t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
@@ -150,9 +173,9 @@ public class AttendeeProfileFragment extends Fragment{
                 attendee.setAllowLocation(editAllowLocation);
 
                 if (attendee.getDefaultProfilePhoto()) {
-                    attendee.generateAndReturnDefaultProfilePhoto(t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                    new ProfilePhotoGenerator().generateAndReturnDefaultProfilePhoto(attendee, t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
                 } else {
-                    attendee.generateDefaultProfilePhoto();
+                    new ProfilePhotoGenerator().generateDefaultProfilePhoto(attendee);
                 }
                 Toast.makeText(getActivity(), "Changes saved!", Toast.LENGTH_SHORT).show();
             } else {
@@ -194,8 +217,6 @@ public class AttendeeProfileFragment extends Fragment{
                 .show();
     }
 
-    // TODO: make sure the most recent default profile shows up if the user changes their name while
-    //  using a real picture then deletes it. This is a minor issue, but it would be nice to fix.
     /**
      * Button listener to delete a photo. Removes the photo from the cloud storage and replaces
      * it with the default profile photo
@@ -275,5 +296,33 @@ public class AttendeeProfileFragment extends Fragment{
         homePage.setText(attendee.getHomePage());
         email.setText(attendee.getEmail());
         allowLocation.setChecked(attendee.getAllowLocation());
+    }
+
+    /**
+     * Confirms if the app has access to the user location
+     */
+    private boolean hasLocationPermissions() {
+        return (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+    }
+
+    /**
+     * Asks the user to allow location tracking
+     */
+    public void requestLocationPermission(){
+        //Note, the thrid invokation of the method, after two denies, does not pop up.
+        String fineLocation = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        String coarseLocation = Manifest.permission.ACCESS_FINE_LOCATION;
+        // Initialize an ArrayList to hold the permissions
+        ArrayList<String> permissionsList = new ArrayList<>();
+        // Add the permission to the ArrayList
+        permissionsList.add(fineLocation);
+        // Add the permission to the ArrayList
+        permissionsList.add(coarseLocation);
+        // Convert the ArrayList to an array
+        String[] permissions = permissionsList.toArray(new String[permissionsList.size()]);
+        // Request permissions, 99 requestCode doesn't mean anything
+        ActivityCompat.requestPermissions(getActivity(), permissions, 99);
+        //stackOverflow used as reference https://stackoverflow.com/questions/40142331/how-to-request-location-permission-at-runtime
     }
 }

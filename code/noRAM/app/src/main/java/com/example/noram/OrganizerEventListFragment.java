@@ -7,18 +7,23 @@ being consulted)
 
 package com.example.noram;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.Event;
+import com.example.noram.model.ListType;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -41,6 +46,10 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
     private ListView pastEventList;
     private ArrayList<Event> pastEventDataList;
     private EventArrayAdapter pastEventAdapter;
+    private TextView noResults;
+    private TextView noEvents;
+    private Button allEventsButton;
+    private Button pastEventsButton;
 
     /**
      * Default constructor
@@ -53,7 +62,6 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
      *
      * @return A new instance of fragment OrganizerEventListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static OrganizerEventListFragment newInstance() {
         OrganizerEventListFragment fragment = new OrganizerEventListFragment();
         Bundle args = new Bundle();
@@ -91,6 +99,11 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
         searchEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         pastEventList.setVisibility(View.INVISIBLE);
+        if (searchEventDataList.isEmpty() && eventListRef != null && !eventListRef.isEmpty()) {
+            noResults.setVisibility(View.VISIBLE);
+        } else {
+            noResults.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -100,33 +113,72 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
     @Override
     protected void hideSearchList(){
         searchEventList.setVisibility(View.INVISIBLE);
-        allEventList.setVisibility(View.VISIBLE); // show all events by default
-        pastEventList.setVisibility(View.INVISIBLE);
+        if (listType == ListType.SPECIFIC) {
+            allEventList.setVisibility(View.INVISIBLE);
+            pastEventList.setVisibility(View.VISIBLE);
+        } else {
+            allEventList.setVisibility(View.VISIBLE);
+            pastEventList.setVisibility(View.INVISIBLE);
+        }
+        noResults.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Makes all-events list visible and hides the other lists
      */
     private void displayAllEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on allEvents list
-        setReferenceSearchList(allEventDataList);
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
         searchBox.setText("");
+
+        // change button backgrounds
+        pastEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
+
         // afterward toggle visibility of lists
         allEventList.setVisibility(View.VISIBLE);
         pastEventList.setVisibility(View.INVISIBLE);
-        searchEventList.setVisibility(View.INVISIBLE);}
+        searchEventList.setVisibility(View.INVISIBLE);
+        if (allEventDataList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.INVISIBLE);
+        }
+    }
 
     /**
      * Makes the list of past events visible and hides the other list
      */
     private void displayPastEvents(){
+        // make sure context is not null
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+
         // clear search bar and makes searches happen on pastEvent list
-        setReferenceSearchList(pastEventDataList);
+        setReferenceSearchList(pastEventDataList, ListType.SPECIFIC);
         searchBox.setText("");
+
+        // change button backgrounds
+        pastEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_button_background));
+        allEventsButton.setBackground(ContextCompat.getDrawable(context, R.drawable.button_background));
+
         // afterward toggle visibility of lists
         pastEventList.setVisibility(View.VISIBLE);
         allEventList.setVisibility(View.INVISIBLE);
         searchEventList.setVisibility(View.INVISIBLE);
+        if (pastEventDataList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -148,10 +200,20 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
         View rootView =  inflater.inflate(R.layout.fragment_organizer_event_list, container, false);
 
         // get all views and initialize variables
+        allEventsButton = rootView.findViewById(R.id.allEventsButton);
+        pastEventsButton = rootView.findViewById(R.id.pastEventsButton);
+        noResults = rootView.findViewById(R.id.organizerEventsNoResults);
+        noEvents = rootView.findViewById(R.id.organizerEventsNoEvents);
         allEventList = rootView.findViewById(R.id.allEventsList);
         allEventDataList = new ArrayList<>();
         pastEventList = rootView.findViewById(R.id.pastEventsList);
         pastEventDataList = new ArrayList<>();
+
+        // setup the search list
+
+        setupSearch(rootView.findViewById(R.id.searchEventsList), rootView.findViewById(R.id.searchInput));
+        // searches are by default on all events
+        setReferenceSearchList(allEventDataList, ListType.GENERAL);
 
         // connect list to their adapters
         allEventAdapter = new EventArrayAdapter(this.getContext(), allEventDataList);
@@ -170,8 +232,8 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
         });
 
         // connect each button to corresponding function
-        rootView.findViewById(R.id.allEventsButton).setOnClickListener(view -> displayAllEvents());
-        rootView.findViewById(R.id.pastEventsButton).setOnClickListener(view -> displayPastEvents());
+        allEventsButton.setOnClickListener(view -> displayAllEvents());
+        pastEventsButton.setOnClickListener(view -> displayPastEvents());
 
         // connect database to lists
         eventRef.whereEqualTo("organizerID", MainActivity.organizer.getIdentifier())
@@ -207,17 +269,29 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
                         // update
                         allEventAdapter.notifyDataSetChanged();
                         pastEventAdapter.notifyDataSetChanged();
+
+                        // Display the correct list
+                        if (listType == ListType.SPECIFIC) {
+                            displayPastEvents();
+                        } else {
+                            displayAllEvents();
+                        }
                     }
                 });
 
-        // setup the search list
-        setupSearch(
-                rootView.findViewById(R.id.searchEventsList), rootView.findViewById(R.id.searchInput)
-        );
-        // searches are by default on all events
-        setReferenceSearchList(allEventDataList);
-
-
         return rootView;
+    }
+
+    /**
+     * Resume to correct list type
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (listType == ListType.SPECIFIC) {
+            displayPastEvents();
+        } else {
+            displayAllEvents();
+        }
     }
 }

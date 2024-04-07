@@ -4,11 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:src="@drawable/event_list_rectangle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,8 +24,9 @@
         android:id="@+id/attendee_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="5dp"
         android:text="Attendee Name"
         android:textSize="30sp"
         app:layout_constraintEnd_toStartOf="@+id/attendee_photo"
@@ -32,50 +38,55 @@
         android:id="@+id/attendee_photo"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginEnd="12dp"
         android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/attendee_name"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
         tools:srcCompat="@drawable/qr_background_gradient" />
 
     <TextView
         android:id="@+id/attendee_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:drawablePadding="5dp"
+        android:padding="5dp"
         android:text="Attendee ID"
         android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:drawableStartCompat="@drawable/outline_grid_3x3_24"
         app:layout_constraintEnd_toStartOf="@+id/attendee_photo"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_name"
         app:layout_constraintHorizontal_bias="0"
-        app:drawableStartCompat="@drawable/outline_grid_3x3_24" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attendee_name" />
 
     <TextView
         android:id="@+id/attendee_homepage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawablePadding="5dp"
         android:padding="5dp"
         android:text="Attendee Homepage"
         android:textSize="15sp"
-        android:layout_marginStart="8dp"
-        android:drawablePadding="5dp"
+        app:drawableStartCompat="@drawable/admin_home_outline_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_id"
-        app:drawableStartCompat="@drawable/admin_home_outline_24"/>
+        app:layout_constraintTop_toBottomOf="@+id/attendee_id" />
 
     <TextView
         android:id="@+id/attendee_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:drawablePadding="5dp"
+        android:padding="5dp"
         android:text="Attendee Email Address"
         android:textSize="15sp"
+        app:drawableStartCompat="@drawable/outline_alternate_email_24"
+        app:layout_constraintBottom_toBottomOf="@id/imageView3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_homepage"
-        app:drawableStartCompat="@drawable/outline_alternate_email_24" />
+        app:layout_constraintTop_toBottomOf="@+id/attendee_homepage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

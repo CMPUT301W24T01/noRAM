@@ -9,13 +9,13 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#AD96FF"
+        android:background="@color/main_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/backButton"
+        android:id="@+id/AttendeeAnnoucementsbackButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="#00FF0808"
@@ -41,6 +41,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topBar" />
 
+    <TextView
+        android:id="@+id/no_announcements_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_announcements_yet"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ListView
         android:id="@+id/notification_list"
         android:layout_width="0dp"
@@ -48,9 +61,12 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:listSelector="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/eventTitle">
+
+    </ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

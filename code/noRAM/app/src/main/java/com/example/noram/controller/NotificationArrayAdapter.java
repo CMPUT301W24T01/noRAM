@@ -7,6 +7,7 @@ Outstanding Issues:
 package com.example.noram.controller;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -63,6 +64,9 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
 
         TextView notificationTitle = view.findViewById(R.id.notification_title_text);
         TextView notificationContent = view.findViewById(R.id.notification_content_text);
+
+        Log.d("NotificationArrayAdapter", "Notification Title: " + notification.getTitle());
+        Log.d("NotificationArrayAdapter", "Notification Content: " + notification.getContent());
 
         notificationTitle.setText(notification.getTitle());
         notificationContent.setText(notification.getContent());

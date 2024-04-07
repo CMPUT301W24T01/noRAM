@@ -2,12 +2,8 @@
 This file is used to create the Admin's Images section fragment, where all the app's images are
 listed
 Outstanding Issues:
-- A default template image is used while waiting for database's images to load. This image could be
-replaced with something more fitting
 - Images listed are not updated in real-time, meaning that the activity needs to be refreshed in
 order to see recent changes in the database's storage.
-- The fragment shows only all the images in the event_banners/ and profile_photos/ folders of the
-database's storage. This also means that "maintenance image" (ex: cupcake-01.jpg) are shown.
  */
 
 package com.example.noram;
@@ -124,7 +120,7 @@ public class AdminImagesFragment extends Fragment {
         imagesAdapter.notifyDataSetChanged();
 
 
-        // connection each list element to show the 'delete' popup TODO: implement the delete function
+        // connection each list element to show the 'delete' popup
         imagesGrid.setOnItemClickListener((parent, view, position, id) -> {
             // initialize popup
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

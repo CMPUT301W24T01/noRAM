@@ -8,12 +8,26 @@ package com.example.noram.model;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import com.example.noram.AttendeeActivity;
 import com.example.noram.MainActivity;
+import com.example.noram.R;
+import com.google.firebase.messaging.CommonNotificationBuilder;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -21,10 +35,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -48,7 +64,9 @@ public class PushNotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        if (MainActivity.attendee != null) { MainActivity.attendee.setFCMToken(token); }
+        if (MainActivity.attendee != null) {
+            MainActivity.attendee.setFCMToken(token);
+        }
     }
 
     /**
@@ -65,13 +83,13 @@ public class PushNotificationService extends FirebaseMessagingService {
         // Change to the UI Thread
         MainActivity.mn.runOnUiThread(() -> {
             // Display the notification with an alert dialog
+
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mn);
             builder.setTitle(remoteMessage.getNotification().getTitle());
             builder.setMessage(remoteMessage.getNotification().getBody());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
-
     }
 
     /**

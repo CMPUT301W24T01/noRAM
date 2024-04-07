@@ -1,7 +1,7 @@
 /*
 This file is used to display the information about an event. Depending on event's data, the layout page will change.
 Outstanding Issues:
-- Not all fields on xml page are filled, needs to get organizer content and event posters
+- None
  */
 
 package com.example.noram;
@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,15 +59,6 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
      * Signup the user to current event in the database and display a message through a new activity
      */
     private void signup(){
-        // TODO: update database to add signed-in attendees to event
-        // TODO: send to message page: should send to signed-in page instead of checked-in page
-        // sign-in the event and display sign-in message
-        EventManager.checkInToEvent(event.getId(), null);
-        Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
-        // load new page (signed-in event)
-        EventManager.displayCheckedInEvent(this, event);
-        // remove old page
-        finish();
         // Check sign-up limit
         if (!event.isLimitedSignUps() || event.getSignUpCount() < event.getSignUpLimit()) {
             // sign-up to the event and display sign-up message
@@ -94,7 +86,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         updateSignUpText();
         hideSignedIn();
         // show feedback message
-        Toast.makeText(this, "Successfully unsigned!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sign in undone!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -105,7 +97,7 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         setContentView(R.layout.attendee_checkedin_event_info);
 
         // connect announcements button
-        TextView announcements = findViewById(R.id.announcementText);
+        ImageButton announcements = findViewById(R.id.announcementImage);
         announcements.setOnClickListener(new View.OnClickListener() {
 
             /**
