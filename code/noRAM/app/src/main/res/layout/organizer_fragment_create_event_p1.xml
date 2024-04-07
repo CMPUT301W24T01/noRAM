@@ -37,17 +37,15 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="10sp"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="10dp"
                 android:textColorHint="@color/hint_color"
-                android:minEms="10"
-                android:maxEms="10"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/location_picker_button"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -63,13 +61,12 @@
                 android:id="@+id/location_picker_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:layout_constraintBottom_toBottomOf="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
-                app:layout_constraintEnd_toEndOf="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
-                app:layout_constraintTop_toTopOf="@+id/organizer_fragment_create_event_p1_edit_location_text_layout"
-                app:srcCompat="@drawable/pin_drop_24px" />
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/map_48px" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -20,6 +20,8 @@ import com.example.noram.model.Event;
 import com.example.noram.model.QRCode;
 import com.example.noram.model.QRType;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -62,6 +64,15 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             ? new QRCode(eventID + "-event", eventID.toString(), QRType.SIGN_IN)
             : new QRCode(checkinQRData, eventID.toString(), QRType.SIGN_IN);
 
+        double lon = eventBundle.getDouble("lon");
+        double lat = eventBundle.getDouble("lat");
+        boolean locationHasCoords = eventBundle.getBoolean("locationIsRealLocation");
+        GeoPoint eventCoords;
+        if (locationHasCoords) {
+            eventCoords = new GeoPoint(lat, lon);
+        } else {
+            eventCoords = null;
+        }
         event = new Event(
             eventID.toString(),
             eventBundle.getString("name"),
@@ -83,7 +94,8 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             new ArrayList<>(),
             eventBundle.getLong("lastMilestone"),
             //notifications
-            new ArrayList<>()
+            new ArrayList<>(),
+            eventCoords
         );
         event.updateDBEvent();
         promoQRCode.updateDBQRCode();
