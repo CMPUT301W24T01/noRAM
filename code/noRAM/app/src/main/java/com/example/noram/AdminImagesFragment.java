@@ -124,7 +124,7 @@ public class AdminImagesFragment extends Fragment {
         imagesAdapter.notifyDataSetChanged();
 
 
-        // connection each list element to show the 'delete' popup TODO: implement the delete function
+        // connection each list element to show the 'delete' popup
         imagesGrid.setOnItemClickListener((parent, view, position, id) -> {
             // initialize popup
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

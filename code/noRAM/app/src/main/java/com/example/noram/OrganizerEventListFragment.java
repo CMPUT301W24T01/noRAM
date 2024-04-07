@@ -62,7 +62,6 @@ public class OrganizerEventListFragment extends EventListFragmentTemplate {
      *
      * @return A new instance of fragment OrganizerEventListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static OrganizerEventListFragment newInstance() {
         OrganizerEventListFragment fragment = new OrganizerEventListFragment();
         Bundle args = new Bundle();

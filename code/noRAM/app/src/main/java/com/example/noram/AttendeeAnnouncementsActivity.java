@@ -7,8 +7,9 @@ Outstanding Issues:
 package com.example.noram;
 
 import android.os.Bundle;
-import android.widget.ListView;
 import android.util.Log;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -64,10 +65,15 @@ public class AttendeeAnnouncementsActivity extends AppCompatActivity {
 
                 notificationAdapter.notifyDataSetChanged();
 
+                TextView noAnnouncements = findViewById(R.id.no_announcements_text);
+                if (notificationDataList.isEmpty()){
+                    noAnnouncements.setVisibility(TextView.VISIBLE);
+                } else {
+                    noAnnouncements.setVisibility(TextView.GONE);
+                }
             }
         });
 
         findViewById(R.id.AttendeeAnnoucementsbackButton).setOnClickListener(v -> finish());
-
     }
 }
