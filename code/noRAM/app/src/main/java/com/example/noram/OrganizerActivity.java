@@ -94,7 +94,7 @@ public class OrganizerActivity extends AppCompatActivity {
                     headerText = R.string.organizer_fragment_event_list_header;
                 } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
-                    headerText = R.string.organizer_fragment_profile_header;
+                    headerText = R.string.dashboard;
                 }
                 else {
                     return false;
