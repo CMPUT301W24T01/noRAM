@@ -73,11 +73,16 @@ public class AddEventCompleteActivity extends AppCompatActivity {
             checkInQRCode.getHashId(),
             promoQRCode.getHashId(),
             eventBundle.getBoolean("trackLocation"),
+            //checkedInAttendees
             new ArrayList<>(),
             MainActivity.organizer.getIdentifier(),
+            //signedUpAttendees
             new ArrayList<>(),
             eventBundle.getLong("signUpLimit"),
+            //checkedInAttendeesLocations
+            new ArrayList<>(),
             eventBundle.getLong("lastMilestone"),
+            //notifications
             new ArrayList<>()
         );
         event.updateDBEvent();

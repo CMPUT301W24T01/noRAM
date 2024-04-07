@@ -6,19 +6,31 @@ Outstanding Issues:
 
 package com.example.noram.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
+import com.example.noram.R;
 import com.example.noram.OrganizerEventInfoActivity;
 import com.example.noram.model.Event;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import org.osmdroid.util.GeoPoint;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -35,16 +47,38 @@ public class EventManager {
     // Identifier for event's checked-in status
     public static final String checkedInLabel = "checkedIn";
 
-
     /**
-     * Check-in the current user to the event given by eventID
+     * Check-in the current user to the event given by eventID into the db
      * @param eventId ID string of the event
+     * @param userLocation the location of the user if they allowed location-tracking at the time
+     * of check-in
      */
-    public static void checkInToEvent(String eventId) {
+    @SuppressLint("MissingPermission")
+    public static void checkInToEvent(String eventId, Location userLocation) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
         MainActivity.attendee.getEventsCheckedInto().add(eventId);
         MainActivity.attendee.updateDBAttendee();
-
+        GeoPoint point;
+        //if the user allowed location tracking, also add it to the db
+        if (userLocation != null ) {
+            //unpack the location
+            Double latitude = userLocation.getLatitude();
+            Double longitude = userLocation.getLongitude();
+            // create a new GeoPoint for the db
+            point = new GeoPoint(latitude, longitude);
+            //add GeoPoint on the transaction
+            MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
+                DocumentSnapshot snapshot = transaction.get(eventRef);
+                //add GeoPoint to checkedInAttendeeLocations
+                List<GeoPoint> checkedInAttendeesLocations =
+                        (List<GeoPoint>) snapshot.get("checkedInAttendeesLocations");
+                checkedInAttendeesLocations.add(point);
+                transaction.update(eventRef, "checkedInAttendeesLocations",
+                        checkedInAttendeesLocations);
+                return null;
+            });
+        }
+        //if user location is null, we only update checkedInAttendees
         // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);

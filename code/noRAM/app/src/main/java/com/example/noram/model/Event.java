@@ -6,11 +6,18 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
+import android.location.Location;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.example.noram.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+import org.osmdroid.util.GeoPoint;
+
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -46,6 +53,7 @@ public class Event {
     private List<String> checkedInAttendees;
     private List<String> signedUpAttendees;
     private Long signUpLimit;
+    private List<GeoPoint> checkedInAttendeesLocations;
     private Long lastMilestone;
     private List<Notification> notifications;
 
@@ -94,6 +102,7 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = new ArrayList<>();
         this.signUpLimit = signUpLimit;
+        this.checkedInAttendeesLocations = new ArrayList<>();
         this.lastMilestone = lastMilestone;
         this.notifications = new ArrayList<>();
     }
@@ -114,6 +123,7 @@ public class Event {
      * @param organizerId the id of the organizer who created the event
      * @param signedUpAttendees list of signed up attendees
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
+     * @param checkedInAttendeesLocations list of attendee locations
      * @param lastMilestone the last milestone that was achieved
      * @param notifications list of notifications
      */
@@ -132,6 +142,7 @@ public class Event {
             String organizerId,
             List<String> signedUpAttendees,
             Long signUpLimit,
+            List<GeoPoint> checkedInAttendeesLocations,
             Long lastMilestone,
             List<Notification> notifications) {
         this.id = id;
@@ -148,8 +159,10 @@ public class Event {
         this.organizerId = organizerId;
         this.signedUpAttendees = signedUpAttendees;
         this.signUpLimit = signUpLimit;
+        this.checkedInAttendeesLocations = checkedInAttendeesLocations;
         this.lastMilestone = lastMilestone;
         this.notifications = notifications;
+
     }
 
     // Getters
@@ -346,6 +359,21 @@ public class Event {
     public void setCheckedInAttendees(List<String> checkedInAttendees) {
         this.checkedInAttendees = checkedInAttendees;
     }
+    /**
+     * Get the list of checked in attendees locations
+     * @return list of attendee locations
+     */
+    public List<GeoPoint> getCheckedInAttendeesLocations() {
+        return checkedInAttendeesLocations;
+    }
+
+    /**
+     * Set the list of checked in attendees locations
+     * @param checkedInAttendeesLocations new list of checked in attendees locations
+     */
+    public void setCheckedInAttendeesLocations(List<GeoPoint> checkedInAttendeesLocations) {
+        this.checkedInAttendeesLocations  = checkedInAttendeesLocations;
+    }
 
     /**
      * Get the ID of the organizer associated with the event
@@ -461,6 +489,7 @@ public class Event {
         data.put("promoQRID", promoQRID);
         data.put("trackLocation", trackLocation);
         data.put("checkedInAttendees", checkedInAttendees);
+        data.put("checkedInAttendeesLocations", checkedInAttendeesLocations);
         data.put("organizerID", organizerId);
         data.put("signedUpAttendees", signedUpAttendees);
         data.put("signUpLimit", signUpLimit);
@@ -481,6 +510,11 @@ public class Event {
         this.setTrackLocation(Boolean.TRUE.equals(doc.getBoolean("trackLocation")));
         this.setStartTime(LocalDateTime.parse(doc.getString("startTime"), formatter));
         this.setEndTime(LocalDateTime.parse(doc.getString("endTime"), formatter));
+        this.setCheckedInAttendees((List<String>) doc.get("checkedInAttendees"));
+        //grab checkedInAttendeesLocations from db
+        List<HashMap<String, Object>> geoData = (List<HashMap<String, Object>>) doc.get("checkedInAttendeesLocations");
+        //then use parseGeopointListFromDatabase() before setting the event attribute
+        this.setCheckedInAttendeesLocations(parseGeopointListFromDatabase(geoData));
         this.setMilestones((ArrayList<Integer>) doc.get("milestones"));
         this.setPromoQRID(doc.getString("promoQRID"));
         this.setCheckInQRID(doc.getString("checkInQRID"));
@@ -498,6 +532,27 @@ public class Event {
      */
     public void addNotification(Notification notification) {
         notifications.add(notification);
+    }
+
+    /**
+     * Parses the list of hashmaps firestore provides for attendee locations into a list of GeoPoint
+     * objects
+     * @author Cole
+     * @param databaseInfo data from firestore
+     * @return parsed list of geopoints
+     */
+    private List<GeoPoint> parseGeopointListFromDatabase(List<HashMap<String,Object>> databaseInfo) {
+        ArrayList<GeoPoint> geopointList = new ArrayList<>();
+        //on first download from db, this list is null?
+        if (databaseInfo != null){
+            for (HashMap<String, Object> entry : databaseInfo) {
+                double latitude = (double) entry.get("latitude");
+                double longitude = (double) entry.get("longitude");
+                GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                geopointList.add(geoPoint);
+            }
+        }
+        return geopointList;
     }
 
     /**

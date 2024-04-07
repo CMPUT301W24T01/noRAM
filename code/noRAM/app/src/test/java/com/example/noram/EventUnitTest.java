@@ -21,6 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedConstruction;
+import org.osmdroid.util.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -134,9 +135,11 @@ public class EventUnitTest {
             List<String> signedUp = new ArrayList<>(Arrays.asList("a", "b"));
             Long signUpLimit = 1200L;
             String organizerId = "organizerId";
+            GeoPoint first = new GeoPoint(5.0, 7.0);
+            List<GeoPoint> checkedInAttendeesLocations = new ArrayList<>(Arrays.asList(first, first));
             Long lastMilestone = -1L;
             List<Notification> notificationList = new ArrayList<>();
-            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, lastMilestone, notificationList);
+            Event event = new Event(id, name, location, startTime, endTime, details, milestones, checkInQR.getHashId(), promoQR.getHashId(), trackLocation, checkedIn, organizerId, signedUp, signUpLimit, checkedInAttendeesLocations, lastMilestone, notificationList);
 
             assertEquals(event.getId(), id);
             assertEquals(event.getName(), name);
@@ -154,6 +157,7 @@ public class EventUnitTest {
             assertEquals(event.getSignUpLimit(), signUpLimit);
             assertEquals(event.getCheckedInAttendees(), checkedIn);
             assertEquals(event.getSignedUpAttendees(), signedUp);
+            assertEquals(event.getCheckedInAttendeesLocations(), checkedInAttendeesLocations);
             assertEquals(event.getLastMilestone(), lastMilestone);
             assertEquals(event.getNotifications(), notificationList);
         }

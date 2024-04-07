@@ -60,6 +60,13 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
     private void signup(){
         // TODO: update database to add signed-in attendees to event
         // TODO: send to message page: should send to signed-in page instead of checked-in page
+        // sign-in the event and display sign-in message
+        EventManager.checkInToEvent(event.getId(), null);
+        Toast.makeText(this, "Successfully checked in!", Toast.LENGTH_SHORT).show();
+        // load new page (signed-in event)
+        EventManager.displayCheckedInEvent(this, event);
+        // remove old page
+        finish();
         // Check sign-up limit
         if (!event.isLimitedSignUps() || event.getSignUpCount() < event.getSignUpLimit()) {
             // sign-up to the event and display sign-up message
@@ -177,7 +184,6 @@ public class AttendeeEventInfoActivity extends EventInfoActivityTemplate {
         // retrieve corresponding event in database, then load page
         String eventID = getIntent().getExtras().getString(EventManager.eventIDLabel);
         assert eventID != null;
-
         initializePage(eventID);
     }
 
