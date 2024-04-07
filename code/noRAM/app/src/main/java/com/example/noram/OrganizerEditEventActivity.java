@@ -1,17 +1,26 @@
 /*
 This file is used to edit the event details for the organizer and update the event in the database.
 Outstanding Issues:
-- Download photo from cloud storage to preview event poster
+None
  */
 
 package com.example.noram;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.content.Intent;
 
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,13 +28,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 
 import com.example.noram.model.Event;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +55,7 @@ import java.util.stream.Stream;
  * @see TimePickerFragment
  * @maintainer Carlin
  * @author Carlin
+ * @author Sandra
  * @maintainer Carlin
  */
 public class OrganizerEditEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
@@ -68,10 +82,14 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private AppCompatButton editEndDateTime;
     private TextView editDetails;
     private TextView editMilestones;
-    private AppCompatButton uploadPosterButton;
     private CheckBox trackLocationCheck;
     private TextView editLimitSignUps;
     private CheckBox limitSignUpsCheck;
+    private FloatingActionButton addPhoto;
+    private FloatingActionButton deletePhoto;
+    private ImageView imageView;
+    private Uri imageUri;
+    private String eventID;
 
     // Main behaviour
     /**
@@ -172,10 +190,30 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         editEndDateTime = findViewById(R.id.organizer_activity_edit_event_edit_endDateTime_button);
         editDetails = findViewById(R.id.organizer_activity_edit_event_edit_details_text);
         editMilestones  = findViewById(R.id.organizer_activity_edit_event_edit_milestones_text);
-        uploadPosterButton = findViewById(R.id.organizer_activity_edit_event_edit_upload_poster_button);
         trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
         limitSignUpsCheck = findViewById(R.id.organizer_activity_edit_event_edit_limitSignUps_check);
         editLimitSignUps = findViewById(R.id.organizer_activity_edit_event_signUpLimit_text);
+        imageView = findViewById(R.id.image_view);
+        deletePhoto = findViewById(R.id.delete_photo);
+        addPhoto = findViewById(R.id.add_photo);
+
+        //populate the imageview onCreate
+        eventID = intent.getExtras().getString("event");
+        String eventImagePath = "event_banners/"+eventID+"-upload";
+        //if the db pulls an image
+        if (eventImagePath != null) {
+            //set the imageBitmap of the view
+            deletePhoto.setVisibility(View.VISIBLE);
+            imageView.setBackground(null);
+            MainActivity.db.downloadPhoto(eventImagePath,
+                    t -> runOnUiThread(() -> {
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setImageBitmap(t);
+                    }));
+        }else{
+            //remove the delete button if there is not a photo
+            deletePhoto.setVisibility(View.INVISIBLE);
+        }
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -305,19 +343,111 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             }
         });
 
-        // TODO: implement poster upload
-
-        uploadPosterButton.setOnClickListener(new View.OnClickListener() {
+        //set on click listener to add photo when pressed
+        addPhoto.setOnClickListener(new View.OnClickListener() {
             /**
-             * On-click listener for poster upload button
+             * On-click listener for addPhoto button
+             * Calls startImagePicker
              * @param v The view that was clicked.
              */
             @Override
             public void onClick(View v) {
-
+                startImagePicker();
             }
         });
+        //set on click listener to delete photo when pressed
+        deletePhoto.setOnClickListener(new View.OnClickListener() {
+            /**
+             * On-click listener for deletePhoto button
+             * Calls showDeletePhotoConfirmation()
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                showDeletePhotoConfirmation();
+            }
+        });
+    }
 
+    /**
+     * Starts the imagepicker activity
+     */
+    private void startImagePicker() {
+        //From Dhaval2404/ImagePicker GitHub accessed Feb 23 2024 by Sandra
+        //https://www.youtube.com/watch?v=v6YvUxpgSYQ
+        ImagePicker.with(OrganizerEditEventActivity.this)
+                .crop()                                 // Crop image(Optional), Check Customization for more option
+                .compress(1024)                 // Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+    }
+
+    /**
+     * Shows a confirmation when a user clicks the delete photo button.
+     */
+    private void showDeletePhotoConfirmation() {
+        // show a confirmation dialog
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete your photo?")
+                .setPositiveButton("Confirm", (dialog, which) -> deletePhoto())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
+     * Button listener to delete a photo. Removes the photo from the imageView, sets uri to null,
+     * and sets the default photo to grey.
+     */
+    private void deletePhoto(){
+        //delete the photo from the db. Get the photo location
+        String deletePhotoStr = "event_banners/"+eventID+"-upload";
+        //delete the photo
+        StorageReference storageReference = MainActivity.db.getStorage().getReference().child(deletePhotoStr);
+        storageReference.delete().addOnSuccessListener(
+                unused -> Log.d("Firebase", "AdminPhoto successfully deleted!")
+        ).addOnFailureListener(
+                e -> Log.d("Firebase", "AdminPhoto unsuccessfully deleted!")
+        );
+
+        imageUri = null;
+        //remove the image preview in the view
+        imageView.setImageBitmap(null);
+        //put the background image back
+        Drawable myIcon = getDrawable(R.drawable.baseline_add_photo_alternate_24);
+        imageView.setBackground(myIcon);
+        deletePhoto.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * ActivityComplete result listener that is called when the photo add activity closes.
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // get image uri and file name from the onActivityResult
+        imageUri =  data.getData();
+        // if there's no uri, we didn't get a new photo, so return.
+        if (imageUri == null) {
+            return;
+        }
+        // get the location of where we will add this new photo
+        String uriString = "event_banners/"+eventID+"-upload";
+        // upload file to cloud storage
+        MainActivity.db.uploadPhoto(imageUri, uriString);
+        // set imageview and update organizer image preview
+        //remove the background image
+        imageView.setBackground(null);
+        imageView.setImageURI(imageUri);
+        // show the delete photo button again
+        deletePhoto.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -378,8 +508,7 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                             startMonth, startDay, startYear, startHour, startMinute
                     )
             );
-        }
-        else {
+        } else {
             // Set end time attributes
             endHour = hour;
             endMinute = minute;
