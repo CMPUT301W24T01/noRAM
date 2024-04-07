@@ -352,9 +352,9 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                         String newLocation = bundle.getString("location");
                         double lon = bundle.getDouble("lon");
                         double lat = bundle.getDouble("lat");
+                        editLocation.setText(newLocation);
                         locationIsRealLocation = true;
                         locationGeopoint = new GeoPoint(lat, lon);
-                        editLocation.setText(newLocation);
                     }
                 });
 

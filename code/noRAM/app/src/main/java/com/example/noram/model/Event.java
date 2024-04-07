@@ -164,6 +164,7 @@ public class Event {
         this.lastMilestone = lastMilestone;
         this.notifications = notifications;
         this.locationCoordinates = locationCoordinates;
+        locationIsRealLocation = locationCoordinates != null;
     }
 
     // Getters
@@ -528,6 +529,8 @@ public class Event {
         data.put("signUpLimit", signUpLimit);
         data.put("lastMilestone", lastMilestone);
         data.put("notifications", notifications);
+        data.put("locationIsRealLocation", locationIsRealLocation);
+        data.put("locationCoordinates", locationCoordinates);
         MainActivity.db.getEventsRef().document(id).set(data);
     }
 
@@ -557,6 +560,16 @@ public class Event {
         this.setSignUpLimit(doc.getLong("signUpLimit"));
         this.setLastMilestone(doc.getLong("lastMilestone"));
         this.setNotifications((List<Notification>) doc.get("notifications"));
+
+        this.setLocationIsRealLocation(doc.getBoolean("locationIsRealLocation"));
+        if (locationIsRealLocation) {
+            HashMap<String, Object> data = (HashMap<String, Object>) doc.get("locationCoordinates");
+            double latitude = (double) data.get("latitude");
+            double longitude = (double) data.get("longitude");
+            locationCoordinates = new GeoPoint(latitude, longitude);
+        } else {
+            locationCoordinates = null;
+        }
     }
 
     /**

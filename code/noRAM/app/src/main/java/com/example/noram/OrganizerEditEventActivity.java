@@ -6,15 +6,20 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.os.Bundle;
-import android.view.View;
+import android.app.Activity;
 import android.content.Intent;
-
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +31,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -72,6 +79,9 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
     private CheckBox trackLocationCheck;
     private TextView editLimitSignUps;
     private CheckBox limitSignUpsCheck;
+    private ImageView locationPickerButton;
+    private boolean locationIsRealLocation;
+    private GeoPoint locationGeopoint;
 
     // Main behaviour
     /**
@@ -176,6 +186,39 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         trackLocationCheck = findViewById(R.id.organizer_activity_edit_event_edit_trackLocation_check);
         limitSignUpsCheck = findViewById(R.id.organizer_activity_edit_event_edit_limitSignUps_check);
         editLimitSignUps = findViewById(R.id.organizer_activity_edit_event_signUpLimit_text);
+        locationPickerButton = findViewById(R.id.edit_location_picker_button);
+
+        editLocation.addTextChangedListener(new TextWatcher() {
+            /**
+             * Unused
+             * @param s
+             * @param start
+             * @param count
+             * @param after
+             */
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            /**
+             * Unused
+             * @param s
+             * @param start
+             * @param before
+             * @param count
+             */
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            /**
+             * If we manually edit the text in the location box, no longer treat it as a real location
+             * @param s unused
+             */
+            @Override
+            public void afterTextChanged(Editable s) {
+                locationGeopoint = null;
+                locationIsRealLocation = false;
+            }
+        });
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -292,6 +335,8 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     event.setMilestones(new ArrayList<>(milestones));
                     event.setTrackLocation(trackLocation);
                     event.setSignUpLimit(signUpLimit);
+                    event.setLocationIsRealLocation(locationIsRealLocation);
+                    event.setLocationCoordinates(locationGeopoint);
 
                     // Update event in database
                     event.updateDBEvent();
@@ -316,6 +361,29 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
             public void onClick(View v) {
 
             }
+        });
+
+        // create a ActivityResultLauncher to get the location from the LocationPickerActivity
+        // when we start it
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Bundle bundle = data.getExtras();
+                        String newLocation = bundle.getString("location");
+                        double lon = bundle.getDouble("lon");
+                        double lat = bundle.getDouble("lat");
+                        editLocation.setText(newLocation);
+                        locationIsRealLocation = true;
+                        locationGeopoint = new GeoPoint(lat, lon);
+                    }
+                });
+
+        // location picker button to start location picker
+        locationPickerButton.setOnClickListener(v -> {
+            Intent pickerIntent = new Intent(this, LocationPickerActivity.class);
+            launcher.launch(pickerIntent);
         });
 
     }

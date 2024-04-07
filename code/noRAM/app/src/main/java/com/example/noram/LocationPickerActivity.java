@@ -1,8 +1,10 @@
 /* Class for a location picker, to be used for selecting event locations. */
 package com.example.noram;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -54,6 +57,8 @@ public class LocationPickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_picker);
         currentLocation = findViewById(R.id.location_picker_content);
 
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         map = findViewById(R.id.location_picker_map);
 
         // setup map

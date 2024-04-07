@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         // setup timer to auto scroll
         timerHandler = new Handler();
         timerRunnable = () -> {
+            if (carouselEvents.isEmpty()) return;
             // update carousel index, scroll to that index, and start another callback timer
             currentCarouselIdx = ++currentCarouselIdx % carouselEvents.size();
             recyclerView.smoothScrollToPosition(currentCarouselIdx);
