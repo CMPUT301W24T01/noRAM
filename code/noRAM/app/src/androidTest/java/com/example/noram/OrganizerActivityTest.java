@@ -69,7 +69,7 @@ public class OrganizerActivityTest {
     @Before
     public void setup() {
         Intents.init();
-        MainActivity.organizer = new Organizer("temp", "name", "photo_path");
+        MainActivity.organizer = new Organizer("temp", "name", "photo_path", true);
         scenario = ActivityScenario.launch(OrganizerActivity.class);
     }
 
