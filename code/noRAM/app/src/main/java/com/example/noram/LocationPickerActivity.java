@@ -26,7 +26,6 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
 
 import java.util.Arrays;
 
@@ -72,11 +71,7 @@ public class LocationPickerActivity extends AppCompatActivity {
         // Start location
         double lon = -113.520338;
         double lat = 53.526293;
-
-        // put a compass on the screen
-        CompassOverlay compassOverlay = new CompassOverlay(this, map);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
+        
         GeoPoint point = new GeoPoint(lat, lon);
         selectedLocationCoordinates = point;
         map.getController().setCenter(point);

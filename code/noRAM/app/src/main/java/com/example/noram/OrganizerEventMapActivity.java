@@ -25,7 +25,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,11 +67,6 @@ public class OrganizerEventMapActivity extends AppCompatActivity {
         //set map properties
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
-
-        //put a compass on the screen
-        CompassOverlay compassOverlay = new CompassOverlay(this, map);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
 
         // after placing the organizer's location, add of the location of its attendees
         eventID = Objects.requireNonNull(getIntent().getExtras()).getString("event");
