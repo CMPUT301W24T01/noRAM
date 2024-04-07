@@ -1,9 +1,7 @@
 /*
 This file is used to display the attendee's profile information and allow for editing.
 Outstanding Issues:
-- The attendee's information is not saved to the database.
-- The attendee's profile picture is not the correct type.
-- Need to move attendee validation logic out of this class
+- None
  */
 
 package com.example.noram;

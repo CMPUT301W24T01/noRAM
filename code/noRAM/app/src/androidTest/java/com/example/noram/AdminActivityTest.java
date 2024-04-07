@@ -40,11 +40,13 @@ public class AdminActivityTest {
      * Test that the home button properly closes the activity.
      */
     @Test
-    public void homeButtonTest() {
+    public void homeButtonTest() throws InterruptedException {
         onView(withId(R.id.admin_home_button)).perform(click());
 
         // note we don't test for the main activity here, since in the unit test
         // we didn't start it. instead check that the activity gets destroyed.
+        // sleep to allow proper activity update
+        Thread.sleep(3000);
         assertSame(scenario.getState(), Lifecycle.State.DESTROYED);
     }
 
