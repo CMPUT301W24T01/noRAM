@@ -1,9 +1,7 @@
 /*
 This file is used to display the list of events for the attendee. It allows the user to see all events, their own events, and search for events.
 Outstanding Issues:
-- UI needs to be cleaned up
-- When the searchbar is cleared, the "AllEvents" list is shown by default (no matter what list was
-being consulted)
+- None
  */
 
 package com.example.noram;
@@ -45,7 +43,6 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     private ListView searchEventList; // list of events' search results
     private ArrayList<Event> allEventDataList; // data list of all events
     private ArrayList<Event> userEventDataList; // data list of all user's events
-
     private EventArrayAdapter allEventAdapter; // adapter for allEvent list
     private EventArrayAdapter userEventAdapter; // adapter for userEvent list
 
@@ -57,8 +54,7 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
     /**
      * Required empty public constructor
      */
-    public AttendeeEventListFragment() {
-    }
+    public AttendeeEventListFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -223,8 +219,12 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         userEventList.setAdapter(userEventAdapter);
 
         // connect each button to corresponding function
-        myEventsButton.setOnClickListener(view -> displayMyEvents());
-        allEventsButton.setOnClickListener(view -> displayAllEvents());
+        myEventsButton.setOnClickListener(view -> {
+            displayMyEvents();
+        });
+        allEventsButton.setOnClickListener(view -> {
+            displayAllEvents();
+        });
 
         // connect the lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {
