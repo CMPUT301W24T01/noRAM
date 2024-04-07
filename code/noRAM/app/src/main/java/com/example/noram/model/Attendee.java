@@ -6,6 +6,8 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
+import static java.lang.Math.abs;
+
 import android.util.Log;
 
 import com.example.noram.MainActivity;
@@ -223,7 +225,7 @@ public class Attendee {
      */
     public void generateDefaultName() {
         if (firstName.isEmpty() && lastName.isEmpty()) {
-            int hashIdentifier = identifier.hashCode();
+            int hashIdentifier = abs(identifier.hashCode());
             String name = "User#" + hashIdentifier;
             if (name.length() > 10) {
                 name = name.substring(0, 10);
