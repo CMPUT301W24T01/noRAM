@@ -31,7 +31,8 @@
     <string name="organizer_activity_edit_event_done_button">Done</string>
     <string name="organizer_activity_edit_event_cancel_button">Cancel</string>
     <string name="organizer_activity_edit_event_apply_button">Apply</string>
-
+    <string name="organizer_profile_update_success">Changes saved</string>
+    <string name="organizer_profile_update_cancel">Changes cancelled</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attendee_profile">Attendee profile</string>
     <string name="event_list">Event List</string>

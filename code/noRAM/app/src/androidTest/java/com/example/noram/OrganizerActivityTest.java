@@ -1,6 +1,7 @@
 package com.example.noram;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -14,6 +15,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
@@ -32,9 +34,13 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
+import com.example.noram.model.Organizer;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -48,17 +54,21 @@ import org.mockito.Mockito;
  * Espresso Tests for the Organizer Activity
  * @maintainer Cole
  * @author Cole
+ * @author Carlin
  */
 public class OrganizerActivityTest {
     public ActivityScenario<OrganizerActivity> scenario;
+
     @Rule
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
+
     /**
      * Setup before all unit tests
      */
     @Before
     public void setup() {
         Intents.init();
+        MainActivity.organizer = new Organizer("temp", "name", "photo_path");
         scenario = ActivityScenario.launch(OrganizerActivity.class);
     }
 
@@ -81,11 +91,13 @@ public class OrganizerActivityTest {
      * Tests that the home button closes the activity
      */
     @Test
-    public void homeButtonTest() {
+    public void homeButtonTest() throws InterruptedException {
         onView(withId(R.id.organizer_home_button)).perform(click());
 
         // note we don't test for the main activity here, since in the unit test
         // we didn't start it. instead check that the activity gets destroyed.
+        // sleep to allow proper activity update
+        Thread.sleep(3000);
         assertSame(scenario.getState(), Lifecycle.State.DESTROYED);
     }
 
@@ -284,6 +296,58 @@ public class OrganizerActivityTest {
         );
         intending(anyIntent()).respondWith(new Instrumentation.ActivityResult(0, null));
         intended(matcher);
+    }
+
+    /**
+     * Tests updating display name within dashboard
+     */
+    @Test
+    public void editDisplayNameConfirmTest() {
+
+        // Update display name in profile
+        onView(withId(R.id.navbar_organizer_profile)).perform(click());
+        onView(withId(R.id.edit_organizer_display_name))
+                .perform(scrollTo())
+                .perform(clearText())
+                .perform(typeText("newName"));
+
+        // Confirm change
+        onView(withId(R.id.organizer_info_save_button))
+                .perform(scrollTo())
+                .perform(click());
+
+        // Navigate away amd come back
+        onView(withId(R.id.navbar_new_event)).perform(click());
+        onView(withId(R.id.navbar_organizer_profile)).perform(click());
+
+        // Check that text remains
+        onView(withId(R.id.edit_organizer_display_name)).check(matches(withText("newName")));
+    }
+
+    /**
+     * Tests updating display name within dashboard
+     */
+    @Test
+    public void editDisplayNameCancelTest() {
+
+        // Update display name in profile
+        onView(withId(R.id.navbar_organizer_profile)).perform(click());
+        onView(withId(R.id.edit_organizer_display_name))
+                .perform(scrollTo())
+                .perform(clearText())
+                .perform(typeText("newName"));
+
+        // Cancel change
+        onView(withId(R.id.organizer_info_cancel_button))
+                .perform(scrollTo())
+                .perform(click());
+
+        // Navigate away amd come back
+        onView(withId(R.id.navbar_new_event)).perform(click());
+        onView(withId(R.id.navbar_organizer_profile)).perform(click());
+
+        // Check that text remains
+        onView(withId(R.id.edit_organizer_display_name)).check(matches(withText("name")));
     }
 
     /**
