@@ -27,6 +27,7 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.model.Attendee;
+import com.example.noram.model.ProfilePhotoGenerator;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.StorageReference;
@@ -150,9 +151,9 @@ public class AttendeeProfileFragment extends Fragment{
                 attendee.setAllowLocation(editAllowLocation);
 
                 if (attendee.getDefaultProfilePhoto()) {
-                    attendee.generateAndReturnDefaultProfilePhoto(t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
+                    new ProfilePhotoGenerator().generateAndReturnDefaultProfilePhoto(attendee, t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));
                 } else {
-                    attendee.generateDefaultProfilePhoto();
+                    new ProfilePhotoGenerator().generateDefaultProfilePhoto(attendee);
                 }
                 Toast.makeText(getActivity(), "Changes saved!", Toast.LENGTH_SHORT).show();
             } else {

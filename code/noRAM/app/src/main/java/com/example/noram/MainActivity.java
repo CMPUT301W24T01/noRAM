@@ -30,6 +30,7 @@ import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Event;
 import com.example.noram.model.Organizer;
+import com.example.noram.model.ProfilePhotoGenerator;
 import com.example.noram.model.PushNotificationService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.carousel.CarouselLayoutManager;
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                     // create new attendee
                                     attendee = new Attendee(user.getUid());
                                     attendee.generateAttendeeFCMToken();
-                                    attendee.generateDefaultProfilePhoto();
+                                    new ProfilePhotoGenerator().generateDefaultProfilePhoto(attendee);
                                     attendee.generateDefaultName();
                                     attendee.updateDBAttendee();
 
