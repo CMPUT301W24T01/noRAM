@@ -108,6 +108,36 @@ public class AttendeeActivityTest {
         onView(withId(R.id.edit_attendee_first_name)).check(matches(not(withText("newName"))));
     }
 
+    /**
+     * Test that the all events button works
+     */
+    @Test
+    public void testAllEventsButton() {
+        onView(withId(R.id.navbar_events)).perform(click());
+        onView(withId(R.id.allEventsButton)).perform(click());
+        onView(withId(R.id.allEventsList)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Test that the my events button works
+     */
+    @Test
+    public void testMyEventsButton() {
+        onView(withId(R.id.navbar_events)).perform(click());
+        onView(withId(R.id.myEventsButton)).perform(click());
+        onView(withId(R.id.userEventsList)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Test that the search bar works
+     */
+    @Test
+    public void testSearchBar() {
+        onView(withId(R.id.navbar_events)).perform(click());
+        onView(withId(R.id.searchInput)).perform(click());
+        onView(withId(R.id.searchInput)).perform(typeText("test"));
+        onView(withId(R.id.searchEventsList)).check(matches(isDisplayed()));
+    }
 
     /**
      * Release intents on shutdown
