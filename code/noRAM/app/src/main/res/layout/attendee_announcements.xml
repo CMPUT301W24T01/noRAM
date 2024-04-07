@@ -9,13 +9,13 @@
         android:id="@+id/topBar"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#AD96FF"
+        android:background="@color/main_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/backButton"
+        android:id="@+id/AttendeeAnnoucementsbackButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="#00FF0808"

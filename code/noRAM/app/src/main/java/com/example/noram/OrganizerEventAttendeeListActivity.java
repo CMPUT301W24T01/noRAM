@@ -32,9 +32,9 @@ import java.util.Locale;
 /**
  * The OrganizerEventAttendeeListActivity class displays the list of attendees for an event.
  * A {@link AppCompatActivity} subclass.
- * @Maintainer Ethan
- * @Author Ethan
- * @Author Carlin
+ * @maintainer Ethan
+ * @author Ethan
+ * @author Carlin
  */
 public class OrganizerEventAttendeeListActivity extends AppCompatActivity {
     private Event event;

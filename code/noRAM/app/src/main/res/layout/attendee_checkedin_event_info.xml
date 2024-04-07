@@ -67,13 +67,14 @@
                 android:src="@drawable/baseline_circle_notifications_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="#000000" />
+                app:tint="#000000"  />
 
             <TextView
                 android:id="@+id/announcementText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="10dp"
                 android:text="@string/announcement_text"
                 android:textSize="24sp"

@@ -111,4 +111,5 @@
     <string name="no_results_found">No results found</string>
     <string name="there_s_no_events_here">There\'s no events here</string>
     <string name="list_of_attendees">List of Attendees</string>
+    <string name="content_text">Content</string>
 </resources>

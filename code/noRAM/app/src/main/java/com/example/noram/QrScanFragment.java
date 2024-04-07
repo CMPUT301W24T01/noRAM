@@ -6,7 +6,10 @@ Outstanding Issues:
 
 package com.example.noram;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.location.Location;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -23,8 +27,19 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.example.noram.controller.EventManager;
 import com.example.noram.model.HashHelper;
 import com.example.noram.model.QRType;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import com.example.noram.controller.EventManager;
+import com.google.firebase.firestore.Transaction;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,7 +112,6 @@ public class QrScanFragment extends Fragment {
         scanLoadingSpinBar = root.findViewById(R.id.scan_progress_ring);
         scanLoadingSpinBar.setVisibility(View.INVISIBLE);
         mCodeScanner = new CodeScanner(activity, scannerView);
-
         // Reference: https://github.com/yuriy-budiyev/code-scanner, Code Scanner Sample Usage, Yuriy Budiyev, retrieved Feb 18 2024
         // Set up QR Code decode callback to check into event
         mCodeScanner.setDecodeCallback(result -> activity.runOnUiThread(() -> {
@@ -115,6 +129,7 @@ public class QrScanFragment extends Fragment {
      * Processes the scanned QR code based on the encoded data
      * @param qrCodeString qr code encoded string
      */
+    @SuppressLint("MissingPermission")
     private void processQRCode(String qrCodeString) {
         String qrDocId = HashHelper.hashSHA256(qrCodeString);
         DocumentReference doc = MainActivity.db.getQrRef().document(qrDocId);
@@ -127,17 +142,20 @@ public class QrScanFragment extends Fragment {
                     showCheckInFailure("Event not found for the QR code.");
                     return;
                 }
-
-                Log.d("DEBUG", "code exists");
                 // Get event id and qr type
                 String eventId = qrDocument.getString("event");
 
                 QRType qrType = QRType.valueOf(qrDocument.getString("type"));
 
                 if (qrType == QRType.SIGN_IN) {
-                    // check in and go to confetti
-                    EventManager.checkInToEvent(eventId);
-                    EventManager.signUpForEvent(eventId, false);
+                    if (MainActivity.attendee.getAllowLocation()) {
+                        getLocationQREntry(eventId);
+                    }
+                    else{
+                        EventManager.checkInToEvent(eventId, null);
+                        //sign up and confetti
+                        EventManager.signUpForEvent(eventId, false);
+                    }
                     showCheckInSuccess();
                     goToEventListener.goToConfetti(eventId);
                 } else {
@@ -149,7 +167,53 @@ public class QrScanFragment extends Fragment {
             }
         });
     }
-
+    /**
+     * Get the location of the user from the phone.
+     * uses the FusedLocationProviderClient provided by Google API to access location.
+     * If location is accessed, goto eventManager.checkInEvent() to update db
+     * If location access fails, exit map.
+     * @suppress the permission check because I check it in onCreate()
+     * @param ID the event ID
+     */
+    @SuppressLint("MissingPermission")
+    private void getLocationQREntry(String ID) {
+        //grab the FusedLocationProviderClient builder
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        //attempt to get the location
+        fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+            /**
+             On successful acquisition of user's location, pass it
+             @param location the location to be added to the database
+             */
+            @Override
+            public void onSuccess(Location location) {
+                //and the location if it is not null
+                if (location != null) {
+                    EventManager.checkInToEvent(ID, location);
+                    //sign up and confetti
+                    EventManager.signUpForEvent(ID, false);
+                } else {
+                    //location was not provided
+                    Toast.makeText(getContext(), "Location tracking denied, signing-in without location", Toast.LENGTH_LONG).show();
+                    EventManager.checkInToEvent(ID, null);
+                    //sign up and confetti
+                    EventManager.signUpForEvent(ID, false);
+                }
+            }
+        }).addOnFailureListener(getActivity(), new OnFailureListener() {
+            /**
+             On failed acquisition of user's location, report error
+             @param e the exception that occurred.
+             */
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //user provided permission to use location but the location was not properly received.
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Failed to retrieve location, internal error. Signing-in without location", Toast.LENGTH_LONG).show();
+                EventManager.checkInToEvent(ID, null);
+            }
+        });
+    };
     /**
      * Shows a toast when check in succeeds
      */
