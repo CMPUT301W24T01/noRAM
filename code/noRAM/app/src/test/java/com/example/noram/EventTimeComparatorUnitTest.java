@@ -24,6 +24,10 @@ import java.util.stream.Stream;
  */
 public class EventTimeComparatorUnitTest {
 
+    /**
+     * Provides parameters for the compare test
+     * @return Stream of arguments for the compare test
+     */
     public static Stream<Arguments> objectProvideParameter() {
         Event event1 = new Event();
         Event event2 = new Event();
