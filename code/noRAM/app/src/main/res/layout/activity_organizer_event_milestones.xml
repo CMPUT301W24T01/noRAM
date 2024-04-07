@@ -52,8 +52,10 @@
 
     <TextView
         android:id="@+id/organizer_event_milestones_empty"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="This event has no milestones"
         android:textAlignment="center"
         android:textSize="24sp"
