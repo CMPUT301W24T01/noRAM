@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                                     // create new attendee
                                     attendee = new Attendee(user.getUid());
                                     attendee.generateAttendeeFCMToken();
+                                    attendee.generateDefaultProfilePhoto();
                                     attendee.updateDBAttendee();
 
                                     // create new organizer, and sync it with the new attendee for now.

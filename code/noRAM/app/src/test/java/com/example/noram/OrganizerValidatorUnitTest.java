@@ -39,9 +39,9 @@ public class OrganizerValidatorUnitTest {
      */
     private static Stream<Arguments> objectProvideParameter() {
         return Stream.of(
-                Arguments.of(new Organizer("id", "John Johnathons", "myCoolPhoto"), true),
-                Arguments.of(new Organizer("id", "", "myCoolPhoto"), false),
-                Arguments.of(new Organizer("id", "John Johnathons", ""), false)
+                Arguments.of(new Organizer("id", "John Johnathons", "myCoolPhoto", false), true),
+                Arguments.of(new Organizer("id", "", "myCoolPhoto", false), false),
+                Arguments.of(new Organizer("id", "John Johnathons", "", false), false)
 
         );
     }
