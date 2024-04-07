@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  */
 public class AttendeeValidatorUnitTest {
     /**
-     * Tests that the AttendeeVaidator properly validates an attendee object
+     * Tests that the AttendeeValidator properly validates an attendee object
      * @param attendee attendee object being validated
      * @param expectedResult expected validation result
      */
