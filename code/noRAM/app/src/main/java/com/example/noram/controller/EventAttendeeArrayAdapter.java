@@ -11,12 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.noram.R;
+import com.example.noram.model.AdminPhoto;
+import com.example.noram.model.Attendee;
 import com.example.noram.model.AttendeeCheckInCounter;
 
 import java.util.ArrayList;
@@ -61,19 +64,33 @@ public class EventAttendeeArrayAdapter extends ArrayAdapter<AttendeeCheckInCount
 
         // get attendee data
         AttendeeCheckInCounter attendeeAndCount = attendeesAndCounts.get(position);
+        Attendee attendee = attendeeAndCount.getAttendee();
+        int checkInCount = attendeeAndCount.getCheckInCount();
+
+
+        // get attendee's photo
+         AdminPhoto photo = new AdminPhoto();
+         photo.setPhotoPath(attendee.getProfilePhotoString());
+         photo.setBitmapFromDB(context);
 
         // get item's fields (UI)
-        TextView attendeeName = view.findViewById(R.id.attendee_list_item_name);
+        TextView attendeeName = view.findViewById(R.id.attendee_list_name);
+        TextView homepageView = view.findViewById(R.id.attendee_list_homepage);
+        TextView emailView = view.findViewById(R.id.attendee_list_email);
         TextView checkInCountView = view.findViewById(R.id.attendee_list_check_in_count);
+        ImageView photoView = view.findViewById(R.id.attendee_list_photo);
 
         // update fields and return view
-        String nameString = attendeeAndCount.getAttendee().getFirstName() + " " + attendeeAndCount.getAttendee().getLastName();
+        String nameString = attendee.getFirstName() + " " + attendee.getLastName();
+        homepageView.setText(attendee.getHomePage());
+        emailView.setText(attendee.getEmail());
+        photo.updateWithBitmap(photoView);
 
         String checkInString;
-        if (attendeeAndCount.getCheckInCount() == 1) {
-            checkInString = "Checked-In: " + attendeeAndCount.getCheckInCount() + " Time";
+        if (checkInCount == 1) {
+            checkInString = "Checked-In: " + checkInCount + " Time";
         } else {
-            checkInString = "Checked-In: " + attendeeAndCount.getCheckInCount() + " Times";
+            checkInString = "Checked-In: " + checkInCount + " Times";
         }
         attendeeName.setText(nameString);
         checkInCountView.setText(checkInString);

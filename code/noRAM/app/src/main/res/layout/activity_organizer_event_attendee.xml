@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:foregroundTint="#FFFFFF"
-        android:text="List of Attendees"
+        android:text="@string/list_of_attendees"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/organizer_event_attendee_header"
@@ -117,7 +117,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_button_layout" />
 
     <TextView
         android:id="@+id/organizer_event_signed_up_attendee_empty"
@@ -130,20 +130,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_button_layout" />
 
     <TextView
         android:id="@+id/organizer_event_attendee_search_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No results found"
+        android:text="@string/no_results_found"
         android:textAlignment="center"
         android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_header" />
+        app:layout_constraintTop_toBottomOf="@+id/organizer_event_attendee_button_layout" />
 
     <ListView
         android:id="@+id/organizer_event_attendee_signed_up_list"

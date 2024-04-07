@@ -57,7 +57,7 @@ public class OrganizerActivity extends AppCompatActivity {
         navBar.setSelectedItemId(NAV_PROFILE);
         activeFragment = profileFragment;
         header = findViewById(R.id.organizer_activity_header_text);
-        header.setText(R.string.organizer_fragment_event_list_header);
+        header.setText(R.string.dashboard);
 
         // create fragments into the fragmentManager
         fragmentManager.beginTransaction()
@@ -94,7 +94,7 @@ public class OrganizerActivity extends AppCompatActivity {
                     headerText = R.string.organizer_fragment_event_list_header;
                 } else if (itemID == NAV_PROFILE) {
                     selectedFragment = profileFragment;
-                    headerText = R.string.organizer_fragment_profile_header;
+                    headerText = R.string.dashboard;
                 }
                 else {
                     return false;
