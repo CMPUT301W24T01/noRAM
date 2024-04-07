@@ -32,10 +32,11 @@ public class Organizer {
      * @param name name for the organizer
      * @param photoPath path to the organizer's profile photo in the cloud.
      */
-    public Organizer(String identifier, String name, String photoPath) {
+    public Organizer(String identifier, String name, String photoPath, boolean usingAttendeeProfilePicture) {
         this.identifier = identifier;
         this.name = name;
         this.photoPath = photoPath;
+        this.usingAttendeeProfilePicture = usingAttendeeProfilePicture;
     }
 
     /**
@@ -118,5 +119,6 @@ public class Organizer {
         name = attendee.getFirstName() + " " + attendee.getLastName();
         photoPath = attendee.getProfilePhotoString();
         identifier = attendee.getIdentifier();
+        usingAttendeeProfilePicture = attendee.getDefaultProfilePhoto();
     }
 }

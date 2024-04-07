@@ -8,7 +8,6 @@ package com.example.noram;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,8 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Event;
+import com.example.noram.model.ListType;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -29,10 +28,11 @@ import java.util.ArrayList;
  * @author Gabriel
  */
 public abstract class EventListFragmentTemplate extends Fragment {
-    private ArrayList<Event> searchEventDataList; // data list of events' search results
-    EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
+    protected ArrayList<Event> searchEventDataList; // data list of events' search results
+    protected EventArrayAdapter searchEventAdapter; // adapter for searchEvent list
     protected final CollectionReference eventRef = MainActivity.db.getEventsRef(); // list of events in database
     protected ArrayList<Event> eventListRef = null; // list of events on which searches are performed
+    protected ListType listType = ListType.GENERAL; // type of list that is being displayed
     protected ListView searchEventList; // view showing all the searched events
     protected EditText searchBox;
 
@@ -50,8 +50,9 @@ public abstract class EventListFragmentTemplate extends Fragment {
      * Changes the reference list (on which searches are performed) for a new list
      * @param newList The new list on which searches will now be performed
      */
-    protected void setReferenceSearchList(ArrayList<Event> newList){
+    protected void setReferenceSearchList(ArrayList<Event> newList, ListType type){
         eventListRef = newList;
+        listType = type;
     }
 
     /**
@@ -155,9 +156,6 @@ public abstract class EventListFragmentTemplate extends Fragment {
             );
         }
 
-        // show search list
-        showSearchList();
-
         // remove old search
         searchEventDataList.clear();
 
@@ -180,5 +178,8 @@ public abstract class EventListFragmentTemplate extends Fragment {
 
         // notify
         searchEventAdapter.notifyDataSetChanged();
+
+        // show search list
+        showSearchList();
     }
 }
