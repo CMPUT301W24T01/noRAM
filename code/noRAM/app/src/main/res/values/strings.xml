@@ -108,4 +108,5 @@
     <string name="past_events">Past Events</string>
     <string name="welcome_to_noram_events">Welcome to noRAM Events!</string>
     <string name="no_events_to_show_why_not_make_one">No events to show... why not make one?</string>
+    <string name="content_text">Content</string>
 </resources>

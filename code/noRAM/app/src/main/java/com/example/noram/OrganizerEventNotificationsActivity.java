@@ -17,22 +17,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.noram.model.Event;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.noram.model.Notification;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * The OrganizerEventNotificationsActivity class allows event organizers to send locations for their event.
  * A {@link AppCompatActivity} subclass.
- * @Maintainer Christiaan
- * @Author Christiaan
+ * @maintainer Christiaan
+ * @author Christiaan
  */
 public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
     // Attributes
-    private Event event = new Event();
+    private List<Notification> listNotification;
+    Event event = new Event();
 
     /**
      * Setup the activity when it is created.
@@ -52,22 +54,11 @@ public class OrganizerEventNotificationsActivity extends AppCompatActivity {
         if (intent.hasExtra("event")) {
             String eventID = Objects.requireNonNull(intent.getExtras()).getString("event");
             assert (eventID != null);
-            Task<DocumentSnapshot> task = MainActivity.db.getEventsRef().document(eventID).get();
-            task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                /**
-                 * On successful acquisition of event attributes from database, create event
-                 * Set dateTime attributes with event attributes
-                 * Update text of views with event attributes
-                 *
-                 * @param documentSnapshot database object from which object is initialized
-                 */
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                    // Make event
-                    event.updateWithDocument(documentSnapshot);
-
-                }
+            Task<DocumentSnapshot> eventTask = MainActivity.db.getEventsRef().document(eventID).get();
+            eventTask.addOnSuccessListener(documentSnapshot -> {
+                event.updateWithDocument(documentSnapshot);
+                listNotification = event.getNotifications();
             });
         }
 

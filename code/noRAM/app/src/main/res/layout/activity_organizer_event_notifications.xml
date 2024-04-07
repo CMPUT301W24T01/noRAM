@@ -57,29 +57,50 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/organizer_notifications_edit_title_text"
-                android:layout_width="match_parent"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_notifications_title_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:ems="10"
-                android:hint="@string/title"
-                android:inputType="textShortMessage"
-                android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_title" />
+                android:layout_marginTop="10dp"
+                android:textColorHint="@color/hint_color"
+                android:minEms="20"
+                android:maxEms="20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_title">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_notifications_edit_title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/title"
+                    android:inputType="text"
+                    android:maxLength="100"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/organizer_notifications_edit_content_text"
-                android:layout_width="match_parent"
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/organizer_notifications_edit_content_text_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:ems="10"
-                android:hint="@string/content"
-                android:inputType="textShortMessage"
-                android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_edit_title_text" />
-
-
+                android:layout_marginTop="10dp"
+                android:textColorHint="@color/hint_color"
+                android:minEms="20"
+                android:maxEms="20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/organizer_notifications_title_layout">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/organizer_notifications_edit_content_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/content_text"
+                    android:inputType="text"
+                    android:maxLength="100"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -101,7 +122,19 @@
             android:layout_margin="10sp"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/button_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/attendee_info_save_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/organizer_notifications_send_button"
@@ -110,7 +143,19 @@
             android:layout_margin="10sp"
             android:layout_weight="1"
             android:text="@string/send"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/button_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/attendee_info_save_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_attendee_location_box"
+            app:layout_constraintVertical_bias="0.0"
+
+
+            />
     </LinearLayout>
 
 
