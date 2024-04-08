@@ -11,6 +11,8 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
 import android.Manifest;
 import android.view.View;
@@ -23,12 +25,15 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.GrantPermissionRule;
 
 import com.example.noram.model.Attendee;
+import com.example.noram.model.Database;
+import com.example.noram.model.Organizer;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Espresso tests for the main activity
@@ -41,6 +46,12 @@ public class MainActivityTest {
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
 
     /**
+     * Grant notification permission
+     */
+    @Rule
+    public GrantPermissionRule permissionNotificatiosn = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
+
+    /**
      * Setup before all unit tests
      * @throws InterruptedException due to sleep
      */
@@ -48,6 +59,7 @@ public class MainActivityTest {
     public void setup() throws InterruptedException {
         Intents.init();
         MainActivity.attendee = new Attendee("test");
+        MainActivity.organizer = new Organizer();
         scenario = ActivityScenario.launch(MainActivity.class);
         
         // Firebase seems to struggle if we don't give time to init in espresso tests
@@ -59,6 +71,9 @@ public class MainActivityTest {
      */
     @Test
     public void attendeeButtonTest() {
+        MainActivity.db = new Database();
+        MainActivity.db = Mockito.spy(MainActivity.db);
+        doNothing().when(MainActivity.db).downloadPhoto(any(String.class), any());
         onView(withId(R.id.bottom_nav_attend_events)).perform(click());
 
         intended(hasComponent(AttendeeActivity.class.getName()));
@@ -69,9 +84,12 @@ public class MainActivityTest {
      */
     @Test
     public void organizerButtonTest() {
+        MainActivity.db = new Database();
+        MainActivity.db = Mockito.spy(MainActivity.db);
+        doNothing().when(MainActivity.db).downloadPhoto(any(String.class), any());
         onView(withId(R.id.bottom_nav_organize_events)).perform(click());
-
         intended(hasComponent(OrganizerActivity.class.getName()));
+
     }
 
     /**

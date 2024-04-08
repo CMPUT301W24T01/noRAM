@@ -40,6 +40,12 @@ public class AttendeeActivityTest {
     @Rule
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
     /**
+     * Grant notification permission
+     */
+    @Rule
+    public GrantPermissionRule permissionNotifications = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
+
+    /**
      * Setup before all unit tests
      */
     @Before

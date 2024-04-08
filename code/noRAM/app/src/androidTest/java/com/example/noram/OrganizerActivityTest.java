@@ -39,11 +39,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
-import com.example.noram.model.Attendee;
 import com.example.noram.model.Database;
 import com.example.noram.model.Organizer;
 
@@ -67,6 +64,12 @@ public class OrganizerActivityTest {
 
     @Rule
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
+
+    /**
+     * Grant notification permission
+     */
+    @Rule
+    public GrantPermissionRule permissionNotificatiosn = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
 
     /**
      * Setup before all unit tests

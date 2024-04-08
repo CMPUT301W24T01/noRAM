@@ -5,22 +5,27 @@
 
 package com.example.noram;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.rule.GrantPermissionRule;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
 import android.Manifest;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.rule.GrantPermissionRule;
+
+import com.example.noram.model.Database;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Espresso Tests for the admin activity
@@ -38,6 +43,12 @@ public class AdminActivityTest {
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
 
     /**
+     * Grant notification permission
+     */
+    @Rule
+    public GrantPermissionRule permissionNotifications = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
+
+    /**
      * Setup before all unit tests
      */
     @Before
@@ -51,6 +62,9 @@ public class AdminActivityTest {
      */
     @Test
     public void homeButtonTest() throws InterruptedException {
+        MainActivity.db = new Database();
+        MainActivity.db = Mockito.spy(MainActivity.db);
+        doNothing().when(MainActivity.db).downloadPhoto(any(String.class), any());
         onView(withId(R.id.admin_home_button)).perform(click());
 
         // note we don't test for the main activity here, since in the unit test
