@@ -366,7 +366,9 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                     List<Integer> milestones;
                     if (!milestonesString.isEmpty()) {
                         milestones = Stream.of(milestonesString.split(","))
-                                .mapToInt(value -> Integer.parseInt(value.replaceAll("\\s+", "")))
+                                .map(value -> value.replaceAll("\\s+", ""))
+                                .filter(value -> !value.isEmpty())
+                                .mapToInt(Integer::parseInt)
                                 .boxed()
                                 .collect(Collectors.toList()
                                 );

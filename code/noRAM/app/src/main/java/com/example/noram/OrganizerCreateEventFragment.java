@@ -277,10 +277,12 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     List<Integer> milestones;
                     if (!milestonesString.isEmpty()) {
                         milestones = Stream.of(milestonesString.split(","))
-                                    .mapToInt(value -> Integer.parseInt(value.replaceAll("\\s+", "")))
-                                    .boxed()
-                                    .collect(Collectors.toList()
-                                    );
+                                .map(value -> value.replaceAll("\\s+", ""))
+                                .filter(value -> !value.isEmpty())
+                                .mapToInt(Integer::parseInt)
+                                .boxed()
+                                .collect(Collectors.toList()
+                                );
                     }
                     else {
                         milestones = new ArrayList<>();
