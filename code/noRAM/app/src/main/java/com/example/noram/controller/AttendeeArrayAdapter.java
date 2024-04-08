@@ -8,7 +8,6 @@ Outstanding Issues:
 package com.example.noram.controller;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ import java.util.ArrayList;
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;
     private Context context;
-    public enum Format{FULL, IDHIDDEN};
+    public enum Format{FULL, IDHIDDEN}
     private Format format;
 
     /**

@@ -2,6 +2,7 @@
  * File to represent the milestone object
  * Outstanding issues: None
  */
+
 package com.example.noram.model;
 
 /**

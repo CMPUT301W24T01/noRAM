@@ -1,4 +1,9 @@
-/* RecyclerView adapter for the image carousel */
+/*
+This file is a RecyclerView adapter for the image carousel
+Outstanding Issues:
+- None
+ */
+
 package com.example.noram.controller;
 
 import android.app.Activity;
@@ -22,7 +27,7 @@ import java.util.ArrayList;
 
 /**
  * RecyclerView adapter for the ImageCarousel on the MainActivity
- * @maintainter Cole
+ * @maintainer Cole
  * @author Cole
  */
 public class ImageCarouselAdapter extends RecyclerView.Adapter<ImageCarouselAdapter.ViewHolder> {
@@ -113,9 +118,7 @@ public class ImageCarouselAdapter extends RecyclerView.Adapter<ImageCarouselAdap
         MainActivity.db.downloadPhoto(photoPath, t -> ac.runOnUiThread(() -> viewHolder.getImageView().setImageBitmap(t)));
 
         // set on click to go to event page
-        viewHolder.getImageView().setOnClickListener(v -> {
-            EventManager.displayAttendeeEvent(context, events.get(i));
-        });
+        viewHolder.getImageView().setOnClickListener(v -> EventManager.displayAttendeeEvent(context, events.get(i)));
 
         // set name text
         viewHolder.getEventNameView().setText(events.get(i).getName());

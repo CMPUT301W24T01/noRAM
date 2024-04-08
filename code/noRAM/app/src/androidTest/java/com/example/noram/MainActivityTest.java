@@ -1,3 +1,8 @@
+/* This file contains the Espresso tests for the MainActivity
+ * Outstanding Issues
+ * - None
+ */
+
 package com.example.noram;
 
 import static androidx.test.espresso.Espresso.onView;

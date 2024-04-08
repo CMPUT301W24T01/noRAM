@@ -1,6 +1,8 @@
 /* Class for adapting an event name to the Brief Event list on the organizer dashboard.
-* Outstanding Issues: None
+* Outstanding Issues:
+* - None
 * */
+
 package com.example.noram.controller;
 
 import android.content.Context;
@@ -39,7 +41,6 @@ public class BriefEventArrayAdapter extends ArrayAdapter<Event> {
         this.events = events;
         this.context = context;
     }
-
 
     /**
      * A method to get the view of the adapter

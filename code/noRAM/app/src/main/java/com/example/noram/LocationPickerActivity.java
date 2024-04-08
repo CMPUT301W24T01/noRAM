@@ -1,4 +1,8 @@
-/* Class for a location picker, to be used for selecting event locations. */
+/*
+* Class for a location picker, to be used for selecting event locations.
+* Outstanding Issues:
+*  - None
+*/
 package com.example.noram;
 
 import android.content.Context;

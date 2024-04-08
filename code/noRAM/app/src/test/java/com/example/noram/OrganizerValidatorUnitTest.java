@@ -1,6 +1,8 @@
-/* Class to hold all unit tests for the Organizer validator.
+/*
+* Class to hold all unit tests for the Organizer validator.
 * Outstanding Issues: None
-*  */
+*/
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -57,7 +57,6 @@ import java.util.stream.Stream;
  * @maintainer Carlin
  * @author Carlin
  * @author Sandra
- * @maintainer Carlin
  */
 public class OrganizerEditEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerDialogListener, TimePickerFragment.TimePickerDialogListener {
 

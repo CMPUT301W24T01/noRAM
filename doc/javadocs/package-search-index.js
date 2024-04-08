@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.noram"},{"l":"com.example.noram.controller"},{"l":"com.example.noram.model"},{"l":"com.example.noram.view"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.noram"},{"l":"com.example.noram.controller"},{"l":"com.example.noram.model"}];updateSearchResults();

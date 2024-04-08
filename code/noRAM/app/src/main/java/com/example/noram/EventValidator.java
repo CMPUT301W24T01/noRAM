@@ -1,6 +1,8 @@
 /* File for validating Event objects - provides multiple methods to validate an event object
-* Outstanding Issues: None.
+* Outstanding Issues:
+*  - None.
 */
+
 package com.example.noram;
 
 import androidx.core.util.Pair;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 
 /**
  * Class to validate an event
+ * @maintainer Cole
+ * @author Cole
  */
 public class EventValidator {
     /**
@@ -64,6 +68,8 @@ public class EventValidator {
      * @param startDateTime start date
      * @param endDateTime end date
      * @param milestonesString string of milestones, comma separated.
+     * @param signUpLimit sign-up limit
+     * @param currentSignUps current number of sign-ups
      * @return Pair where the first element is a boolean indicating validity, and the second is a string
      *         indicating the error message.
      */

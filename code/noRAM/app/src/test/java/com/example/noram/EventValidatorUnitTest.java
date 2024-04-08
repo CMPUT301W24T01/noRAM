@@ -1,4 +1,9 @@
-/* Class containing unit tests for the EventValidator object. */
+/*
+* Class containing unit tests for the EventValidator object.
+* Outstanding Issues:
+* - None
+*/
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,6 +64,8 @@ public class EventValidatorUnitTest {
      * @param end end of event
      * @param milestones string to be parsed as a milestones list
      * @param expectedResult the expected result of the test.
+     * @param signUpLimit the sign up limit for the event
+     * @param currentSignUps the current sign ups for the event
      */
     @ParameterizedTest
     @MethodSource("fieldsProvideParameter")

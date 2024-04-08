@@ -1,6 +1,7 @@
 /* Class to Validate an Organizer
 * Outstanding issues: none
 * */
+
 package com.example.noram;
 
 import androidx.core.util.Pair;

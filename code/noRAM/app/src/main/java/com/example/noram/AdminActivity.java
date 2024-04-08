@@ -12,12 +12,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import com.example.noram.AdminHomeFragment;
 
 /**
  * The AdminActivity class is the activity that is used to display the admin

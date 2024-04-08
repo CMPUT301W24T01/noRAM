@@ -6,11 +6,8 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import android.util.Log;
-
 import com.example.noram.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 
 /**

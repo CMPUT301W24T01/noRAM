@@ -5,6 +5,7 @@ Outstanding Issues:
 - Maybe: Properly handle the map application to prompt for location access if it does not have it
 - Maybe: if event object says no tracking, continue as usual, just remove the map from the menu.
  */
+
 package com.example.noram;
 
 import android.content.Context;
@@ -35,7 +36,7 @@ import java.util.Objects;
  * @author Sandra Taskovic
  *         https://github.com/osmdroid
  *         CHATGPT for adding onSuccesListener and onFailureListner when acessing the user location
- *         this video on how to use googlePlay API https://www.youtube.com/watch?v=M0kUd2dpxo4&t=854s
+ *         this video on how to use googlePlay API <a href="https://www.youtube.com/watch?v=M0kUd2dpxo4&t=854s">...</a>
  * @maintainer Sandra Taskovic
  */
 

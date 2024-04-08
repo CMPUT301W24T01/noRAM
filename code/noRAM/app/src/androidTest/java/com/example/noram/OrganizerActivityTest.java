@@ -1,3 +1,8 @@
+/* This file contains the Espresso tests for the OrganizerActivity
+ * Outstanding Issues
+ * - None
+ */
+
 package com.example.noram;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -90,6 +95,7 @@ public class OrganizerActivityTest {
 
     /**
      * Tests that the home button closes the activity
+     * @throws InterruptedException if the thread is interrupted
      */
     @Test
     public void homeButtonTest() throws InterruptedException {

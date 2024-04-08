@@ -4,6 +4,7 @@ with an ArrayList of the attendees and the number of times they've checked in.
 Outstanding Issues:
 - None
  */
+
 package com.example.noram.controller;
 
 import android.content.Context;

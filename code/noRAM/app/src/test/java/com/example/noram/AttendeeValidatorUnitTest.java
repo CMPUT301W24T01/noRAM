@@ -1,4 +1,9 @@
-/* Contains unit tests for the Attendee Validator Class. */
+/*
+* Contains unit tests for the Attendee Validator Class.
+* Outstanding Issues:
+* - None
+*/
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

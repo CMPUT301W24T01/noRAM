@@ -17,9 +17,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.AttendeeArrayAdapter;
-import com.example.noram.controller.EventArrayAdapter;
 import com.example.noram.model.Attendee;
-import com.example.noram.model.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
