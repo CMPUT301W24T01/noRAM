@@ -114,4 +114,5 @@
     <string name="list_of_attendees">List of Attendees</string>
     <string name="content_text">Content</string>
     <string name="no_announcements_yet">No announcements yet</string>
+    <string name="submit">Submit</string>
 </resources>

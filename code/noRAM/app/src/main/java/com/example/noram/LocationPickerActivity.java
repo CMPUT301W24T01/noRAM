@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -46,6 +48,7 @@ public class LocationPickerActivity extends AppCompatActivity {
     private ImageButton backButton;
     private MapView map;
     private Marker selectedPosMarker;
+    private Button submit;
 
     /**
      * Create the activity
@@ -59,6 +62,7 @@ public class LocationPickerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_picker);
         currentLocation = findViewById(R.id.location_picker_content);
+        submit = findViewById(R.id.location_picker_submit);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -114,7 +118,10 @@ public class LocationPickerActivity extends AppCompatActivity {
 
         // setup back button
         backButton = findViewById(R.id.organizer_location_picker_back);
-        backButton.setOnClickListener(v -> {
+        backButton.setOnClickListener(v ->  finish());
+
+        // setup submit button
+        submit.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.putExtra("location", selectedLocation);
             intent.putExtra("lon", selectedLocationCoordinates.getLongitude());
@@ -122,6 +129,7 @@ public class LocationPickerActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         } );
+
 
         // create http request queue
         requestQueue = Volley.newRequestQueue(this);
@@ -158,6 +166,7 @@ public class LocationPickerActivity extends AppCompatActivity {
             }
             currentLocation.setText(locName);
             selectedLocation = locName;
+            submit.setVisibility(View.VISIBLE);
         } catch (JSONException e) {
             Log.d("DEBUG", "couldn't get location name from json");
         }
