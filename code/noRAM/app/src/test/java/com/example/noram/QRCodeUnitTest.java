@@ -1,3 +1,9 @@
+/*
+ * This file contains tests for the QRCode class.
+ * Outstanding Issues:
+ * - None
+ */
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

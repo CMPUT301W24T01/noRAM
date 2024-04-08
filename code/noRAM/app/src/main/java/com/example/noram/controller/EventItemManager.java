@@ -3,6 +3,7 @@ This file is used to make it easier to setup event items in listviews.
 Outstanding Issues:
 - None
  */
+
 package com.example.noram.controller;
 
 import android.content.Context;
@@ -153,14 +154,11 @@ public class EventItemManager {
 
         // get the event's organizer and display its name on success
         DocumentReference docRef = MainActivity.db.getOrganizerRef().document(event.getOrganizerId());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // get organizer name and ID and display it
-                String organizer = documentSnapshot.getString("name");
-                organizer += documentSnapshot.getId();
-                organizerText.setText(organizer);
-            }
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            // get organizer name and ID and display it
+            String organizer = documentSnapshot.getString("name");
+            organizer += documentSnapshot.getId();
+            organizerText.setText(organizer);
         });
     }
 

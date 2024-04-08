@@ -1,7 +1,7 @@
 /*
 This file is used to create an Attendee object. This object is used to store information about an attendee.
 Outstanding Issues:
-- Generate proflie picture duplicated for some functionality, may want to decouple database from setters
+- Generate profile picture duplicated for some functionality, may want to decouple database from setters
  */
 
 package com.example.noram.model;

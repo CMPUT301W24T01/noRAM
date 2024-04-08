@@ -1,7 +1,7 @@
 /*
 This file is used to display the profile of an organizer.
 Outstanding Issues:
-- Needs to be implemented
+- None
  */
 
 package com.example.noram;

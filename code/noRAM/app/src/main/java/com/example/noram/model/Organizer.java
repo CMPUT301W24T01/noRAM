@@ -31,6 +31,7 @@ public class Organizer {
      * @param identifier the identifier of the organizer
      * @param name name for the organizer
      * @param photoPath path to the organizer's profile photo in the cloud.
+     * @param usingAttendeeProfilePicture whether or not the organizer is using an attendee profile picture
      */
     public Organizer(String identifier, String name, String photoPath, boolean usingAttendeeProfilePicture) {
         this.identifier = identifier;

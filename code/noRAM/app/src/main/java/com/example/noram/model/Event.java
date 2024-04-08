@@ -74,6 +74,7 @@ public class Event {
      * @param organizerId the id of the organizer who created the event
      * @param signUpLimit number of signups for event allowed (-1 for no limit)
      * @param lastMilestone the last milestone that was achieved
+     * @param locationCoords the location of the event
      */
     public Event(
             String id,
@@ -126,6 +127,7 @@ public class Event {
      * @param checkedInAttendeesLocations list of attendee locations
      * @param lastMilestone the last milestone that was achieved
      * @param notifications list of notifications
+     * @param locationCoordinates the location of the event
      */
     public Event(
             String id,

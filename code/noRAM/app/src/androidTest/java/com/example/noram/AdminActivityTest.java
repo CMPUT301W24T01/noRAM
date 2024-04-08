@@ -1,4 +1,17 @@
+/* This file is a test file for the AdminActivity class. It tests the home button and the fragment transitions.
+ * Outstanding Issues
+ * - None
+ */
+
 package com.example.noram;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.rule.GrantPermissionRule;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -9,14 +22,6 @@ import static org.junit.Assert.assertSame;
 
 import android.Manifest;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.rule.GrantPermissionRule;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 /**
  * Espresso Tests for the admin activity
  * @maintainer Cole
@@ -25,6 +30,10 @@ import org.junit.Test;
  */
 public class AdminActivityTest {
     public ActivityScenario<AdminActivity> scenario;
+
+    /**
+     * Grant camera permission
+     */
     @Rule
     public GrantPermissionRule permissionCamera = GrantPermissionRule.grant(Manifest.permission.CAMERA);
 
@@ -38,6 +47,7 @@ public class AdminActivityTest {
 
     /**
      * Test that the home button properly closes the activity.
+     * @throws InterruptedException if the thread is interrupted
      */
     @Test
     public void homeButtonTest() throws InterruptedException {

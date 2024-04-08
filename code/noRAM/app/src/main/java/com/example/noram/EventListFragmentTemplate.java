@@ -49,6 +49,7 @@ public abstract class EventListFragmentTemplate extends Fragment {
     /**
      * Changes the reference list (on which searches are performed) for a new list
      * @param newList The new list on which searches will now be performed
+     * @param type The type of list that is being displayed
      */
     protected void setReferenceSearchList(ArrayList<Event> newList, ListType type){
         eventListRef = newList;

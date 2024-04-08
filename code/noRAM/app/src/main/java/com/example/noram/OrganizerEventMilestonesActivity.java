@@ -33,6 +33,8 @@ import nl.dionsegijn.konfetti.xml.KonfettiView;
 /**
  * The OrganizerEventMilestonesActivity class displays the milestones for an event for the organizer.
  * A {@link AppCompatActivity} subclass.
+ * @maintainer Ethan
+ * @author Ethan
  */
 public class OrganizerEventMilestonesActivity extends AppCompatActivity {
     private KonfettiView confetti;

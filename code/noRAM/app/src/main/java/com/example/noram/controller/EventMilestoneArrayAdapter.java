@@ -4,6 +4,7 @@ with an ArrayList of milestone integers.
 Outstanding Issues:
 - None
  */
+
 package com.example.noram.controller;
 
 import android.content.Context;
@@ -83,7 +84,7 @@ public class EventMilestoneArrayAdapter extends ArrayAdapter<Milestone> {
         } else {
             attendeeCountField.setVisibility(View.VISIBLE);
             milestoneAchievedField.setVisibility(View.INVISIBLE);
-            String attendeeCountString = "";
+            String attendeeCountString;
             if (attendeeCount == 1) {
                 attendeeCountString = attendeeCount + "/" + milestone + " Attendee";
             } else {

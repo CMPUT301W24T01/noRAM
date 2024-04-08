@@ -1,4 +1,9 @@
-/* Class containing unit tests for the Event class. */
+/*
+* Class containing unit tests for the Event class.
+* Outstanding Issues:
+* - None
+*/
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -208,6 +213,10 @@ public class EventUnitTest {
 
     /**
      * Test the countCheckIns method of the event
+     * @param attendeeIDs List of attendee IDs to check
+     * @param attendeeObjects List of attendee objects to check
+     * @param attendeeNumber Number of attendees to check
+     * @param attendeeCheckInCounts List of expected check in counts
      */
     @ParameterizedTest
     @MethodSource("provideCountCheckIns")

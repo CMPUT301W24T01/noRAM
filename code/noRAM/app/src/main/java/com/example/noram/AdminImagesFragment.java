@@ -19,8 +19,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.noram.controller.PhotoArrayAdapter;
 import com.example.noram.model.AdminPhoto;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -92,27 +90,19 @@ public class AdminImagesFragment extends Fragment {
 
         // get all images from firebase's storage and store it(NOT updated in real-time!)
         MainActivity.db.getStorage().getReference("profile_photos/").listAll()
-                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-
-                    @Override
-                    public void onSuccess(ListResult listResult) {
-                        for(StorageReference item : listResult.getItems()){
-                            // add photo if it's not a setting photo
-                            String path = item.getPath().toLowerCase();
-                            if(!path.contains("cupcake") && !path.contains("-default")){
-                                addPhotoToGrid(item, true);
-                            }
+                .addOnSuccessListener(listResult -> {
+                    for(StorageReference item : listResult.getItems()){
+                        // add photo if it's not a setting photo
+                        String path = item.getPath().toLowerCase();
+                        if(!path.contains("cupcake") && !path.contains("-default")){
+                            addPhotoToGrid(item, true);
                         }
                     }
                 });
         MainActivity.db.getStorage().getReference("event_banners/").listAll()
-                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-
-                    @Override
-                    public void onSuccess(ListResult listResult) {
-                        for(StorageReference item : listResult.getItems()){
-                            addPhotoToGrid(item, false);
-                        }
+                .addOnSuccessListener(listResult -> {
+                    for(StorageReference item : listResult.getItems()){
+                        addPhotoToGrid(item, false);
                     }
                 });
 
@@ -126,9 +116,7 @@ public class AdminImagesFragment extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Confirm delete?")
                     .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Confirm", (dialog, which) -> {
-                        deletePhoto(position);
-                    })
+                    .setPositiveButton("Confirm", (dialog, which) -> deletePhoto(position))
                     .create().show();
         });
 

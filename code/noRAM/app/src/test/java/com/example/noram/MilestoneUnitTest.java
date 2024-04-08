@@ -1,6 +1,9 @@
 /*
  * This file is for testing the Milestone class.
+ * Outstanding issues:
+ * - None
  */
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

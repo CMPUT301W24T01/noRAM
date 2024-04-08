@@ -1,6 +1,9 @@
 /*
  * This class is used to generate a default profile picture for an attendee.
+ * Outstanding Issues:
+ * - None
  */
+
 package com.example.noram.model;
 
 import android.graphics.Bitmap;
@@ -12,6 +15,8 @@ import java.util.function.Consumer;
 
 /**
  * A class to generate a default profile picture for an attendee
+ * @maintainer Ethan
+ * @author Ethan
  */
 public class ProfilePhotoGenerator {
 
@@ -57,6 +62,7 @@ public class ProfilePhotoGenerator {
     /**
      * A method to generate a default profile picture for the attendee. Should be called
      * when the attendee is created so that a photo can immediately be displayed.
+     * @param attendee the attendee to generate the photo for
      */
     public void generateDefaultProfilePhoto(Attendee attendee) {
 
@@ -98,6 +104,7 @@ public class ProfilePhotoGenerator {
      * A method to generate a default profile picture for the attendee. Should be called
      * when the attendee is created so that a photo can immediately be displayed.
      * In addition, this method will return the generated photo to the calling function.
+     * @param attendee the attendee to generate the photo for
      * @param callingFunction the function to return the photo to (e.g. a lambda that sets the photo in the UI)
      */
     public void generateAndReturnDefaultProfilePhoto(Attendee attendee, Consumer<Bitmap> callingFunction) {
@@ -134,5 +141,4 @@ public class ProfilePhotoGenerator {
             MainActivity.db.downloadPhoto("profile_photos/cupcakeCakeDefault.png", downloadConsumer);
         }
     }
-
 }

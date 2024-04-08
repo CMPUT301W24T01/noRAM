@@ -6,8 +6,6 @@ Outstanding Issues:
 
 package com.example.noram;
 
-import static androidx.core.content.PermissionChecker.checkSelfPermission;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -26,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
@@ -37,7 +34,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import android.content.Context;
 
 /**
  * A {@link Fragment} subclass.

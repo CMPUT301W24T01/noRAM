@@ -1,4 +1,8 @@
-/* Class responsible for showing a fun confetti page after someone checks into an event. */
+/*
+Class responsible for showing a fun confetti page after someone checks into an event.
+* Outstanding Issues:
+* - None
+*/
 package com.example.noram;
 
 import android.os.Bundle;

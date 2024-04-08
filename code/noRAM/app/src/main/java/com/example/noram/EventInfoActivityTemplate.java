@@ -119,7 +119,7 @@ public abstract class EventInfoActivityTemplate extends AppCompatActivity {
         });
 
         // connect back button
-        backButton.setOnClickListener(v -> {finish();});
+        backButton.setOnClickListener(v -> finish());
     }
 
     /**

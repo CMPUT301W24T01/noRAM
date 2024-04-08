@@ -4,6 +4,7 @@ and provide methods to interact with it.
 Outstanding Issues:
 - None
  */
+
 package com.example.noram.model;
 /**
  * A class to represent the number of times an attendee has checked into an event.

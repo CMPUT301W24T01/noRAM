@@ -1,4 +1,9 @@
-/* Unit test class for the Organizer class */
+/*
+* Unit test class for the Organizer class
+* Outstanding Issues:
+* - None
+*/
+
 package com.example.noram;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.noram.R;
-import com.example.noram.model.Event;
 import com.example.noram.model.Notification;
 
 import java.util.ArrayList;
@@ -73,5 +72,4 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
 
         return view;
     }
-
 }

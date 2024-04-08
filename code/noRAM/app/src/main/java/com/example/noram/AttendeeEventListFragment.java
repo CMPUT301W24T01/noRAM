@@ -219,12 +219,8 @@ public class AttendeeEventListFragment extends EventListFragmentTemplate {
         userEventList.setAdapter(userEventAdapter);
 
         // connect each button to corresponding function
-        myEventsButton.setOnClickListener(view -> {
-            displayMyEvents();
-        });
-        allEventsButton.setOnClickListener(view -> {
-            displayAllEvents();
-        });
+        myEventsButton.setOnClickListener(view -> displayMyEvents());
+        allEventsButton.setOnClickListener(view -> displayAllEvents());
 
         // connect the lists so that each item display its event
         allEventList.setOnItemClickListener((parent, view, position, id) -> {

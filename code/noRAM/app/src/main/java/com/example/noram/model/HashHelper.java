@@ -1,4 +1,9 @@
-/* Class to help with Hashing of strings. */
+/*
+* Class to help with Hashing of strings.
+* Outstanding Issues:
+* None
+*/
+
 package com.example.noram.model;
 
 import java.nio.charset.StandardCharsets;

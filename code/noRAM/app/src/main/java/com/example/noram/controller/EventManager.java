@@ -12,20 +12,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.example.noram.AttendeeEventInfoActivity;
 import com.example.noram.MainActivity;
-import com.example.noram.R;
 import com.example.noram.OrganizerEventInfoActivity;
 import com.example.noram.model.Event;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
@@ -78,7 +69,8 @@ public class EventManager {
                 return null;
             });
         }
-        //if user location is null, we only update checkedInAttendees
+
+        // if user location is null, we only update checkedInAttendees
         // run a transaction on the event to update checkedInAttendee list
         MainActivity.db.getDb().runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(eventRef);
@@ -113,6 +105,7 @@ public class EventManager {
     /**
      * Sign the current user up for the event given by eventID
      * @param eventID ID string of the event
+     * @param allowMultipleSignup boolean to allow multiple signups
      */
     public static void signUpForEvent(String eventID, boolean allowMultipleSignup) {
         DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventID);

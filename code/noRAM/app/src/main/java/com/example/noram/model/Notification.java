@@ -6,7 +6,6 @@ Outstanding Issues:
 
 package com.example.noram.model;
 
-
 /**
  * The Notification class is used to create notifications that can be displayed to the user.
  * @maintainer Christiaan
