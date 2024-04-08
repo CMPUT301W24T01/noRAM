@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="90dp"
         android:background="@drawable/button_background"
-        android:text="@string/submit"
+        android:text="@string/confirm"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

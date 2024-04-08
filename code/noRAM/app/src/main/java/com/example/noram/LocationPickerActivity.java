@@ -118,7 +118,14 @@ public class LocationPickerActivity extends AppCompatActivity {
 
         // setup back button
         backButton = findViewById(R.id.organizer_location_picker_back);
-        backButton.setOnClickListener(v ->  finish());
+        backButton.setOnClickListener(v ->  {
+            Intent intent = new Intent();
+            intent.putExtra("location", selectedLocation);
+            intent.putExtra("lon", selectedLocationCoordinates.getLongitude());
+            intent.putExtra("lat", selectedLocationCoordinates.getLatitude());
+            setResult(RESULT_OK, intent);
+            finish();
+        } );
 
         // setup submit button
         submit.setOnClickListener(v -> {
