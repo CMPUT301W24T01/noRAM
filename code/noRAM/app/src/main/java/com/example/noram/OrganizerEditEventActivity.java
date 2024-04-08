@@ -245,19 +245,21 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
         eventID = intent.getExtras().getString("event");
         String eventImagePath = "event_banners/" + eventID + "-upload";
         //if the db pulls an image
-        if (eventImagePath != null) {
-            //set the imageBitmap of the view
-            deletePhoto.setVisibility(View.VISIBLE);
-            imageView.setBackground(null);
-            MainActivity.db.downloadPhoto(eventImagePath,
-                    t -> runOnUiThread(() -> {
+        //set the imageBitmap of the view
+        deletePhoto.setVisibility(View.INVISIBLE);
+        imageView.setBackground(null);
+        MainActivity.db.downloadPhoto(eventImagePath,
+                t -> runOnUiThread(() -> {
+                    if (t == null) {
+                        Drawable myIcon = getDrawable(R.drawable.baseline_add_photo_alternate_24);
+                        imageView.setBackground(myIcon);
+                    } else {
+                        deletePhoto.setVisibility(View.VISIBLE);
                         imageView.setVisibility(View.VISIBLE);
                         imageView.setImageBitmap(t);
-                    }));
-        } else {
-            //remove the delete button if there is not a photo
-            deletePhoto.setVisibility(View.INVISIBLE);
-        }
+                    }
+                }));
+
 
         // Set on-click listeners for buttons
         editStartDateTime.setOnClickListener(new View.OnClickListener() {
@@ -348,8 +350,11 @@ public class OrganizerEditEventActivity extends AppCompatActivity implements Dat
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
                 Long signUpLimit = -1L;
+                String signUpLimitString = editLimitSignUps.getText().toString();
                 if (limitSignUpsCheck.isChecked()) {
-                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                    if (!signUpLimitString.isEmpty()) {
+                        signUpLimit = Long.parseLong(signUpLimitString);
+                    }
                 }
 
                 Pair<Boolean, String> validateResult = EventValidator.validateFromFields(name, location, startDateTime, endDateTime, milestonesString, signUpLimit, event.getSignUpCount());
