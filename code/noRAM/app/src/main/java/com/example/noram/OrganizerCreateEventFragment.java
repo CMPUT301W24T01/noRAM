@@ -259,8 +259,11 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                 String milestonesString = editMilestones.getText().toString();
                 boolean trackLocation = trackLocationCheck.isChecked();
                 Long signUpLimit = -1L;
+                String signUpLimitString = editLimitSignUps.getText().toString();
                 if (limitSignUpsCheck.isChecked()) {
-                    signUpLimit = Long.parseLong(editLimitSignUps.getText().toString());
+                    if (!signUpLimitString.isEmpty()) {
+                        signUpLimit = Long.parseLong(signUpLimitString);
+                    }
                 }
 
                 // Check inputs
@@ -274,10 +277,12 @@ public class OrganizerCreateEventFragment extends Fragment implements DatePicker
                     List<Integer> milestones;
                     if (!milestonesString.isEmpty()) {
                         milestones = Stream.of(milestonesString.split(","))
-                                    .mapToInt(value -> Integer.parseInt(value.replaceAll("\\s+", "")))
-                                    .boxed()
-                                    .collect(Collectors.toList()
-                                    );
+                                .map(value -> value.replaceAll("\\s+", ""))
+                                .filter(value -> !value.isEmpty())
+                                .mapToInt(Integer::parseInt)
+                                .boxed()
+                                .collect(Collectors.toList()
+                                );
                     }
                     else {
                         milestones = new ArrayList<>();

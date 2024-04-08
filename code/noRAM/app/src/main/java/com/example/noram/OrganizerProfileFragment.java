@@ -218,6 +218,7 @@ public class OrganizerProfileFragment extends Fragment {
 
         organizer.setPhotoPath(MainActivity.attendee.getProfilePhotoString());
         organizer.setUsingAttendeeProfilePicture(true);
+        organizer.updateDBOrganizer();
         deletePhoto.setVisibility(View.INVISIBLE);
         MainActivity.db.downloadPhoto(organizer.getPhotoPath(),
                 t -> getActivity().runOnUiThread(() -> imageView.setImageBitmap(t)));

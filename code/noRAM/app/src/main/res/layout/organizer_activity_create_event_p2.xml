@@ -19,7 +19,6 @@
         android:text="@string/organizer_fragment_create_event_p2_header"
         android:textColor="@color/white"
         android:textSize="28sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
