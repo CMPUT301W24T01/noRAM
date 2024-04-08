@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/attendee_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -63,22 +63,25 @@
 
     <TextView
         android:id="@+id/attendee_homepage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:drawablePadding="5dp"
         android:padding="5dp"
         android:text="Attendee Homepage"
         android:textSize="15sp"
         app:drawableStartCompat="@drawable/admin_home_outline_24"
+        app:layout_constraintEnd_toStartOf="@+id/attendee_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_id" />
 
     <TextView
         android:id="@+id/attendee_email"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:drawablePadding="5dp"
         android:padding="5dp"
@@ -86,6 +89,7 @@
         android:textSize="15sp"
         app:drawableStartCompat="@drawable/outline_alternate_email_24"
         app:layout_constraintBottom_toBottomOf="@id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/attendee_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/attendee_homepage" />
 
