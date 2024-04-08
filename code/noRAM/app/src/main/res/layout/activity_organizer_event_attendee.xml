@@ -108,8 +108,10 @@
 
     <TextView
         android:id="@+id/organizer_event_checked_in_attendee_empty"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/there_are_no_checked_in_attendees_yet"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -121,8 +123,10 @@
 
     <TextView
         android:id="@+id/organizer_event_signed_up_attendee_empty"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/there_are_no_signed_up_attendees_yet"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -134,8 +138,10 @@
 
     <TextView
         android:id="@+id/organizer_event_attendee_search_empty"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/no_results_found"
         android:textAlignment="center"
         android:textSize="24sp"

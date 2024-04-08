@@ -43,8 +43,10 @@
 
     <TextView
         android:id="@+id/no_announcements_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/no_announcements_yet"
         android:textAlignment="center"
         android:textSize="20sp"
