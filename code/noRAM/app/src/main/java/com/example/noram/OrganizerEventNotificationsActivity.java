@@ -33,7 +33,6 @@ import java.util.Objects;
 public class OrganizerEventNotificationsActivity extends AppCompatActivity {
 
     // Attributes
-    private List<Notification> listNotification;
     Event event = new Event();
 
     /**
